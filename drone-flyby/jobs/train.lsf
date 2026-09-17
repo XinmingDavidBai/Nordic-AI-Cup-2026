@@ -1,0 +1,46 @@
+#!/bin/bash
+#BSUB -J drone_detector_train
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 8
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -W 8:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s245146@dtu.dk
+#BSUB -o logs/train_%J.out
+#BSUB -e logs/train_%J.err
+
+set -euo pipefail
+cd "$(dirname "$0")/.."   # -> drone-flyby/
+mkdir -p logs
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+source .venv/bin/activate
+
+# ---- run config (edit per variant: baseline / copy_paste / synthetic) ----
+MODEL=yolo11s.pt          # bump to yolo11s.pt / yolo11m.pt now that compute is free
+EPOCHS=150
+IMGSZ=960
+BATCH=32                  # A100 headroom over the CPU run's batch=8
+WORKERS=$(( ${LSB_DJOB_NUMPROC:-8} - 1 ))
+NAME=drone_detector_a100
+EXTRA_ARGS=""             # e.g. "--extra-dataset datasets/synthetic" for variant C
+# ---------------------------------------------------------------------------
+
+python train_detector.py \
+    --model "$MODEL" \
+    --epochs "$EPOCHS" \
+    --imgsz "$IMGSZ" \
+    --batch "$BATCH" \
+    --device 0 \
+    --workers "$WORKERS" \
+    --name "$NAME" \
+    $EXTRA_ARGS
+
+echo "Job finished $(date)"
+echo "Best checkpoint + archive copied to weights/detector.pt and models_weights/ - scp these back, e.g.:"
+echo "  scp <user>@transfer.gbar.dtu.dk:~/Nordic-AI-Cup-2026/drone-flyby/weights/detector.pt ./weights/"
