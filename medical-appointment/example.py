@@ -88,6 +88,12 @@ try:
         timeout=30,
     )
     logger.info('Ollama warm-up: %s', _r.status_code)
+    _r = requests.post(
+        f'{OLLAMA_URL}/api/embed',
+        json={'model': EMBED_MODEL, 'input': ['search_document: warm-up']},
+        timeout=60,
+    )
+    logger.info('Embed warm-up: %s', _r.status_code)
 except Exception as _e:
     logger.warning('Ollama warm-up failed (will retry on first request): %s', _e)
 
