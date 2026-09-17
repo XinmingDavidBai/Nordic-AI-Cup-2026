@@ -85,7 +85,6 @@ debug_out/
 datasets/
 runs/
 recordings/
-weights/
-*.pt
+models_weights/
 # .env holds NAIC_API_KEY. Never commit it (.env is also covered above).
 .env
