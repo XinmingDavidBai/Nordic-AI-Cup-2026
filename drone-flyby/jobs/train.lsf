@@ -8,12 +8,12 @@
 #BSUB -W 8:00
 #BSUB -B
 #BSUB -N
-#BSUB -u s245146@dtu.dk
-#BSUB -o logs/train_%J.out
-#BSUB -e logs/train_%J.err
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup/drone-flyby/logs/train_%J.out
+#BSUB -e /work3/s234812/nordic_cup/drone-flyby/logs/train_%J.err
 
 set -euo pipefail
-cd "$(dirname "$0")/.."   # -> drone-flyby/
+cd /work3/s234812/nordic_cup/drone-flyby
 mkdir -p logs
 
 echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
@@ -43,4 +43,4 @@ python train_detector.py \
 
 echo "Job finished $(date)"
 echo "Best checkpoint + archive copied to weights/detector.pt and models_weights/ - scp these back, e.g.:"
-echo "  scp <user>@transfer.gbar.dtu.dk:~/Nordic-AI-Cup-2026/drone-flyby/weights/detector.pt ./weights/"
+echo "  scp s234812@transfer.gbar.dtu.dk:/work3/s234812/nordic_cup/drone-flyby/weights/detector.pt ./weights/"
