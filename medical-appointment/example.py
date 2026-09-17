@@ -58,9 +58,11 @@ WHISPER_COMPUTE = os.getenv('WHISPER_COMPUTE', 'int8')
 
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
 OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.2:3b')
+EMBED_MODEL = os.getenv('EMBED_MODEL', 'nomic-embed-text')
 # llama3.2:3b with format:json only needs ~60-80 tokens to output the answer.
 LLM_NUM_PREDICT = int(os.getenv('LLM_NUM_PREDICT', '80'))
 OLLAMA_TIMEOUT = int(os.getenv('OLLAMA_TIMEOUT', '8'))
+EMBED_TIMEOUT = int(os.getenv('EMBED_TIMEOUT', '15'))
 
 TOP_K_SEGS = int(os.getenv('TOP_K_SEGS', '8'))
 
@@ -122,6 +124,55 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r'[a-z0-9]+', text.lower())
 
 
+# Medical synonym expansion: words that appear in clinical questions but rarely
+# in spoken transcripts are mapped to the conversational equivalents that DO
+# appear (e.g. "stethoscope" → ["listen", "chest", "heart", "lungs"]).
+# Only the QUERY is expanded; IDF is computed on the raw segment text.
+_MEDICAL_SYNONYMS: dict[str, list[str]] = {
+    'stethoscope':   ['listen', 'chest', 'heart', 'lungs'],
+    'auscultation':  ['listen', 'chest', 'lungs', 'heart', 'sound', 'sounds'],
+    'auscultated':   ['listen', 'listened', 'chest', 'lungs', 'heart'],
+    'auscultatory':  ['listen', 'chest', 'lungs', 'heart'],
+    'unchanged':     ['carry', 'changes', 'continue', 'same', 'maintain'],
+    'unaltered':     ['carry', 'changes', 'continue', 'same'],
+    'nsaid':         ['ibuprofen', 'ibumetin', 'naproxen', 'aspirin'],
+    'ppi':           ['pantoprazole', 'omeprazole', 'proton'],
+    'prescribed':    ['prescription', 'prescribe', 'issued', 'written', 'given'],
+    'prescription':  ['prescribe', 'prescribed', 'issued', 'written'],
+    'referred':      ['referral', 'sent', 'booked', 'specialist'],
+    'referral':      ['referred', 'sent', 'booked', 'specialist'],
+    'annual':        ['routine', 'follow', 'check', 'regular', 'yearly'],
+    'normal':        ['clear', 'unremarkable', 'fine', 'good', 'sound'],
+    'abnormal':      ['concern', 'finding', 'issue', 'problem'],
+    'examination':   ['examine', 'check', 'found', 'noted', 'looked'],
+    'stable':        ['unchanged', 'steady', 'same', 'consistent', 'controlled'],
+}
+
+
+def _expand_query(tokens: list[str]) -> list[str]:
+    """Append clinical synonyms for each token that has a known mapping."""
+    expanded = list(tokens)
+    for t in tokens:
+        expanded.extend(_MEDICAL_SYNONYMS.get(t, []))
+    return expanded
+
+
+def _embed_batch(texts: list[str]) -> list[list[float]]:
+    """Return nomic-embed-text embeddings for a list of texts (one call)."""
+    resp = requests.post(
+        f'{OLLAMA_URL}/api/embed',
+        json={'model': EMBED_MODEL, 'input': texts},
+        timeout=EMBED_TIMEOUT,
+    )
+    return resp.json()['embeddings']
+
+
+def embed_segments(segments: list[dict]) -> list[list[float]]:
+    """Precompute embeddings for all transcript segments (once per conversation)."""
+    texts = [f'search_document: {s["text"]}' for s in segments]
+    return _embed_batch(texts)
+
+
 def _build_idf(segments: list[dict]) -> dict[str, float]:
     """IDF over all segments: log((N+1)/(df+1))+1."""
     N = len(segments)
@@ -150,31 +201,41 @@ def retrieve(
     segments: list[dict],
     question: str,
     k: int = TOP_K_SEGS,
+    seg_embeddings: Optional[list[list[float]]] = None,
 ) -> tuple[list[tuple[int, dict]], int]:
-    """Return (top-k pairs in temporal order, index of best TF-IDF segment).
+    """Return (top-k pairs in temporal order, index of best segment).
 
-    TF-IDF outperforms plain keyword overlap because it down-weights terms that
-    appear in many segments (like 'asthma' across an asthma consultation), so it
-    distinguishes the specific evidence segment from a generic summary.
-    Numbers in the question get an extra bonus so dose/duration mismatches
-    surface high-scoring segments with the right values.
+    When seg_embeddings is provided (precomputed nomic-embed-text vectors), uses
+    semantic cosine similarity so that paraphrases like "listen to chest" match
+    "stethoscope" and "no changes" matches "treatment unchanged". Falls back to
+    TF-IDF with medical synonym expansion when embeddings are unavailable.
+    Numbers in the question always get a bonus to protect exact-value matching.
     """
-    idf = _build_idf(segments)
-    q_toks = _tokenize(question)
     q_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', question))
-    q_vec = _tfidf_vec(q_toks, idf)
 
-    scored: list[tuple[float, int]] = []
-    for i, seg in enumerate(segments):
-        s_toks = _tokenize(seg['text'])
-        s_vec = _tfidf_vec(s_toks, idf)
-        sim = _cosine(q_vec, s_vec)
-        # Boost segments that share exact numbers with the question.
-        s_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', seg['text']))
-        num_bonus = 0.15 * len(q_nums & s_nums)
-        scored.append((sim + num_bonus, i))
+    if seg_embeddings is not None:
+        import numpy as np
+        q_emb = np.array(_embed_batch([f'search_query: {question}'])[0])
+        q_norm = np.linalg.norm(q_emb) or 1.0
+        scored: list[tuple[float, int]] = []
+        for i, (seg, s_emb) in enumerate(zip(segments, seg_embeddings)):
+            s_arr = np.array(s_emb)
+            sim = float(np.dot(q_emb, s_arr) / (q_norm * (np.linalg.norm(s_arr) or 1.0)))
+            s_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', seg['text']))
+            num_bonus = 0.15 * len(q_nums & s_nums)
+            scored.append((sim + num_bonus, i))
+    else:
+        idf = _build_idf(segments)
+        q_toks = _tokenize(question)
+        q_vec = _tfidf_vec(_expand_query(q_toks), idf)
+        scored = []
+        for i, seg in enumerate(segments):
+            s_toks = _tokenize(seg['text'])
+            sim = _cosine(q_vec, _tfidf_vec(s_toks, idf))
+            s_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', seg['text']))
+            num_bonus = 0.15 * len(q_nums & s_nums)
+            scored.append((sim + num_bonus, i))
 
-    # Highest score first; ties broken by earlier segment.
     scored.sort(key=lambda x: (-x[0], x[1]))
     best_idx = scored[0][1]
     top_idx = sorted(i for _, i in scored[:k])
@@ -242,8 +303,8 @@ Question: {question}
 
 Rules:
 - YES if the transcript confirms the claim, even if phrased differently. Common medical paraphrases:
-  • "listened to your chest / lungs / heart" or "lungs sound clear" → stethoscope used / auscultation normal
-  • "heart sounds normal / regular rate" → heart examination without abnormal findings
+  • "listened to your chest / lungs / heart" or "lungs / chest / heart sound clear / normal" → stethoscope used / auscultation normal
+  • "chest and heart both sound normal" → lungs normal on auscultation / heart examination without abnormal findings
   • "carry on as you are / continue as before / no changes" → treatment continues unchanged
   • "I'll prescribe / here is a prescription / take [drug]" → prescription issued for [drug]
   • "referred / sent / booked you for" → referral made
@@ -261,15 +322,10 @@ Output JSON: {{"answer": true or false, "segment": integer or null}}"""
 def ask(
     segments: list[dict],
     question: str,
+    seg_embeddings: Optional[list[list[float]]] = None,
 ) -> tuple[bool, Optional[tuple[float, float]]]:
-    """Query the LLM for one question; return (answer, span_or_None).
-
-    The LLM receives ALL transcript segments so retrieval vocabulary gaps
-    (e.g. "stethoscope" vs "listen to chest") cannot cause false negatives.
-    TF-IDF retrieval is kept only as the span-selection fallback when the
-    LLM cites a segment index that is out-of-range or absent.
-    """
-    top, best_idx = retrieve(segments, question)
+    """Query the LLM for one question; return (answer, span_or_None)."""
+    top, best_idx = retrieve(segments, question, seg_embeddings=seg_embeddings)
     context = '\n'.join(
         f'[{i}] [{s["start"]:.1f}-{s["end"]:.1f}s]: {s["text"]}'
         for i, s in top
@@ -323,13 +379,20 @@ def predict(request: ASRQuestionRequestDto) -> ASRQuestionResponseDto:
     segments = transcribe(audio_bytes)
     logger.info('%s: %d segments', request.audio_filename, len(segments))
 
+    # Precompute semantic embeddings once for all segments.
+    try:
+        seg_embeddings = embed_segments(segments)
+    except Exception as exc:
+        logger.warning('Embedding failed (%s); falling back to TF-IDF', exc)
+        seg_embeddings = None
+
     answers: list[bool] = []
     evidence_start: list[Optional[float]] = []
     evidence_end: list[Optional[float]] = []
 
     for question in request.questions:
         try:
-            answer, span = ask(segments, question)
+            answer, span = ask(segments, question, seg_embeddings=seg_embeddings)
         except Exception:
             logger.exception('Error on question: %s', question)
             answer, span = False, None
