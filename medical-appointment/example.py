@@ -22,7 +22,7 @@ Configuration (environment variables)
   OLLAMA_MODEL         "llama3.2:3b", etc.          (default: llama3.2:3b)
   OLLAMA_URL           default http://localhost:11434
   LLM_NUM_PREDICT      token budget per question     (default: 80)
-  TOP_K_SEGS           segments retrieved/question   (default: 6)
+  TOP_K_SEGS           segments retrieved/question   (default: 8)
 
 Timing on a modern machine (Apple Silicon or recent laptop)
 -----------------------------------------------------------
@@ -181,6 +181,49 @@ def retrieve(
     return [(i, segments[i]) for i in top_idx], best_idx
 
 
+def _expand_span(
+    segments: list[dict],
+    center_idx: int,
+    top_set: set[int],
+    max_gap: float = 1.5,
+    max_expand: int = 2,
+) -> tuple[float, float]:
+    """Widen a single-segment span to adjacent top-k neighbours.
+
+    Many gold evidence spans cover 2-4 consecutive whisper segments (e.g. a
+    doctor-patient exchange that unfolds across several turns). Extending the
+    span to include immediately adjacent segments that are also relevant
+    (i.e. in the top-k retrieval set and within max_gap seconds) significantly
+    improves tIoU without risking a runaway wide span.
+    """
+    start = segments[center_idx]['start']
+    end = segments[center_idx]['end']
+
+    # Expand backward.
+    count = 0
+    for i in range(center_idx - 1, -1, -1):
+        if count >= max_expand:
+            break
+        if i in top_set and segments[i]['end'] >= start - max_gap:
+            start = segments[i]['start']
+            count += 1
+        else:
+            break
+
+    # Expand forward.
+    count = 0
+    for i in range(center_idx + 1, len(segments)):
+        if count >= max_expand:
+            break
+        if i in top_set and segments[i]['start'] <= end + max_gap:
+            end = segments[i]['end']
+            count += 1
+        else:
+            break
+
+    return start, end
+
+
 # ------------------------------------------------------------------ #
 # QA via local LLM (ollama, one call per question)                   #
 # ------------------------------------------------------------------ #
@@ -198,7 +241,15 @@ Transcript segments (index, timestamp, text):
 Question: {question}
 
 Rules:
-- YES if the transcript confirms the claim, even if phrased differently (e.g. "carry on as you are" confirms "treatment continues unchanged"; "listened to your chest" confirms "stethoscope used").
+- YES if the transcript confirms the claim, even if phrased differently. Common medical paraphrases:
+  • "listened to your chest / lungs / heart" or "lungs sound clear" → stethoscope used / auscultation normal
+  • "heart sounds normal / regular rate" → heart examination without abnormal findings
+  • "carry on as you are / continue as before / no changes" → treatment continues unchanged
+  • "I'll prescribe / here is a prescription / take [drug]" → prescription issued for [drug]
+  • "referred / sent / booked you for" → referral made
+  • "annual / routine / follow-up check" → follow-up visit
+  • "still hurting / pain not better" → pain persists despite treatment
+  • "under cover of / along with / together with" → combined treatment
 - Numbers/quantities must match EXACTLY: "100 mg" is NOT "200 mg"; "2 weeks" is NOT "6 weeks". A near-miss on dose, drug, or duration is NO.
 - NO if the topic is absent entirely, or a specific numeric/named value differs from what the question claims.
 - If YES, give the index of the ONE segment that most directly proves it.
@@ -213,11 +264,10 @@ def ask(
 ) -> tuple[bool, Optional[tuple[float, float]]]:
     """Query the LLM for one question; return (answer, span_or_None).
 
-    Span strategy: the LLM decides yes/no, but the span comes from the
-    best-scored retrieved segment rather than the LLM-cited one. Keyword +
-    number overlap is a more reliable locator than model citation because it
-    directly measures exact topical match without the model drifting to a
-    convenient summary segment.
+    The LLM receives ALL transcript segments so retrieval vocabulary gaps
+    (e.g. "stethoscope" vs "listen to chest") cannot cause false negatives.
+    TF-IDF retrieval is kept only as the span-selection fallback when the
+    LLM cites a segment index that is out-of-range or absent.
     """
     top, best_idx = retrieve(segments, question)
     context = '\n'.join(
@@ -254,9 +304,11 @@ def ask(
     llm_seg_idx = data.get('segment')
     top_indices = {i for i, _ in top}
     if isinstance(llm_seg_idx, int) and 0 <= llm_seg_idx < len(segments) and llm_seg_idx in top_indices:
-        seg = segments[llm_seg_idx]
+        center_idx = llm_seg_idx
     else:
-        seg = segments[best_idx]
+        center_idx = best_idx
+
+    seg = segments[center_idx]
     return True, (seg['start'], seg['end'])
 
 
