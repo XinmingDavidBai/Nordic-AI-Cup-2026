@@ -8,15 +8,19 @@ submission environment free of training-only packages.
 
 Two things matter more than the choice of optimiser here:
 
-* Budget. A full 3000 s episode is minutes of wall clock. Early generations therefore run
-  truncated episodes (`--max-time`) and only the finalists are scored at full length -
-  a parameter set that cannot reach 1200 s will never win at 3000 s.
+* Budget, traded against truncation bias. A full 3000 s episode is minutes of wall clock,
+  so `--max-time` truncates. But truncation is not neutral: trees die at age 50-100 while
+  the tree spawn rate halves every 300 s, so food is abundant early and scarce late. A
+  short episode therefore rewards camping one tree and punishes the cost of looking for
+  another - which is exactly how an earlier run drove `w_explore` to zero. Train long
+  enough to include the scarce regime, or the search will evolve the foraging behaviour
+  back out.
 
 * Overfitting. Validation and evaluation use different seeds, so the seed set is rotated
   every generation and fitness is downside-aware (mean minus a multiple of the spread).
 
-    python train/evolve.py --generations 30 --pop 16 --max-time 1200
-    python train/evolve.py --resume checkpoints/best.json --generations 20 --max-time 3000
+    python train/evolve.py --resume checkpoints/forage_start.json --generations 20
+    python train/evolve.py --resume checkpoints/best.json --generations 10 --max-time 3000
 """
 
 import argparse
@@ -115,8 +119,8 @@ def main() -> None:
     ap.add_argument("--pop", type=int, default=16, help="lambda")
     ap.add_argument("--elites", type=int, default=4, help="mu")
     ap.add_argument("--seeds", type=int, default=3, help="episodes per candidate")
-    ap.add_argument("--max-time", type=float, default=1200.0,
-                    help="truncate episodes; raise for final polish generations")
+    ap.add_argument("--max-time", type=float, default=2500.0,
+                    help="truncate episodes; below ~2000 the search selects against foraging")
     ap.add_argument("--sigma", type=float, default=0.12, help="initial step as a fraction of range")
     ap.add_argument("--risk-aversion", type=float, default=0.5)
     ap.add_argument("--out", default="checkpoints")

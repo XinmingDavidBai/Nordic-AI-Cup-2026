@@ -1,18 +1,10 @@
 [
   {
     "gen": 0,
-    "best_fitness": 483.15192945300066,
-    "best_survived": 622.5333333334064,
-    "elite_fitness": 355.08846085314866,
-    "all_time_best": 483.15192945300066,
-    "seconds": 529.9905035495758
-  },
-  {
-    "gen": 1,
-    "best_fitness": 836.7956771030072,
-    "best_survived": 875.1000000001304,
-    "elite_fitness": 684.5370338132005,
-    "all_time_best": 836.7956771030072,
-    "seconds": 1072.8078274726868
+    "best_fitness": 743.2234629427819,
+    "best_survived": 807.6333333334484,
+    "elite_fitness": 680.2891070571766,
+    "all_time_best": 743.2234629427819,
+    "seconds": 923.2367534637451
   }
 ]

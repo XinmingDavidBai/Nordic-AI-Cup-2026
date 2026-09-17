@@ -1,0 +1,44 @@
+#!/bin/bash
+#BSUB -J survival_evolve
+#BSUB -q hpc
+#BSUB -n 16
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=2GB]"
+#BSUB -W 24:00
+#BSUB -B
+#BSUB -N
+#BSUB -u <your_dtu_id>@dtu.dk
+#BSUB -o /work3/<your_dtu_id>/nordic_cup/survival-simulator/logs/train_%J.out
+#BSUB -e /work3/<your_dtu_id>/nordic_cup/survival-simulator/logs/train_%J.err
+
+# CPU-only job: evaluate() forks one worker per seed via multiprocessing.Pool, so this
+# wants many cores on one host rather than a GPU. -q hpc is DTU's general CPU queue -
+# check `bqueues` if it is unavailable to your group, and adjust -n/-W to its limits.
+
+set -euo pipefail
+cd /work3/<your_dtu_id>/nordic_cup/survival-simulator
+mkdir -p logs
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nproc
+
+source .venv/bin/activate
+
+# ---- run config ----
+RESUME=checkpoints/forage_start.json   # foraging-tuned start point; see params.py for why
+GENERATIONS=20
+MAX_TIME=2500                          # below ~2000s the search selects against foraging
+WORKERS=$(( ${LSB_DJOB_NUMPROC:-16} - 1 ))
+OUT=checkpoints
+# ---------------------------------------------------------------------------
+
+python train/evolve.py \
+    --resume "$RESUME" \
+    --generations "$GENERATIONS" \
+    --max-time "$MAX_TIME" \
+    --workers "$WORKERS" \
+    --out "$OUT"
+
+echo "Job finished $(date)"
+echo "Best parameters written to $OUT/best.json - scp these back, e.g.:"
+echo "  scp <your_dtu_id>@transfer.gbar.dtu.dk:/work3/<your_dtu_id>/nordic_cup/survival-simulator/checkpoints/best.json ./checkpoints/"
