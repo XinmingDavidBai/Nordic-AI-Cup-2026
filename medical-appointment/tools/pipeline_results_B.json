@@ -1,0 +1,10301 @@
+[
+ {
+  "qid": "sample_10_hard_no_q01",
+  "sid": "sample_10",
+  "type": "hard_negative",
+  "question": "Has the doctor found the condition to be unstable?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   5,
+   9,
+   10,
+   15,
+   18,
+   19,
+   30
+  ],
+  "best_idx": 18
+ },
+ {
+  "qid": "sample_10_hard_no_q04",
+  "sid": "sample_10",
+  "type": "hard_negative",
+  "question": "Did the patient report new breathing symptoms?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   5,
+   6,
+   9,
+   11,
+   13,
+   15,
+   21
+  ],
+  "best_idx": 5
+ },
+ {
+  "qid": "sample_10_yes_q01",
+  "sid": "sample_10",
+  "type": "positive",
+  "question": "Does the patient need continued treatment?",
+  "want": true,
+  "said": true,
+  "span": [
+   11.92,
+   13.36
+  ],
+  "gold": [
+   63.18,
+   64.58
+  ],
+  "top_idx": [
+   4,
+   9,
+   11,
+   13,
+   19,
+   20,
+   21,
+   28
+  ],
+  "best_idx": 19,
+  "oracle_idx": 19,
+  "oracle_iou": 0.6780487804878037,
+  "oracle_in_topk": true,
+  "chosen_idx": 4,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_10_off_topic_q02",
+  "sid": "sample_10",
+  "type": "off_topic",
+  "question": "Did the patient mention owning a specific pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   9,
+   11,
+   15,
+   19,
+   28,
+   30
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_10_off_topic_q01",
+  "sid": "sample_10",
+  "type": "off_topic",
+  "question": "Was any problem with housing discussed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   7,
+   9,
+   10,
+   14,
+   18,
+   26,
+   27
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_10_hard_no_q05",
+  "sid": "sample_10",
+  "type": "hard_negative",
+  "question": "Is the stomach acid medication being discontinued?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   9,
+   10,
+   19,
+   21,
+   23,
+   28,
+   31
+  ],
+  "best_idx": 23
+ },
+ {
+  "qid": "sample_10_hard_no_q03",
+  "sid": "sample_10",
+  "type": "hard_negative",
+  "question": "Were abnormal sounds heard over the lungs?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   7,
+   9,
+   11,
+   13,
+   15,
+   16,
+   17
+  ],
+  "best_idx": 15
+ },
+ {
+  "qid": "sample_10_yes_q02",
+  "sid": "sample_10",
+  "type": "positive",
+  "question": "Were the lungs and heart normal on auscultation?",
+  "want": true,
+  "said": true,
+  "span": [
+   53.74,
+   55.86
+  ],
+  "gold": [
+   53.76,
+   57.56
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   16,
+   30
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.5497382198952883,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.5497382198952883
+ },
+ {
+  "qid": "sample_10_yes_q03",
+  "sid": "sample_10",
+  "type": "positive",
+  "question": "Are the patient's complaints unchanged, with nothing new reported?",
+  "want": true,
+  "said": true,
+  "span": [
+   16.98,
+   21.6
+  ],
+  "gold": [
+   22.2,
+   23.56
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   9,
+   10,
+   15,
+   19,
+   21
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.253731343283582,
+  "oracle_in_topk": true,
+  "chosen_idx": 5,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_10_hard_no_q02",
+  "sid": "sample_10",
+  "type": "hard_negative",
+  "question": "Does the plan include a referral to a lung specialist?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   12,
+   15,
+   19,
+   28
+  ],
+  "best_idx": 15
+ },
+ {
+  "qid": "sample_17_yes_q03",
+  "sid": "sample_17",
+  "type": "positive",
+  "question": "Is the medicine to be taken after a meal?",
+  "want": true,
+  "said": true,
+  "span": [
+   46.14,
+   47.5
+  ],
+  "gold": [
+   46.1,
+   47.52
+  ],
+  "top_idx": [
+   1,
+   4,
+   11,
+   13,
+   14,
+   15,
+   16,
+   23
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.9577464788732379,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.9577464788732379
+ },
+ {
+  "qid": "sample_17_hard_no_q06",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "Has the patient been told that the condition needs no treatment?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   4,
+   11,
+   12,
+   16,
+   17,
+   23,
+   24
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_17_yes_q02",
+  "sid": "sample_17",
+  "type": "positive",
+  "question": "Should the daily dose be 100 mg?",
+  "want": true,
+  "said": true,
+  "span": [
+   42.84,
+   45.48
+  ],
+  "gold": [
+   42.84,
+   44.42
+  ],
+  "top_idx": [
+   1,
+   4,
+   11,
+   13,
+   14,
+   15,
+   16,
+   23
+  ],
+  "best_idx": 13,
+  "oracle_idx": 13,
+  "oracle_iou": 0.40512820512820485,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.5984848484848493
+ },
+ {
+  "qid": "sample_17_hard_no_q05",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "Were bacteria identified in the sample?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   5,
+   6,
+   8,
+   9,
+   10,
+   23
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_17_hard_no_q03",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "Did the swab come from the throat?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_17_hard_no_q02",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "Was the prescribed dose 200 mg daily?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   11,
+   13,
+   14,
+   15,
+   16,
+   23
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_17_off_topic_q01",
+  "sid": "sample_17",
+  "type": "off_topic",
+  "question": "Is there any mention of attending a concert?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   2,
+   4,
+   6,
+   7,
+   11,
+   16
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_17_hard_no_q01",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "The treatment is planned to run for six weeks, right?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   11,
+   12,
+   13,
+   15,
+   22,
+   23
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_17_hard_no_q04",
+  "sid": "sample_17",
+  "type": "hard_negative",
+  "question": "Should the tablets be taken on an empty stomach?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   4,
+   6,
+   13,
+   14,
+   16,
+   23
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_17_yes_q01",
+  "sid": "sample_17",
+  "type": "positive",
+  "question": "Will the treatment last two weeks?",
+  "want": true,
+  "said": true,
+  "span": [
+   42.84,
+   45.48
+  ],
+  "gold": [
+   48.18,
+   50.7
+  ],
+  "top_idx": [
+   0,
+   4,
+   11,
+   12,
+   13,
+   15,
+   22,
+   23
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.9921259842519673,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_18_yes_q04",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Should kidney function be monitored?",
+  "want": true,
+  "said": true,
+  "span": [
+   41.36,
+   45.58
+  ],
+  "gold": [
+   41.82,
+   45.58
+  ],
+  "top_idx": [
+   8,
+   9,
+   14,
+   17,
+   18,
+   19,
+   20,
+   24
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.8909952606635069,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.8909952606635069
+ },
+ {
+  "qid": "sample_18_off_topic_q01",
+  "sid": "sample_18",
+  "type": "off_topic",
+  "question": "Is there any reference to the patient planning a specific fitness challenge?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   6,
+   11,
+   15,
+   18,
+   19,
+   22,
+   23
+  ],
+  "best_idx": 22
+ },
+ {
+  "qid": "sample_18_yes_q02",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Did the patient ask for a renewal of the Ibumetin prescription?",
+  "want": true,
+  "said": true,
+  "span": [
+   66.6,
+   68.54
+  ],
+  "gold": [
+   17.24,
+   18.5
+  ],
+  "top_idx": [
+   0,
+   6,
+   12,
+   21,
+   22,
+   24,
+   28,
+   30
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 21,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_18_yes_q01",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Has the Ibumetin prescription been issued?",
+  "want": true,
+  "said": true,
+  "span": [
+   66.6,
+   68.54
+  ],
+  "gold": [
+   69.38,
+   72.04
+  ],
+  "top_idx": [
+   0,
+   6,
+   8,
+   9,
+   12,
+   21,
+   22,
+   24
+  ],
+  "best_idx": 6,
+  "oracle_idx": 22,
+  "oracle_iou": 0.9925373134328374,
+  "oracle_in_topk": true,
+  "chosen_idx": 21,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_18_yes_q07",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Is the patient also taking Pantoprazole?",
+  "want": true,
+  "said": true,
+  "span": [
+   20.92,
+   24.6
+  ],
+  "gold": [
+   20.92,
+   26.3
+  ],
+  "top_idx": [
+   1,
+   6,
+   8,
+   12,
+   18,
+   20,
+   22,
+   30
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.6840148698884759,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.6840148698884759
+ },
+ {
+  "qid": "sample_18_hard_no_q01",
+  "sid": "sample_18",
+  "type": "hard_negative",
+  "question": "Were liver values the focus of the planned blood tests?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   8,
+   14,
+   17,
+   19,
+   20,
+   22,
+   24
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_18_hard_no_q02",
+  "sid": "sample_18",
+  "type": "hard_negative",
+  "question": "Should the blood pressure readings be taken at the clinic instead of at home?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   14,
+   15,
+   17,
+   19,
+   20,
+   22,
+   24
+  ],
+  "best_idx": 17
+ },
+ {
+  "qid": "sample_18_yes_q06",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Will the blood tests include cholesterol and blood sugar?",
+  "want": true,
+  "said": true,
+  "span": [
+   63.92,
+   65.92
+  ],
+  "gold": [
+   62.5,
+   65.94
+  ],
+  "top_idx": [
+   0,
+   8,
+   14,
+   17,
+   18,
+   19,
+   20,
+   24
+  ],
+  "best_idx": 20,
+  "oracle_idx": 20,
+  "oracle_iou": 0.994186046511629,
+  "oracle_in_topk": true,
+  "chosen_idx": 20,
+  "iou": 0.5813953488372097
+ },
+ {
+  "qid": "sample_18_yes_q03",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Does the doctor consider the NSAID use long-standing and high?",
+  "want": true,
+  "said": true,
+  "span": [
+   32.76,
+   38.7
+  ],
+  "gold": [
+   33.0,
+   38.66
+  ],
+  "top_idx": [
+   12,
+   14,
+   17,
+   20,
+   22,
+   24,
+   28,
+   30
+  ],
+  "best_idx": 12,
+  "oracle_idx": 12,
+  "oracle_iou": 0.9528619528619515,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.9528619528619515
+ },
+ {
+  "qid": "sample_18_yes_q05",
+  "sid": "sample_18",
+  "type": "positive",
+  "question": "Was blood pressure to be measured at home over three days?",
+  "want": true,
+  "said": true,
+  "span": [
+   50.78,
+   55.12
+  ],
+  "gold": [
+   50.74,
+   55.1
+  ],
+  "top_idx": [
+   9,
+   14,
+   17,
+   19,
+   20,
+   22,
+   24,
+   28
+  ],
+  "best_idx": 17,
+  "oracle_idx": 17,
+  "oracle_iou": 0.9863013698630148,
+  "oracle_in_topk": true,
+  "chosen_idx": 17,
+  "iou": 0.9863013698630148
+ },
+ {
+  "qid": "sample_19_yes_q04",
+  "sid": "sample_19",
+  "type": "positive",
+  "question": "Is the patient still being treated for asthma?",
+  "want": true,
+  "said": true,
+  "span": [
+   25.47,
+   29.82
+  ],
+  "gold": [
+   26.3,
+   28.12
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   12,
+   13,
+   15,
+   20,
+   28
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.41839080459770106,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.41839080459770106
+ },
+ {
+  "qid": "sample_19_off_topic_q01",
+  "sid": "sample_19",
+  "type": "off_topic",
+  "question": "Did the patient discuss baking a cake in the conversation?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   28
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_19_hard_no_q03",
+  "sid": "sample_19",
+  "type": "hard_negative",
+  "question": "Does the doctor describe the medication as unstable and in need of change?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   9,
+   10,
+   11,
+   13,
+   15,
+   19,
+   28
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_19_hard_no_q01",
+  "sid": "sample_19",
+  "type": "hard_negative",
+  "question": "Alongside asthma, is the patient treated for diabetes?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   9,
+   12,
+   13,
+   15,
+   19,
+   20
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_19_yes_q01",
+  "sid": "sample_19",
+  "type": "positive",
+  "question": "Were three prescriptions renewed in total?",
+  "want": true,
+  "said": true,
+  "span": [
+   17.62,
+   18.94
+  ],
+  "gold": [
+   68.24,
+   71.64
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   18,
+   19
+  ],
+  "best_idx": 4,
+  "oracle_idx": 19,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 4,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_19_off_topic_q02",
+  "sid": "sample_19",
+  "type": "off_topic",
+  "question": "Did the conversation mention anything about the patient planning a trip?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   28
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_19_yes_q02",
+  "sid": "sample_19",
+  "type": "positive",
+  "question": "Has Esomeprazole been renewed as well?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   68.24,
+   71.64
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   20
+  ],
+  "best_idx": 4,
+  "oracle_idx": 19,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_19_yes_q03",
+  "sid": "sample_19",
+  "type": "positive",
+  "question": "Is Airomir among the renewed medicines?",
+  "want": true,
+  "said": true,
+  "span": [
+   17.62,
+   22.78
+  ],
+  "gold": [
+   68.24,
+   71.64
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   20
+  ],
+  "best_idx": 4,
+  "oracle_idx": 19,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 4,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_19_hard_no_q04",
+  "sid": "sample_19",
+  "type": "hard_negative",
+  "question": "Were the prescriptions stopped rather than renewed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   28
+  ],
+  "best_idx": 4
+ },
+ {
+  "qid": "sample_19_hard_no_q02",
+  "sid": "sample_19",
+  "type": "hard_negative",
+  "question": "Was Pantoprazole the acid-reducing drug that was renewed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   20
+  ],
+  "best_idx": 4
+ },
+ {
+  "qid": "sample_20_hard_no_q03",
+  "sid": "sample_20",
+  "type": "hard_negative",
+  "question": "Will the patient be referred to a pain clinic?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   12,
+   13,
+   14,
+   16,
+   23,
+   25,
+   30
+  ],
+  "best_idx": 25
+ },
+ {
+  "qid": "sample_20_off_topic_q02",
+  "sid": "sample_20",
+  "type": "off_topic",
+  "question": "Was a specific recipe or cooking activity discussed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   5,
+   15,
+   19,
+   20,
+   22,
+   23,
+   29
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_20_off_topic_q01",
+  "sid": "sample_20",
+  "type": "off_topic",
+  "question": "At any point does the patient talk about their experiences with a hobby?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   5,
+   6,
+   16,
+   21,
+   23,
+   25,
+   30
+  ],
+  "best_idx": 23
+ },
+ {
+  "qid": "sample_20_yes_q01",
+  "sid": "sample_20",
+  "type": "positive",
+  "question": "Was Ibumetin renewed as well?",
+  "want": true,
+  "said": true,
+  "span": [
+   181.32,
+   186.28
+  ],
+  "gold": [
+   182.44,
+   186.3
+  ],
+  "top_idx": [
+   6,
+   8,
+   9,
+   15,
+   23,
+   27,
+   28,
+   30
+  ],
+  "best_idx": 9,
+  "oracle_idx": 27,
+  "oracle_iou": 0.5092348284960432,
+  "oracle_in_topk": true,
+  "chosen_idx": 27,
+  "iou": 0.7710843373493954
+ },
+ {
+  "qid": "sample_20_hard_no_q01",
+  "sid": "sample_20",
+  "type": "hard_negative",
+  "question": "Did the patient ask for morphine to be renewed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   16,
+   21,
+   23,
+   25,
+   27,
+   29,
+   30
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_20_hard_no_q02",
+  "sid": "sample_20",
+  "type": "hard_negative",
+  "question": "Does the pain affect the lower back alone?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   11,
+   12,
+   13,
+   14,
+   16,
+   25,
+   30
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_20_yes_q05",
+  "sid": "sample_20",
+  "type": "positive",
+  "question": "Is Pamol one of the medicines requested?",
+  "want": true,
+  "said": true,
+  "span": [
+   181.32,
+   188.9
+  ],
+  "gold": [
+   182.44,
+   184.98
+  ],
+  "top_idx": [
+   6,
+   8,
+   9,
+   21,
+   23,
+   25,
+   27,
+   30
+  ],
+  "best_idx": 27,
+  "oracle_idx": 27,
+  "oracle_iou": 0.3350923482849588,
+  "oracle_in_topk": true,
+  "chosen_idx": 27,
+  "iou": 0.3350923482849588
+ },
+ {
+  "qid": "sample_20_yes_q02",
+  "sid": "sample_20",
+  "type": "positive",
+  "question": "Has the pain problem been described as stable?",
+  "want": true,
+  "said": true,
+  "span": [
+   84.64,
+   92.1
+  ],
+  "gold": [
+   102.3,
+   105.02
+  ],
+  "top_idx": [
+   6,
+   12,
+   13,
+   14,
+   15,
+   16,
+   25,
+   30
+  ],
+  "best_idx": 25,
+  "oracle_idx": 16,
+  "oracle_iou": 0.4610169491525428,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_20_yes_q04",
+  "sid": "sample_20",
+  "type": "positive",
+  "question": "Does the patient still need pain relief?",
+  "want": true,
+  "said": true,
+  "span": [
+   84.64,
+   92.1
+  ],
+  "gold": [
+   105.56,
+   107.46
+  ],
+  "top_idx": [
+   6,
+   11,
+   14,
+   16,
+   21,
+   23,
+   25,
+   30
+  ],
+  "best_idx": 25,
+  "oracle_idx": 16,
+  "oracle_iou": 0.3220338983050838,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_20_yes_q03",
+  "sid": "sample_20",
+  "type": "positive",
+  "question": "Were both prescriptions issued?",
+  "want": true,
+  "said": true,
+  "span": [
+   181.32,
+   188.9
+  ],
+  "gold": [
+   182.44,
+   184.5
+  ],
+  "top_idx": [
+   6,
+   9,
+   11,
+   21,
+   23,
+   25,
+   27,
+   30
+  ],
+  "best_idx": 30,
+  "oracle_idx": 27,
+  "oracle_iou": 0.27176781002638506,
+  "oracle_in_topk": true,
+  "chosen_idx": 27,
+  "iou": 0.27176781002638506
+ },
+ {
+  "qid": "sample_23_yes_q03",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Was a skin wart found under the right breast?",
+  "want": true,
+  "said": true,
+  "span": [
+   23.13,
+   26.97
+  ],
+  "gold": [
+   23.12,
+   25.66
+  ],
+  "top_idx": [
+   3,
+   4,
+   7,
+   10,
+   13,
+   15,
+   16,
+   23
+  ],
+  "best_idx": 7,
+  "oracle_idx": 7,
+  "oracle_iou": 0.6571428571428578,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 0.6571428571428578
+ },
+ {
+  "qid": "sample_23_yes_q05",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Has the patient been informed about the risk of scarring and infection?",
+  "want": true,
+  "said": true,
+  "span": [
+   75.27,
+   79.53
+  ],
+  "gold": [
+   75.26,
+   79.54
+  ],
+  "top_idx": [
+   3,
+   13,
+   15,
+   20,
+   21,
+   22,
+   23,
+   25
+  ],
+  "best_idx": 23,
+  "oracle_idx": 21,
+  "oracle_iou": 0.9953271028037393,
+  "oracle_in_topk": true,
+  "chosen_idx": 21,
+  "iou": 0.9953271028037393
+ },
+ {
+  "qid": "sample_23_yes_q02",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Does the patient want the skin changes removed?",
+  "want": true,
+  "said": true,
+  "span": [
+   75.27,
+   79.53
+  ],
+  "gold": [
+   85.28,
+   88.5
+  ],
+  "top_idx": [
+   3,
+   5,
+   15,
+   18,
+   19,
+   21,
+   24,
+   25
+  ],
+  "best_idx": 19,
+  "oracle_idx": 24,
+  "oracle_iou": 0.9938080495356005,
+  "oracle_in_topk": true,
+  "chosen_idx": 21,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_23_off_topic_q02",
+  "sid": "sample_23",
+  "type": "off_topic",
+  "question": "Is there any mention of the patient's pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   7,
+   9,
+   16,
+   19,
+   21,
+   25
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_23_hard_no_q01",
+  "sid": "sample_23",
+  "type": "hard_negative",
+  "question": "Has the patient been told that the procedure carries no risk of scarring?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   7,
+   13,
+   15,
+   18,
+   19,
+   21,
+   23,
+   25
+  ],
+  "best_idx": 21
+ },
+ {
+  "qid": "sample_23_yes_q04",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Is an appointment for the removal going to be arranged?",
+  "want": true,
+  "said": true,
+  "span": [
+   67.07,
+   69.97
+  ],
+  "gold": [
+   90.2,
+   92.2
+  ],
+  "top_idx": [
+   18,
+   19,
+   20,
+   21,
+   22,
+   24,
+   25,
+   27
+  ],
+  "best_idx": 19,
+  "oracle_idx": 25,
+  "oracle_iou": 0.6277602523659287,
+  "oracle_in_topk": true,
+  "chosen_idx": 19,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_23_yes_q06",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Do the changes on the abdomen and lower leg resemble seborrheic keratoses?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   43.44,
+   45.58
+  ],
+  "top_idx": [
+   3,
+   5,
+   10,
+   12,
+   13,
+   15,
+   21,
+   23
+  ],
+  "best_idx": 10,
+  "oracle_idx": 13,
+  "oracle_iou": 0.4681318681318667,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_23_yes_q01",
+  "sid": "sample_23",
+  "type": "positive",
+  "question": "Were the skin changes judged to be benign?",
+  "want": true,
+  "said": true,
+  "span": [
+   53.33,
+   56.21
+  ],
+  "gold": [
+   53.3,
+   56.2
+  ],
+  "top_idx": [
+   3,
+   7,
+   12,
+   13,
+   15,
+   16,
+   18,
+   21
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.582329317269077,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.9862542955326463
+ },
+ {
+  "qid": "sample_23_off_topic_q01",
+  "sid": "sample_23",
+  "type": "off_topic",
+  "question": "Does the patient talk about needing a new vehicle?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   14,
+   15,
+   19,
+   20,
+   22,
+   25
+  ],
+  "best_idx": 25
+ },
+ {
+  "qid": "sample_23_hard_no_q02",
+  "sid": "sample_23",
+  "type": "hard_negative",
+  "question": "Are the elements on the abdomen about 2 cm across?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   7,
+   10,
+   12,
+   13,
+   15,
+   16
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_33_yes_q06",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "The visit is a follow-up on allergic rhinitis, correct?",
+  "want": true,
+  "said": true,
+  "span": [
+   22.12,
+   25.34
+  ],
+  "gold": [
+   13.94,
+   17.42
+  ],
+  "top_idx": [
+   0,
+   3,
+   5,
+   6,
+   15,
+   16,
+   20,
+   23
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.5580865603644647,
+  "oracle_in_topk": true,
+  "chosen_idx": 5,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_33_hard_no_q01",
+  "sid": "sample_33",
+  "type": "hard_negative",
+  "question": "Does the doctor plan to refer the patient to an allergy specialist?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   6,
+   11,
+   15,
+   19,
+   20,
+   23,
+   28
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_33_hard_no_q02",
+  "sid": "sample_33",
+  "type": "hard_negative",
+  "question": "Were daily doses made mandatory going forward?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   14,
+   15,
+   19,
+   20,
+   21,
+   22
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_33_off_topic_q01",
+  "sid": "sample_33",
+  "type": "off_topic",
+  "question": "Is there any talk about the patient's recent purchase of a vehicle?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   5,
+   6,
+   13,
+   14,
+   20,
+   23,
+   28
+  ],
+  "best_idx": 5
+ },
+ {
+  "qid": "sample_33_yes_q02",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "Is the patient free of symptoms at the moment?",
+  "want": true,
+  "said": true,
+  "span": [
+   26.86,
+   29.02
+  ],
+  "gold": [
+   27.02,
+   31.5
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   13,
+   14,
+   15,
+   16,
+   20
+  ],
+  "best_idx": 7,
+  "oracle_idx": 7,
+  "oracle_iou": 0.5511111111111112,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.43103448275862066
+ },
+ {
+  "qid": "sample_33_yes_q04",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "Did the antihistamine work well?",
+  "want": true,
+  "said": true,
+  "span": [
+   22.12,
+   25.34
+  ],
+  "gold": [
+   58.82,
+   61.32
+  ],
+  "top_idx": [
+   3,
+   5,
+   6,
+   13,
+   14,
+   15,
+   16,
+   24
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.6377551020408161,
+  "oracle_in_topk": true,
+  "chosen_idx": 5,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_33_yes_q03",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "Has the medication helped the patient?",
+  "want": true,
+  "said": true,
+  "span": [
+   25.86,
+   26.58
+  ],
+  "gold": [
+   55.34,
+   58.28
+  ],
+  "top_idx": [
+   5,
+   6,
+   14,
+   15,
+   16,
+   20,
+   21,
+   28
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.451754385964911,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_33_yes_q05",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "Are the findings unremarkable?",
+  "want": true,
+  "said": true,
+  "span": [
+   49.37,
+   52.61
+  ],
+  "gold": [
+   44.86,
+   52.62
+  ],
+  "top_idx": [
+   7,
+   8,
+   10,
+   13,
+   14,
+   15,
+   23,
+   24
+  ],
+  "best_idx": 13,
+  "oracle_idx": 13,
+  "oracle_iou": 0.41752577319587664,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.41752577319587664
+ },
+ {
+  "qid": "sample_33_yes_q01",
+  "sid": "sample_33",
+  "type": "positive",
+  "question": "Should the patient carry on with the treatment as needed?",
+  "want": true,
+  "said": true,
+  "span": [
+   53.72,
+   57.4
+  ],
+  "gold": [
+   69.06,
+   71.0
+  ],
+  "top_idx": [
+   5,
+   6,
+   11,
+   14,
+   19,
+   20,
+   21,
+   28
+  ],
+  "best_idx": 19,
+  "oracle_idx": 19,
+  "oracle_iou": 0.9897959183673489,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_33_hard_no_q03",
+  "sid": "sample_33",
+  "type": "hard_negative",
+  "question": "Was anything abnormal picked up at the examination?",
+  "want": false,
+  "said": true,
+  "span": [
+   44.85,
+   46.87
+  ],
+  "gold": null,
+  "top_idx": [
+   7,
+   8,
+   11,
+   12,
+   13,
+   20,
+   23,
+   25
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_37_yes_q05",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "Is the skin intact?",
+  "want": true,
+  "said": true,
+  "span": [
+   28.79,
+   30.01
+  ],
+  "gold": [
+   28.5,
+   30.0
+  ],
+  "top_idx": [
+   4,
+   6,
+   9,
+   11,
+   15,
+   17,
+   19,
+   27
+  ],
+  "best_idx": 15,
+  "oracle_idx": 9,
+  "oracle_iou": 0.2944038929440392,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.801324503311258
+ },
+ {
+  "qid": "sample_37_hard_no_q01",
+  "sid": "sample_37",
+  "type": "hard_negative",
+  "question": "Was erythema migrans seen around the bite?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   6,
+   9,
+   10,
+   11,
+   15,
+   19
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_37_hard_no_q03",
+  "sid": "sample_37",
+  "type": "hard_negative",
+  "question": "Is the risk of Borrelia considered high?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   9,
+   11,
+   12,
+   13,
+   15,
+   19
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_37_yes_q03",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "Was erythema migrans absent?",
+  "want": true,
+  "said": true,
+  "span": [
+   37.44,
+   39.8
+  ],
+  "gold": [
+   30.68,
+   32.62
+  ],
+  "top_idx": [
+   0,
+   6,
+   9,
+   11,
+   15,
+   17,
+   18,
+   19
+  ],
+  "best_idx": 11,
+  "oracle_idx": 9,
+  "oracle_iou": 0.5039164490861621,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_37_yes_q04",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "Are redness and swelling absent?",
+  "want": true,
+  "said": true,
+  "span": [
+   17.51,
+   18.83
+  ],
+  "gold": [
+   17.58,
+   22.18
+  ],
+  "top_idx": [
+   4,
+   5,
+   6,
+   9,
+   10,
+   11,
+   15,
+   17
+  ],
+  "best_idx": 15,
+  "oracle_idx": 4,
+  "oracle_iou": 0.2676659528907924,
+  "oracle_in_topk": true,
+  "chosen_idx": 4,
+  "iou": 0.2676659528907924
+ },
+ {
+  "qid": "sample_37_yes_q06",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "The plan involves no treatment, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   55.36,
+   57.64
+  ],
+  "gold": [
+   60.02,
+   61.34
+  ],
+  "top_idx": [
+   6,
+   11,
+   13,
+   15,
+   16,
+   17,
+   19,
+   25
+  ],
+  "best_idx": 17,
+  "oracle_idx": 17,
+  "oracle_iou": 0.4962406015037588,
+  "oracle_in_topk": true,
+  "chosen_idx": 16,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_37_off_topic_q01",
+  "sid": "sample_37",
+  "type": "off_topic",
+  "question": "Does the conversation indicate the patient discussed their employment as a freelancer?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   8,
+   11,
+   17,
+   19,
+   23,
+   27,
+   28
+  ],
+  "best_idx": 17
+ },
+ {
+  "qid": "sample_37_hard_no_q02",
+  "sid": "sample_37",
+  "type": "hard_negative",
+  "question": "Has the bite area become red and swollen?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   5,
+   6,
+   9,
+   10,
+   15,
+   19
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_37_yes_q01",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "Did the patient get a tick bite?",
+  "want": true,
+  "said": true,
+  "span": [
+   12.9,
+   14.5
+  ],
+  "gold": [
+   13.74,
+   14.52
+  ],
+  "top_idx": [
+   2,
+   3,
+   9,
+   10,
+   11,
+   13,
+   17,
+   19
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.19746835443037952,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.4691358024691359
+ },
+ {
+  "qid": "sample_37_yes_q02",
+  "sid": "sample_37",
+  "type": "positive",
+  "question": "Has the patient been told simply to keep an eye on the area?",
+  "want": true,
+  "said": true,
+  "span": [
+   58.68,
+   61.34
+  ],
+  "gold": [
+   56.02,
+   59.34
+  ],
+  "top_idx": [
+   2,
+   6,
+   7,
+   13,
+   15,
+   17,
+   21,
+   27
+  ],
+  "best_idx": 17,
+  "oracle_idx": 16,
+  "oracle_iou": 0.4070351758793959,
+  "oracle_in_topk": false,
+  "chosen_idx": 17,
+  "iou": 0.12406015037594054
+ },
+ {
+  "qid": "sample_39_yes_q02",
+  "sid": "sample_39",
+  "type": "positive",
+  "question": "Does the patient have pain in the lower back?",
+  "want": true,
+  "said": true,
+  "span": [
+   22.69,
+   24.05
+  ],
+  "gold": [
+   22.64,
+   23.92
+  ],
+  "top_idx": [
+   10,
+   11,
+   12,
+   14,
+   21,
+   23,
+   24,
+   26
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.45387453874538747,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.8723404255319152
+ },
+ {
+  "qid": "sample_39_hard_no_q04",
+  "sid": "sample_39",
+  "type": "hard_negative",
+  "question": "Has the patient been referred for surgery?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   9,
+   11,
+   13,
+   14,
+   21,
+   23
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_39_off_topic_q02",
+  "sid": "sample_39",
+  "type": "off_topic",
+  "question": "Is the patient discussing their pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   9,
+   12,
+   14,
+   21,
+   23,
+   30
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_39_off_topic_q01",
+  "sid": "sample_39",
+  "type": "off_topic",
+  "question": "At any point does the patient express interest in learning digital photography techniques?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   7,
+   14,
+   19,
+   21,
+   23,
+   24,
+   26
+  ],
+  "best_idx": 23
+ },
+ {
+  "qid": "sample_39_yes_q04",
+  "sid": "sample_39",
+  "type": "positive",
+  "question": "Was reduced mobility found during the examination?",
+  "want": true,
+  "said": true,
+  "span": [
+   47.39,
+   51.09
+  ],
+  "gold": [
+   47.34,
+   53.04
+  ],
+  "top_idx": [
+   0,
+   10,
+   12,
+   14,
+   18,
+   19,
+   21,
+   26
+  ],
+  "best_idx": 19,
+  "oracle_idx": 19,
+  "oracle_iou": 0.6491228070175449,
+  "oracle_in_topk": true,
+  "chosen_idx": 19,
+  "iou": 0.6491228070175449
+ },
+ {
+  "qid": "sample_39_yes_q03",
+  "sid": "sample_39",
+  "type": "positive",
+  "question": "Were painkillers part of the treatment plan?",
+  "want": true,
+  "said": true,
+  "span": [
+   67.96,
+   69.96
+  ],
+  "gold": [
+   63.56,
+   65.8
+  ],
+  "top_idx": [
+   11,
+   12,
+   19,
+   21,
+   23,
+   24,
+   26,
+   30
+  ],
+  "best_idx": 24,
+  "oracle_idx": 23,
+  "oracle_iou": 0.5463414634146327,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_39_hard_no_q01",
+  "sid": "sample_39",
+  "type": "hard_negative",
+  "question": "Does the pain radiate down the leg?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   10,
+   11,
+   12,
+   16,
+   19,
+   21,
+   23,
+   24
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_39_yes_q01",
+  "sid": "sample_39",
+  "type": "positive",
+  "question": "The pain was assessed as nonspecific musculoskeletal pain, right?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   55.32,
+   60.68
+  ],
+  "top_idx": [
+   10,
+   11,
+   16,
+   19,
+   20,
+   21,
+   23,
+   24
+  ],
+  "best_idx": 21,
+  "oracle_idx": 21,
+  "oracle_iou": 0.7790697674418601,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_39_hard_no_q03",
+  "sid": "sample_39",
+  "type": "hard_negative",
+  "question": "Did the doctor conclude that the pain came from a herniated disc?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   10,
+   11,
+   14,
+   16,
+   18,
+   19,
+   21,
+   23
+  ],
+  "best_idx": 21
+ },
+ {
+  "qid": "sample_39_hard_no_q02",
+  "sid": "sample_39",
+  "type": "hard_negative",
+  "question": "Was the patient's mobility completely unaffected?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   12,
+   19,
+   20,
+   21,
+   23,
+   26,
+   28
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_4_yes_q03",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Did the patient attend for an annual asthma follow-up?",
+  "want": true,
+  "said": true,
+  "span": [
+   21.58,
+   24.14
+  ],
+  "gold": [
+   21.62,
+   26.24
+  ],
+  "top_idx": [
+   6,
+   7,
+   11,
+   15,
+   21,
+   24,
+   31,
+   32
+  ],
+  "best_idx": 24,
+  "oracle_idx": 6,
+  "oracle_iou": 0.5407725321888411,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.5407725321888411
+ },
+ {
+  "qid": "sample_4_yes_q07",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Is the heart examination without abnormal findings?",
+  "want": true,
+  "said": true,
+  "span": [
+   40.7,
+   42.74
+  ],
+  "gold": [
+   43.5,
+   44.98
+  ],
+  "top_idx": [
+   7,
+   9,
+   12,
+   13,
+   14,
+   16,
+   19,
+   24
+  ],
+  "best_idx": 13,
+  "oracle_idx": 14,
+  "oracle_iou": 0.9864864864864843,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_4_yes_q06",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Was the patient listened to with a stethoscope?",
+  "want": true,
+  "said": true,
+  "span": [
+   27.89,
+   32.62
+  ],
+  "gold": [
+   28.520000000000003,
+   42.72
+  ],
+  "top_idx": [
+   0,
+   1,
+   9,
+   11,
+   13,
+   19,
+   22,
+   31
+  ],
+  "best_idx": 9,
+  "oracle_idx": 9,
+  "oracle_iou": 0.2764666217127441,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.2764666217127441
+ },
+ {
+  "qid": "sample_4_yes_q05",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Were the lungs found to be normal on auscultation?",
+  "want": true,
+  "said": true,
+  "span": [
+   40.7,
+   42.74
+  ],
+  "gold": [
+   40.68,
+   44.98
+  ],
+  "top_idx": [
+   3,
+   7,
+   9,
+   11,
+   13,
+   14,
+   19,
+   24
+  ],
+  "best_idx": 13,
+  "oracle_idx": 13,
+  "oracle_iou": 0.4744186046511629,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.4744186046511629
+ },
+ {
+  "qid": "sample_4_yes_q02",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Are the patient's asthma findings stable at this visit?",
+  "want": true,
+  "said": true,
+  "span": [
+   45.78,
+   49.34
+  ],
+  "gold": [
+   51.48,
+   54.4
+  ],
+  "top_idx": [
+   7,
+   11,
+   13,
+   15,
+   16,
+   18,
+   19,
+   24
+  ],
+  "best_idx": 24,
+  "oracle_idx": 16,
+  "oracle_iou": 0.6697247706422023,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_4_hard_no_q01",
+  "sid": "sample_4",
+  "type": "hard_negative",
+  "question": "Should the asthma medication dose be increased?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   7,
+   9,
+   11,
+   18,
+   19,
+   20,
+   22,
+   24
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_4_yes_q01",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Will the current treatment continue unchanged?",
+  "want": true,
+  "said": true,
+  "span": [
+   57.56,
+   61.68
+  ],
+  "gold": [
+   55.64,
+   61.64
+  ],
+  "top_idx": [
+   2,
+   17,
+   18,
+   20,
+   21,
+   24,
+   29,
+   31
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 0.6754966887417216,
+  "oracle_in_topk": true,
+  "chosen_idx": 18,
+  "iou": 0.6754966887417216
+ },
+ {
+  "qid": "sample_4_yes_q04",
+  "sid": "sample_4",
+  "type": "positive",
+  "question": "Does the visit concern asthma?",
+  "want": true,
+  "said": true,
+  "span": [
+   40.7,
+   42.74
+  ],
+  "gold": [
+   24.88,
+   26.24
+  ],
+  "top_idx": [
+   1,
+   7,
+   9,
+   13,
+   14,
+   21,
+   24,
+   32
+  ],
+  "best_idx": 24,
+  "oracle_idx": 7,
+  "oracle_iou": 0.9855072463768119,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_4_off_topic_q01",
+  "sid": "sample_4",
+  "type": "off_topic",
+  "question": "Is there any discussion about cooking?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   9,
+   12,
+   13,
+   15,
+   18,
+   20,
+   21,
+   22
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_4_hard_no_q02",
+  "sid": "sample_4",
+  "type": "hard_negative",
+  "question": "Has an irregular heart rhythm been found?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   7,
+   9,
+   13,
+   14,
+   15,
+   16,
+   19
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_42_yes_q02",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Was the blood pressure measured at 135/88?",
+  "want": true,
+  "said": true,
+  "span": [
+   39.18,
+   42.58
+  ],
+  "gold": [
+   39.16,
+   42.54
+  ],
+  "top_idx": [
+   10,
+   11,
+   12,
+   13,
+   14,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.9824561403508766,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.9824561403508766
+ },
+ {
+  "qid": "sample_42_yes_q07",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Did the doctor assess the patient as slightly overweight?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   62.26,
+   65.16
+  ],
+  "top_idx": [
+   3,
+   4,
+   14,
+   16,
+   17,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 32,
+  "oracle_idx": 16,
+  "oracle_iou": 0.9862542955326439,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_42_yes_q06",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Were exercise recommendations also part of the plan?",
+  "want": true,
+  "said": true,
+  "span": [
+   103.74,
+   106.08
+  ],
+  "gold": [
+   89.86,
+   93.12
+  ],
+  "top_idx": [
+   3,
+   22,
+   23,
+   24,
+   25,
+   32,
+   36,
+   39
+  ],
+  "best_idx": 22,
+  "oracle_idx": 22,
+  "oracle_iou": 0.9693251533742305,
+  "oracle_in_topk": true,
+  "chosen_idx": 25,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_42_yes_q05",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Does the patient have a BMI of 28?",
+  "want": true,
+  "said": true,
+  "span": [
+   55.8,
+   58.42
+  ],
+  "gold": [
+   56.18,
+   58.38
+  ],
+  "top_idx": [
+   10,
+   14,
+   15,
+   16,
+   17,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 33,
+  "oracle_idx": 14,
+  "oracle_iou": 0.8396946564885492,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.8396946564885492
+ },
+ {
+  "qid": "sample_42_yes_q03",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Has the patient been given advice about diet?",
+  "want": true,
+  "said": true,
+  "span": [
+   89.86,
+   93.02
+  ],
+  "gold": [
+   89.86,
+   91.76
+  ],
+  "top_idx": [
+   3,
+   17,
+   22,
+   23,
+   25,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 22,
+  "oracle_idx": 22,
+  "oracle_iou": 0.6012658227848126,
+  "oracle_in_topk": true,
+  "chosen_idx": 22,
+  "iou": 0.6012658227848126
+ },
+ {
+  "qid": "sample_42_hard_no_q02",
+  "sid": "sample_42",
+  "type": "hard_negative",
+  "question": "Did the doctor consider the patient severely obese?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   14,
+   16,
+   17,
+   23,
+   25,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 33
+ },
+ {
+  "qid": "sample_42_yes_q01",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "Is the patient feeling well?",
+  "want": true,
+  "said": true,
+  "span": [
+   10.28,
+   14.14
+  ],
+  "gold": [
+   17.22,
+   18.48
+  ],
+  "top_idx": [
+   1,
+   3,
+   4,
+   5,
+   6,
+   7,
+   30,
+   33
+  ],
+  "best_idx": 4,
+  "oracle_idx": 4,
+  "oracle_iou": 0.36000000000000043,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_42_yes_q04",
+  "sid": "sample_42",
+  "type": "positive",
+  "question": "The visit was a preventive health check, correct?",
+  "want": true,
+  "said": true,
+  "span": [
+   10.28,
+   14.14
+  ],
+  "gold": [
+   11.92,
+   14.14
+  ],
+  "top_idx": [
+   3,
+   5,
+   6,
+   7,
+   8,
+   17,
+   32,
+   40
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.5751295336787564,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.5751295336787564
+ },
+ {
+  "qid": "sample_42_hard_no_q01",
+  "sid": "sample_42",
+  "type": "hard_negative",
+  "question": "Was the blood pressure 155/98?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   9,
+   10,
+   11,
+   14,
+   32,
+   33,
+   35
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_42_off_topic_q01",
+  "sid": "sample_42",
+  "type": "off_topic",
+  "question": "Does the patient talk about wanting to work part-time?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   3,
+   6,
+   7,
+   23,
+   25,
+   28,
+   40
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_43_yes_q02",
+  "sid": "sample_43",
+  "type": "positive",
+  "question": "Does the patient have a sore throat?",
+  "want": true,
+  "said": true,
+  "span": [
+   7.0,
+   9.24
+  ],
+  "gold": [
+   4.82,
+   6.24
+  ],
+  "top_idx": [
+   1,
+   2,
+   4,
+   8,
+   15,
+   16,
+   18,
+   26
+  ],
+  "best_idx": 2,
+  "oracle_idx": 1,
+  "oracle_iou": 0.5182481751824817,
+  "oracle_in_topk": true,
+  "chosen_idx": 2,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_43_hard_no_q03",
+  "sid": "sample_43",
+  "type": "hard_negative",
+  "question": "Is the infection thought to be bacterial?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   8,
+   9,
+   12,
+   13,
+   15,
+   16
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_43_yes_q05",
+  "sid": "sample_43",
+  "type": "positive",
+  "question": "Did the examination find no pus in the throat?",
+  "want": true,
+  "said": true,
+  "span": [
+   30.7,
+   34.26
+  ],
+  "gold": [
+   31.76,
+   34.28
+  ],
+  "top_idx": [
+   1,
+   2,
+   4,
+   6,
+   8,
+   9,
+   10,
+   26
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.5630630630630621,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.6983240223463674
+ },
+ {
+  "qid": "sample_43_off_topic_q01",
+  "sid": "sample_43",
+  "type": "off_topic",
+  "question": "Are the speakers discussing the patient's pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   4,
+   8,
+   12,
+   16,
+   18,
+   26
+  ],
+  "best_idx": 26
+ },
+ {
+  "qid": "sample_43_yes_q04",
+  "sid": "sample_43",
+  "type": "positive",
+  "question": "Was the strep test negative?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   23.06,
+   23.78
+  ],
+  "top_idx": [
+   2,
+   4,
+   6,
+   7,
+   8,
+   9,
+   10,
+   16
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.20338983050847512,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_43_yes_q01",
+  "sid": "sample_43",
+  "type": "positive",
+  "question": "Is the infection considered to be viral?",
+  "want": true,
+  "said": true,
+  "span": [
+   44.24,
+   46.78
+  ],
+  "gold": [
+   44.22,
+   46.78
+  ],
+  "top_idx": [
+   4,
+   6,
+   8,
+   9,
+   12,
+   13,
+   15,
+   16
+  ],
+  "best_idx": 12,
+  "oracle_idx": 12,
+  "oracle_iou": 0.9921874999999988,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.9921874999999988
+ },
+ {
+  "qid": "sample_43_hard_no_q01",
+  "sid": "sample_43",
+  "type": "hard_negative",
+  "question": "Does the patient describe abdominal pain as the main problem?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   4,
+   8,
+   11,
+   12,
+   18,
+   19
+  ],
+  "best_idx": 18
+ },
+ {
+  "qid": "sample_43_hard_no_q02",
+  "sid": "sample_43",
+  "type": "hard_negative",
+  "question": "Were the tonsils covered in coatings?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   4,
+   8,
+   9,
+   16,
+   18,
+   26
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_43_yes_q03",
+  "sid": "sample_43",
+  "type": "positive",
+  "question": "Has the doctor decided against antibiotics?",
+  "want": true,
+  "said": true,
+  "span": [
+   29.84,
+   34.26
+  ],
+  "gold": [
+   59.48,
+   63.9
+  ],
+  "top_idx": [
+   4,
+   6,
+   8,
+   13,
+   14,
+   15,
+   16,
+   18
+  ],
+  "best_idx": 16,
+  "oracle_idx": 16,
+  "oracle_iou": 0.818181818181818,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_43_hard_no_q04",
+  "sid": "sample_43",
+  "type": "hard_negative",
+  "question": "Did the doctor see pus in the throat?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   4,
+   6,
+   8,
+   9,
+   18,
+   26
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_47_yes_q03",
+  "sid": "sample_47",
+  "type": "positive",
+  "question": "Has penicillin treatment been started?",
+  "want": true,
+  "said": true,
+  "span": [
+   71.87,
+   74.03
+  ],
+  "gold": [
+   71.86,
+   79.4
+  ],
+  "top_idx": [
+   18,
+   23,
+   31,
+   32,
+   33,
+   34,
+   46,
+   47
+  ],
+  "best_idx": 31,
+  "oracle_idx": 31,
+  "oracle_iou": 0.28647214854111336,
+  "oracle_in_topk": true,
+  "chosen_idx": 31,
+  "iou": 0.28647214854111336
+ },
+ {
+  "qid": "sample_47_hard_no_q04",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Is the patient able to swallow without any discomfort?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   7,
+   11,
+   12,
+   18,
+   23,
+   47
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_47_hard_no_q03",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Did the doctor prescribe erythromycin?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   18,
+   23,
+   31,
+   32,
+   39,
+   47,
+   53
+  ],
+  "best_idx": 47
+ },
+ {
+  "qid": "sample_47_hard_no_q01",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Does the patient complain of hoarseness as the main symptom?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   7,
+   21,
+   23,
+   28,
+   44,
+   47
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_47_hard_no_q05",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Was the patient told to manage with symptom relief only?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   26,
+   31,
+   35,
+   39,
+   47,
+   53,
+   57,
+   60
+  ],
+  "best_idx": 47
+ },
+ {
+  "qid": "sample_47_off_topic_q01",
+  "sid": "sample_47",
+  "type": "off_topic",
+  "question": "Does the conversation indicate the patient discussed their desire to learn digital photography techniques?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   10,
+   31,
+   36,
+   39,
+   50,
+   57,
+   59
+  ],
+  "best_idx": 36
+ },
+ {
+  "qid": "sample_47_yes_q01",
+  "sid": "sample_47",
+  "type": "positive",
+  "question": "Were coatings seen on the tonsils?",
+  "want": true,
+  "said": true,
+  "span": [
+   34.62,
+   37.84
+  ],
+  "gold": [
+   25.72,
+   28.66
+  ],
+  "top_idx": [
+   12,
+   16,
+   18,
+   22,
+   23,
+   28,
+   46,
+   47
+  ],
+  "best_idx": 12,
+  "oracle_idx": 12,
+  "oracle_iou": 0.9728813559322028,
+  "oracle_in_topk": true,
+  "chosen_idx": 16,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_47_hard_no_q06",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Has the throat problem been assessed as a viral infection?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   7,
+   21,
+   23,
+   28,
+   44,
+   47
+  ],
+  "best_idx": 5
+ },
+ {
+  "qid": "sample_47_yes_q02",
+  "sid": "sample_47",
+  "type": "positive",
+  "question": "Does the patient have a sore throat?",
+  "want": true,
+  "said": true,
+  "span": [
+   9.46,
+   11.7
+  ],
+  "gold": [
+   8.32,
+   11.7
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   21,
+   23,
+   28,
+   44,
+   47
+  ],
+  "best_idx": 7,
+  "oracle_idx": 6,
+  "oracle_iou": 0.662721893491124,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.662721893491124
+ },
+ {
+  "qid": "sample_47_hard_no_q02",
+  "sid": "sample_47",
+  "type": "hard_negative",
+  "question": "Were the tonsils pale and free of coatings?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   12,
+   16,
+   18,
+   22,
+   23,
+   28,
+   46,
+   47
+  ],
+  "best_idx": 12
+ },
+ {
+  "qid": "sample_48_hard_no_q02",
+  "sid": "sample_48",
+  "type": "hard_negative",
+  "question": "Does the doctor attribute the fatigue to a thyroid disorder?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   7,
+   12,
+   14,
+   15,
+   19,
+   26
+  ],
+  "best_idx": 12
+ },
+ {
+  "qid": "sample_48_off_topic_q01",
+  "sid": "sample_48",
+  "type": "off_topic",
+  "question": "Does the doctor ask about the patient's experience with specific technology?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   7,
+   8,
+   14,
+   18,
+   19,
+   21,
+   28
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_48_yes_q03",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Was the TSH normal?",
+  "want": true,
+  "said": true,
+  "span": [
+   26.06,
+   31.32
+  ],
+  "gold": [
+   28.34,
+   35.82
+  ],
+  "top_idx": [
+   7,
+   8,
+   10,
+   12,
+   14,
+   16,
+   19,
+   23
+  ],
+  "best_idx": 14,
+  "oracle_idx": 7,
+  "oracle_iou": 0.41393442622950843,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 0.305327868852459
+ },
+ {
+  "qid": "sample_48_yes_q06",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Did the glucose test come back normal too?",
+  "want": true,
+  "said": true,
+  "span": [
+   38.96,
+   41.06
+  ],
+  "gold": [
+   38.96,
+   43.04
+  ],
+  "top_idx": [
+   7,
+   8,
+   9,
+   10,
+   14,
+   15,
+   16,
+   19
+  ],
+  "best_idx": 14,
+  "oracle_idx": 9,
+  "oracle_iou": 0.37906137184115557,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.5147058823529418
+ },
+ {
+  "qid": "sample_48_yes_q05",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Were both blood tests within normal limits?",
+  "want": true,
+  "said": true,
+  "span": [
+   26.06,
+   31.32
+  ],
+  "gold": [
+   41.74,
+   44.36
+  ],
+  "top_idx": [
+   7,
+   8,
+   9,
+   10,
+   14,
+   15,
+   16,
+   19
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.9924242424242412,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_48_hard_no_q01",
+  "sid": "sample_48",
+  "type": "hard_negative",
+  "question": "Is the tiredness described as brief and occasional?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   10,
+   12,
+   14,
+   15,
+   19,
+   23
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_48_yes_q04",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Has the patient been left without any specific treatment?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   77.42,
+   81.2
+  ],
+  "top_idx": [
+   3,
+   4,
+   8,
+   11,
+   15,
+   18,
+   19,
+   28
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_48_yes_q02",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Is the patient's tiredness persistent?",
+  "want": true,
+  "said": true,
+  "span": [
+   11.18,
+   15.38
+  ],
+  "gold": [
+   11.18,
+   18.78
+  ],
+  "top_idx": [
+   3,
+   4,
+   12,
+   14,
+   15,
+   16,
+   19,
+   23
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.5526315789473685,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.5526315789473685
+ },
+ {
+  "qid": "sample_48_yes_q07",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "Does the doctor rule out an endocrine cause?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   48.06,
+   52.34
+  ],
+  "top_idx": [
+   6,
+   7,
+   12,
+   14,
+   15,
+   18,
+   23,
+   28
+  ],
+  "best_idx": 7,
+  "oracle_idx": 12,
+  "oracle_iou": 0.7109634551495023,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_48_yes_q01",
+  "sid": "sample_48",
+  "type": "positive",
+  "question": "The thyroid test gave a normal result, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   34.86,
+   36.76
+  ],
+  "gold": [
+   28.34,
+   35.82
+  ],
+  "top_idx": [
+   7,
+   8,
+   10,
+   12,
+   14,
+   15,
+   16,
+   19
+  ],
+  "best_idx": 14,
+  "oracle_idx": 7,
+  "oracle_iou": 0.41393442622950843,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.11401425178147281
+ },
+ {
+  "qid": "sample_5_yes_q01",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Does the patient take pantoprazole for reflux?",
+  "want": true,
+  "said": true,
+  "span": [
+   47.02,
+   52.84
+  ],
+  "gold": [
+   47.08,
+   52.84
+  ],
+  "top_idx": [
+   8,
+   10,
+   12,
+   15,
+   18,
+   27,
+   28,
+   30
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.9896907216494853,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.9896907216494853
+ },
+ {
+  "qid": "sample_5_hard_no_q02",
+  "sid": "sample_5",
+  "type": "hard_negative",
+  "question": "Did the back pain begin after surgery for a lumbar disc prolapse?",
+  "want": false,
+  "said": true,
+  "span": [
+   31.16,
+   34.98
+  ],
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   7,
+   10,
+   15,
+   16,
+   28,
+   35
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_5_hard_no_q01",
+  "sid": "sample_5",
+  "type": "hard_negative",
+  "question": "Have the pains in the hands been attributed to gout?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   7,
+   10,
+   16,
+   18,
+   25,
+   29,
+   30
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_5_yes_q05",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Is the patient still in pain despite regular Ibumetin and Panodil?",
+  "want": true,
+  "said": true,
+  "span": [
+   26.6,
+   30.48
+  ],
+  "gold": [
+   36.42,
+   41.58
+  ],
+  "top_idx": [
+   5,
+   7,
+   8,
+   10,
+   15,
+   16,
+   30,
+   35
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.4639175257731951,
+  "oracle_in_topk": true,
+  "chosen_idx": 5,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_5_yes_q02",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Will the NSAID treatment be continued under cover of a proton pump inhibitor?",
+  "want": true,
+  "said": true,
+  "span": [
+   142.52,
+   145.6
+  ],
+  "gold": [
+   142.44,
+   147.88
+  ],
+  "top_idx": [
+   8,
+   10,
+   12,
+   15,
+   16,
+   28,
+   35,
+   36
+  ],
+  "best_idx": 35,
+  "oracle_idx": 35,
+  "oracle_iou": 0.5661764705882326,
+  "oracle_in_topk": true,
+  "chosen_idx": 35,
+  "iou": 0.5661764705882326
+ },
+ {
+  "qid": "sample_5_yes_q06",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Did the patient undergo surgery for a cervical disc prolapse in 2017?",
+  "want": true,
+  "said": true,
+  "span": [
+   31.16,
+   34.98
+  ],
+  "gold": [
+   32.06,
+   34.98
+  ],
+  "top_idx": [
+   0,
+   5,
+   6,
+   10,
+   16,
+   18,
+   28,
+   32
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.7643979057591616,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.7643979057591616
+ },
+ {
+  "qid": "sample_5_off_topic_q02",
+  "sid": "sample_5",
+  "type": "off_topic",
+  "question": "Does the conversation mention the patient owning a digital camera?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   3,
+   12,
+   16,
+   18,
+   21,
+   28,
+   32
+  ],
+  "best_idx": 32
+ },
+ {
+  "qid": "sample_5_yes_q03",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Was muscle tension found in the neck and shoulders?",
+  "want": true,
+  "said": true,
+  "span": [
+   102.68,
+   105.42
+  ],
+  "gold": [
+   102.68,
+   105.42
+  ],
+  "top_idx": [
+   5,
+   10,
+   16,
+   18,
+   25,
+   26,
+   30,
+   31
+  ],
+  "best_idx": 25,
+  "oracle_idx": 25,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 25,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_5_yes_q04",
+  "sid": "sample_5",
+  "type": "positive",
+  "question": "Are the menopausal symptoms treated with Activelle?",
+  "want": true,
+  "said": true,
+  "span": [
+   69.1,
+   73.82
+  ],
+  "gold": [
+   70.44,
+   73.82
+  ],
+  "top_idx": [
+   8,
+   10,
+   15,
+   16,
+   18,
+   27,
+   28,
+   30
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.7161016949152534,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.7161016949152534
+ },
+ {
+  "qid": "sample_5_off_topic_q01",
+  "sid": "sample_5",
+  "type": "off_topic",
+  "question": "Is the patient discussing owning a cat?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   3,
+   12,
+   16,
+   18,
+   21,
+   28,
+   32
+  ],
+  "best_idx": 12
+ },
+ {
+  "qid": "sample_50_yes_q04",
+  "sid": "sample_50",
+  "type": "positive",
+  "question": "Are further tests needed before the diagnosis can be settled?",
+  "want": true,
+  "said": true,
+  "span": [
+   47.97,
+   52.51
+  ],
+  "gold": [
+   60.36,
+   69.66
+  ],
+  "top_idx": [
+   2,
+   6,
+   8,
+   13,
+   15,
+   16,
+   18,
+   23
+  ],
+  "best_idx": 16,
+  "oracle_idx": 18,
+  "oracle_iou": 0.45980707395498316,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_50_hard_no_q01",
+  "sid": "sample_50",
+  "type": "hard_negative",
+  "question": "Does the fasting blood sugar lie at 5.0 mmol/L?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   21
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_50_off_topic_q01",
+  "sid": "sample_50",
+  "type": "off_topic",
+  "question": "Are the speakers discussing the patient's recent college experience?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   4,
+   8,
+   18,
+   20,
+   21,
+   23
+  ],
+  "best_idx": 23
+ },
+ {
+  "qid": "sample_50_yes_q01",
+  "sid": "sample_50",
+  "type": "positive",
+  "question": "The HbA1c came out at 47 mmol/mol, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   47.97,
+   52.51
+  ],
+  "gold": [
+   39.68,
+   43.4
+  ],
+  "top_idx": [
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   20,
+   21
+  ],
+  "best_idx": 11,
+  "oracle_idx": 11,
+  "oracle_iou": 0.9946236559139796,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_50_yes_q03",
+  "sid": "sample_50",
+  "type": "positive",
+  "question": "Was the patient's BMI recorded as 29?",
+  "want": true,
+  "said": true,
+  "span": [
+   22.24,
+   25.96
+  ],
+  "gold": [
+   23.86,
+   25.96
+  ],
+  "top_idx": [
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   21,
+   23
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.5645161290322581,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.5645161290322581
+ },
+ {
+  "qid": "sample_50_hard_no_q03",
+  "sid": "sample_50",
+  "type": "hard_negative",
+  "question": "Has metformin treatment been started at this visit?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   13,
+   16,
+   18,
+   20,
+   21,
+   23
+  ],
+  "best_idx": 23
+ },
+ {
+  "qid": "sample_50_off_topic_q02",
+  "sid": "sample_50",
+  "type": "off_topic",
+  "question": "Was the patient talking about their recent weekend?",
+  "want": false,
+  "said": true,
+  "span": [
+   14.5,
+   17.9
+  ],
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   4,
+   5,
+   15,
+   20,
+   21,
+   23
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_50_yes_q05",
+  "sid": "sample_50",
+  "type": "positive",
+  "question": "Is the patient free of any symptoms at this visit?",
+  "want": true,
+  "said": true,
+  "span": [
+   18.56,
+   21.42
+  ],
+  "gold": [
+   20.38,
+   22.78
+  ],
+  "top_idx": [
+   2,
+   5,
+   6,
+   13,
+   18,
+   20,
+   21,
+   23
+  ],
+  "best_idx": 5,
+  "oracle_idx": 5,
+  "oracle_iou": 0.24644549763033224,
+  "oracle_in_topk": true,
+  "chosen_idx": 5,
+  "iou": 0.24644549763033224
+ },
+ {
+  "qid": "sample_50_yes_q02",
+  "sid": "sample_50",
+  "type": "positive",
+  "question": "Does the patient have a fasting blood sugar of 7.0 mmol/L?",
+  "want": true,
+  "said": true,
+  "span": [
+   35.24,
+   39.0
+  ],
+  "gold": [
+   35.38,
+   39.0
+  ],
+  "top_idx": [
+   5,
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   23
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.9627659574468084,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.9627659574468084
+ },
+ {
+  "qid": "sample_50_hard_no_q02",
+  "sid": "sample_50",
+  "type": "hard_negative",
+  "question": "Were the results enough to confirm type 2 diabetes already?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   8,
+   10,
+   13,
+   14,
+   15,
+   21,
+   23
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_52_yes_q02",
+  "sid": "sample_52",
+  "type": "positive",
+  "question": "Did the doctor plan continued follow-up?",
+  "want": true,
+  "said": true,
+  "span": [
+   56.82,
+   62.7
+  ],
+  "gold": [
+   83.42,
+   86.4
+  ],
+  "top_idx": [
+   2,
+   12,
+   16,
+   17,
+   19,
+   21,
+   27,
+   28
+  ],
+  "best_idx": 16,
+  "oracle_idx": 16,
+  "oracle_iou": 0.4200848656294195,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_52_hard_no_q06",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Has the patient been discharged from any further follow-up?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   7,
+   15,
+   16,
+   17,
+   19,
+   27,
+   28
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_52_yes_q03",
+  "sid": "sample_52",
+  "type": "positive",
+  "question": "Was the patient seen as engaged during the consultation?",
+  "want": true,
+  "said": true,
+  "span": [
+   56.82,
+   62.7
+  ],
+  "gold": [
+   59.06,
+   62.7
+  ],
+  "top_idx": [
+   2,
+   10,
+   12,
+   14,
+   15,
+   16,
+   23,
+   28
+  ],
+  "best_idx": 12,
+  "oracle_idx": 12,
+  "oracle_iou": 0.6190476190476188,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.6190476190476188
+ },
+ {
+  "qid": "sample_52_hard_no_q05",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Does the plan involve starting insulin?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   10,
+   16,
+   21,
+   23,
+   24,
+   27
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_52_hard_no_q04",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Is the patient's grasp of the treatment considered inadequate?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   7,
+   10,
+   12,
+   14,
+   15,
+   16,
+   17
+  ],
+  "best_idx": 7
+ },
+ {
+  "qid": "sample_52_hard_no_q02",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Was the patient found to be poorly motivated?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   7,
+   10,
+   12,
+   14,
+   16,
+   17,
+   18,
+   28
+  ],
+  "best_idx": 12
+ },
+ {
+  "qid": "sample_52_yes_q01",
+  "sid": "sample_52",
+  "type": "positive",
+  "question": "The patient understands the treatment well, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   69.02,
+   74.04
+  ],
+  "gold": [
+   70.22,
+   75.36
+  ],
+  "top_idx": [
+   5,
+   7,
+   10,
+   14,
+   15,
+   16,
+   17,
+   18
+  ],
+  "best_idx": 7,
+  "oracle_idx": 14,
+  "oracle_iou": 0.49354005167958787,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.6025236593059945
+ },
+ {
+  "qid": "sample_52_hard_no_q03",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Were the classes the patient attended about hypertension?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   7,
+   10,
+   12,
+   14,
+   18,
+   28
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_52_off_topic_q01",
+  "sid": "sample_52",
+  "type": "off_topic",
+  "question": "Does the doctor ask about the patient's plans for the holidays?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   7,
+   14,
+   16,
+   19,
+   23,
+   27,
+   28
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_52_hard_no_q01",
+  "sid": "sample_52",
+  "type": "hard_negative",
+  "question": "Did the patient skip the diabetes education?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   10,
+   12,
+   14,
+   16,
+   18,
+   28
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_54_hard_no_q02",
+  "sid": "sample_54",
+  "type": "hard_negative",
+  "question": "Is the blood pressure elevated?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   13,
+   14,
+   15,
+   21,
+   23,
+   25,
+   30
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_54_yes_q04",
+  "sid": "sample_54",
+  "type": "positive",
+  "question": "Was the foot examination normal?",
+  "want": true,
+  "said": true,
+  "span": [
+   43.46,
+   44.64
+  ],
+  "gold": [
+   51.62,
+   54.6
+  ],
+  "top_idx": [
+   14,
+   16,
+   17,
+   20,
+   21,
+   23,
+   25,
+   28
+  ],
+  "best_idx": 20,
+  "oracle_idx": 21,
+  "oracle_iou": 0.4899328859060399,
+  "oracle_in_topk": true,
+  "chosen_idx": 16,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_54_off_topic_q01",
+  "sid": "sample_54",
+  "type": "off_topic",
+  "question": "Does the patient discuss their job?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   7,
+   8,
+   9,
+   21,
+   38,
+   51
+  ],
+  "best_idx": 4
+ },
+ {
+  "qid": "sample_54_hard_no_q04",
+  "sid": "sample_54",
+  "type": "hard_negative",
+  "question": "Was the patient given a pneumococcal vaccination?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   6,
+   9,
+   18,
+   21,
+   23,
+   51
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_54_hard_no_q01",
+  "sid": "sample_54",
+  "type": "hard_negative",
+  "question": "Has the diabetes become unstable?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   11,
+   13,
+   14,
+   28,
+   30,
+   31,
+   32
+  ],
+  "best_idx": 30
+ },
+ {
+  "qid": "sample_54_yes_q03",
+  "sid": "sample_54",
+  "type": "positive",
+  "question": "Has the patient received a flu vaccination?",
+  "want": true,
+  "said": true,
+  "span": [
+   14.24,
+   15.76
+  ],
+  "gold": [
+   13.82,
+   15.76
+  ],
+  "top_idx": [
+   1,
+   4,
+   6,
+   9,
+   21,
+   23,
+   49,
+   51
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.7835051546391752
+ },
+ {
+  "qid": "sample_54_yes_q02",
+  "sid": "sample_54",
+  "type": "positive",
+  "question": "Did the plan include continued monitoring?",
+  "want": true,
+  "said": true,
+  "span": [
+   80.33,
+   82.19
+  ],
+  "gold": [
+   80.38,
+   82.2
+  ],
+  "top_idx": [
+   9,
+   28,
+   35,
+   36,
+   38,
+   39,
+   40,
+   49
+  ],
+  "best_idx": 35,
+  "oracle_idx": 35,
+  "oracle_iou": 0.9679144385026727,
+  "oracle_in_topk": true,
+  "chosen_idx": 35,
+  "iou": 0.9679144385026727
+ },
+ {
+  "qid": "sample_54_hard_no_q03",
+  "sid": "sample_54",
+  "type": "hard_negative",
+  "question": "Does the plan involve a check-up only every second year?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   9,
+   21,
+   23,
+   35,
+   36,
+   38,
+   40
+  ],
+  "best_idx": 35
+ },
+ {
+  "qid": "sample_54_off_topic_q02",
+  "sid": "sample_54",
+  "type": "off_topic",
+  "question": "Was the doctor concerned that the patient's symptoms might be related to exposure to the dark side of the Force?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   8,
+   9,
+   21,
+   25,
+   30,
+   38,
+   51
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_54_yes_q01",
+  "sid": "sample_54",
+  "type": "positive",
+  "question": "Does the doctor regard the diabetes as stable?",
+  "want": true,
+  "said": true,
+  "span": [
+   37.96,
+   40.24
+  ],
+  "gold": [
+   68.74,
+   70.98
+  ],
+  "top_idx": [
+   8,
+   9,
+   14,
+   21,
+   28,
+   30,
+   32,
+   51
+  ],
+  "best_idx": 30,
+  "oracle_idx": 30,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_55_yes_q02",
+  "sid": "sample_55",
+  "type": "positive",
+  "question": "Does the plan include routine follow-up?",
+  "want": true,
+  "said": true,
+  "span": [
+   78.75,
+   80.87
+  ],
+  "gold": [
+   79.42,
+   80.84
+  ],
+  "top_idx": [
+   6,
+   8,
+   10,
+   23,
+   24,
+   25,
+   26,
+   31
+  ],
+  "best_idx": 25,
+  "oracle_idx": 25,
+  "oracle_iou": 0.6698113207547164,
+  "oracle_in_topk": true,
+  "chosen_idx": 25,
+  "iou": 0.6698113207547164
+ },
+ {
+  "qid": "sample_55_hard_no_q01",
+  "sid": "sample_55",
+  "type": "hard_negative",
+  "question": "Does the plan include an urgent referral to a kidney specialist?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   10,
+   18,
+   19,
+   23,
+   25,
+   26,
+   32
+  ],
+  "best_idx": 25
+ },
+ {
+  "qid": "sample_55_off_topic_q01",
+  "sid": "sample_55",
+  "type": "off_topic",
+  "question": "Does the conversation indicate the patient was thinking about joining a hiking club?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   6,
+   10,
+   23,
+   25,
+   27,
+   32
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_55_yes_q03",
+  "sid": "sample_55",
+  "type": "positive",
+  "question": "Will the current treatment be continued?",
+  "want": true,
+  "said": true,
+  "span": [
+   71.11,
+   74.25
+  ],
+  "gold": [
+   71.12,
+   74.22
+  ],
+  "top_idx": [
+   6,
+   10,
+   23,
+   25,
+   26,
+   27,
+   31,
+   32
+  ],
+  "best_idx": 23,
+  "oracle_idx": 23,
+  "oracle_iou": 0.5783582089552228,
+  "oracle_in_topk": true,
+  "chosen_idx": 23,
+  "iou": 0.9872611464968133
+ },
+ {
+  "qid": "sample_55_yes_q01",
+  "sid": "sample_55",
+  "type": "positive",
+  "question": "Did the HbA1c come out at 43 mmol/mol?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   32.56,
+   36.72
+  ],
+  "top_idx": [
+   8,
+   10,
+   11,
+   13,
+   14,
+   15,
+   19,
+   23
+  ],
+  "best_idx": 13,
+  "oracle_idx": 13,
+  "oracle_iou": 0.8093385214007774,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_55_hard_no_q05",
+  "sid": "sample_55",
+  "type": "hard_negative",
+  "question": "Did the tests show albuminuria?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   10,
+   11,
+   15,
+   17,
+   19,
+   21,
+   25
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_55_hard_no_q04",
+  "sid": "sample_55",
+  "type": "hard_negative",
+  "question": "Is the HbA1c reported as 53 mmol/mol?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   13,
+   14,
+   15,
+   16,
+   17,
+   19,
+   26
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_55_hard_no_q02",
+  "sid": "sample_55",
+  "type": "hard_negative",
+  "question": "Was the creatinine found to be raised?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   10,
+   11,
+   13,
+   15,
+   19,
+   25,
+   31
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_55_hard_no_q03",
+  "sid": "sample_55",
+  "type": "hard_negative",
+  "question": "Has the patient reported tiredness and thirst?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   7,
+   8,
+   10,
+   11,
+   19,
+   23,
+   25
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_55_off_topic_q02",
+  "sid": "sample_55",
+  "type": "off_topic",
+  "question": "Does the patient mention having a preference for tea?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   6,
+   10,
+   15,
+   23,
+   24,
+   25,
+   32
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_56_yes_q01",
+  "sid": "sample_56",
+  "type": "positive",
+  "question": "Has the cause of the tiredness remained unexplained?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   61.66,
+   64.2
+  ],
+  "top_idx": [
+   10,
+   11,
+   13,
+   16,
+   29,
+   30,
+   32,
+   45
+  ],
+  "best_idx": 29,
+  "oracle_idx": 32,
+  "oracle_iou": 0.9844961240310082,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_56_off_topic_q01",
+  "sid": "sample_56",
+  "type": "off_topic",
+  "question": "Was the doctor asking about the patient's upcoming movie night?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   10,
+   11,
+   21,
+   45,
+   50,
+   54
+  ],
+  "best_idx": 21
+ },
+ {
+  "qid": "sample_56_hard_no_q02",
+  "sid": "sample_56",
+  "type": "hard_negative",
+  "question": "Has iron treatment been started for the tiredness?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   13,
+   16,
+   21,
+   29,
+   42,
+   45,
+   54
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_56_yes_q02",
+  "sid": "sample_56",
+  "type": "positive",
+  "question": "Did the COVID-19 test come back negative?",
+  "want": true,
+  "said": true,
+  "span": [
+   48.72,
+   50.82
+  ],
+  "gold": [
+   48.84,
+   50.82
+  ],
+  "top_idx": [
+   7,
+   20,
+   21,
+   23,
+   24,
+   26,
+   36,
+   38
+  ],
+  "best_idx": 26,
+  "oracle_idx": 26,
+  "oracle_iou": 0.9428571428571407,
+  "oracle_in_topk": true,
+  "chosen_idx": 26,
+  "iou": 0.9428571428571407
+ },
+ {
+  "qid": "sample_56_hard_no_q04",
+  "sid": "sample_56",
+  "type": "hard_negative",
+  "question": "Was the patient's thyroid function found to be reduced?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   20,
+   21,
+   23,
+   24,
+   26,
+   32,
+   44
+  ],
+  "best_idx": 24
+ },
+ {
+  "qid": "sample_56_yes_q04",
+  "sid": "sample_56",
+  "type": "positive",
+  "question": "The patient's thyroid function was checked, wasn't it?",
+  "want": true,
+  "said": true,
+  "span": [
+   44.92,
+   46.48
+  ],
+  "gold": [
+   44.92,
+   46.5
+  ],
+  "top_idx": [
+   6,
+   21,
+   22,
+   23,
+   24,
+   26,
+   39,
+   54
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.9873417721518968,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.9873417721518968
+ },
+ {
+  "qid": "sample_56_hard_no_q01",
+  "sid": "sample_56",
+  "type": "hard_negative",
+  "question": "Is the patient complaining mainly of chest pain?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   10,
+   16,
+   17,
+   23,
+   24,
+   29,
+   39,
+   54
+  ],
+  "best_idx": 17
+ },
+ {
+  "qid": "sample_56_hard_no_q03",
+  "sid": "sample_56",
+  "type": "hard_negative",
+  "question": "Will treatment for the fatigue begin straight away?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   16,
+   21,
+   29,
+   39,
+   42,
+   44,
+   45
+  ],
+  "best_idx": 29
+ },
+ {
+  "qid": "sample_56_yes_q03",
+  "sid": "sample_56",
+  "type": "positive",
+  "question": "Will further measures be held off for the time being?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   81.92,
+   85.66
+  ],
+  "top_idx": [
+   7,
+   21,
+   23,
+   34,
+   39,
+   40,
+   42,
+   44
+  ],
+  "best_idx": 44,
+  "oracle_idx": 42,
+  "oracle_iou": 0.5561497326203212,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_56_off_topic_q02",
+  "sid": "sample_56",
+  "type": "off_topic",
+  "question": "Are the speakers discussing the weather?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   21,
+   33,
+   37,
+   39,
+   50,
+   51
+  ],
+  "best_idx": 21
+ },
+ {
+  "qid": "sample_57_yes_q05",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Will the patient continue on the current medication?",
+  "want": true,
+  "said": true,
+  "span": [
+   117.65,
+   122.53
+  ],
+  "gold": [
+   117.6,
+   122.54
+  ],
+  "top_idx": [
+   9,
+   13,
+   14,
+   16,
+   20,
+   21,
+   24,
+   25
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.7012802275960179,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.9878542510121424
+ },
+ {
+  "qid": "sample_57_yes_q07",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Is the diabetes considered stable?",
+  "want": true,
+  "said": true,
+  "span": [
+   24.36,
+   26.46
+  ],
+  "gold": [
+   97.54,
+   100.0
+  ],
+  "top_idx": [
+   1,
+   6,
+   8,
+   10,
+   13,
+   14,
+   16,
+   20
+  ],
+  "best_idx": 20,
+  "oracle_idx": 20,
+  "oracle_iou": 0.5913461538461529,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_57_yes_q04",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Has the patient kept up the lifestyle changes?",
+  "want": true,
+  "said": true,
+  "span": [
+   82.23,
+   85.07
+  ],
+  "gold": [
+   59.74,
+   62.1
+  ],
+  "top_idx": [
+   13,
+   14,
+   16,
+   20,
+   21,
+   22,
+   24,
+   25
+  ],
+  "best_idx": 24,
+  "oracle_idx": 13,
+  "oracle_iou": 0.35542168674698743,
+  "oracle_in_topk": true,
+  "chosen_idx": 16,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_57_yes_q03",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Was it concluded that no changes to treatment are needed?",
+  "want": true,
+  "said": true,
+  "span": [
+   97.51,
+   101.67
+  ],
+  "gold": [
+   117.6,
+   122.54
+  ],
+  "top_idx": [
+   10,
+   11,
+   20,
+   21,
+   22,
+   24,
+   25,
+   26
+  ],
+  "best_idx": 21,
+  "oracle_idx": 24,
+  "oracle_iou": 0.7012802275960179,
+  "oracle_in_topk": true,
+  "chosen_idx": 20,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_57_yes_q06",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Does the patient feel stable?",
+  "want": true,
+  "said": true,
+  "span": [
+   32.09,
+   33.81
+  ],
+  "gold": [
+   30.06,
+   33.8
+  ],
+  "top_idx": [
+   1,
+   8,
+   9,
+   10,
+   14,
+   16,
+   20,
+   24
+  ],
+  "best_idx": 10,
+  "oracle_idx": 8,
+  "oracle_iou": 0.18936877076411882,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.4559999999999979
+ },
+ {
+  "qid": "sample_57_off_topic_q01",
+  "sid": "sample_57",
+  "type": "off_topic",
+  "question": "Does the doctor ask about the patient's job responsibilities?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   5,
+   16,
+   19,
+   20,
+   24,
+   28,
+   29
+  ],
+  "best_idx": 1
+ },
+ {
+  "qid": "sample_57_yes_q01",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "Should the patient carry on with the same lifestyle?",
+  "want": true,
+  "said": true,
+  "span": [
+   78.99,
+   85.07
+  ],
+  "gold": [
+   117.6,
+   120.1
+  ],
+  "top_idx": [
+   1,
+   9,
+   13,
+   14,
+   16,
+   20,
+   24,
+   25
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.35612535612535634,
+  "oracle_in_topk": true,
+  "chosen_idx": 16,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_57_hard_no_q01",
+  "sid": "sample_57",
+  "type": "hard_negative",
+  "question": "Was the patient advised to stop the current medication?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   13,
+   16,
+   20,
+   24,
+   25,
+   27,
+   34
+  ],
+  "best_idx": 24
+ },
+ {
+  "qid": "sample_57_hard_no_q02",
+  "sid": "sample_57",
+  "type": "hard_negative",
+  "question": "Will the diabetes now be treated with insulin?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   6,
+   20,
+   21,
+   22,
+   24,
+   25,
+   27
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_57_yes_q02",
+  "sid": "sample_57",
+  "type": "positive",
+  "question": "The patient stays on the medicine already in use, correct?",
+  "want": true,
+  "said": true,
+  "span": [
+   117.65,
+   122.53
+  ],
+  "gold": [
+   120.9,
+   122.54
+  ],
+  "top_idx": [
+   9,
+   10,
+   13,
+   14,
+   16,
+   20,
+   24,
+   25
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.2318634423897575,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.33333333333333237
+ },
+ {
+  "qid": "sample_6_yes_q03",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Was the patient's voice noted to sound congested?",
+  "want": true,
+  "said": true,
+  "span": [
+   24.61,
+   26.35
+  ],
+  "gold": [
+   24.4,
+   26.34
+  ],
+  "top_idx": [
+   0,
+   3,
+   7,
+   9,
+   12,
+   13,
+   18,
+   19
+  ],
+  "best_idx": 7,
+  "oracle_idx": 7,
+  "oracle_iou": 0.40165631469979307,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 0.8871794871794861
+ },
+ {
+  "qid": "sample_6_hard_no_q02",
+  "sid": "sample_6",
+  "type": "hard_negative",
+  "question": "Should the fungal infection be treated with Brentan gel?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   6,
+   11,
+   13,
+   15,
+   19,
+   22,
+   24
+  ],
+  "best_idx": 1
+ },
+ {
+  "qid": "sample_6_off_topic_q01",
+  "sid": "sample_6",
+  "type": "off_topic",
+  "question": "Does the patient talk about needing a new vehicle for their daily commute?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   3,
+   6,
+   7,
+   11,
+   17,
+   24
+  ],
+  "best_idx": 2
+ },
+ {
+  "qid": "sample_6_yes_q04",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Are four daily doses of one million IU of penicillin planned?",
+  "want": true,
+  "said": true,
+  "span": [
+   64.18,
+   67.26
+  ],
+  "gold": [
+   62.9,
+   69.68
+  ],
+  "top_idx": [
+   3,
+   6,
+   11,
+   13,
+   15,
+   19,
+   20,
+   22
+  ],
+  "best_idx": 19,
+  "oracle_idx": 19,
+  "oracle_iou": 0.6430678466076698,
+  "oracle_in_topk": true,
+  "chosen_idx": 19,
+  "iou": 0.4542772861356924
+ },
+ {
+  "qid": "sample_6_yes_q05",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Does the patient also have a fungal infection in the mouth?",
+  "want": true,
+  "said": true,
+  "span": [
+   44.13,
+   46.61
+  ],
+  "gold": [
+   72.96,
+   77.6
+  ],
+  "top_idx": [
+   0,
+   4,
+   6,
+   9,
+   12,
+   13,
+   19,
+   22
+  ],
+  "best_idx": 4,
+  "oracle_idx": 22,
+  "oracle_iou": 0.8273381294964062,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_6_yes_q07",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Did the patient ask for penicillin?",
+  "want": true,
+  "said": true,
+  "span": [
+   17.92,
+   19.18
+  ],
+  "gold": [
+   17.9,
+   19.18
+  ],
+  "top_idx": [
+   0,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   21
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.43448275862068864,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.9843749999999976
+ },
+ {
+  "qid": "sample_6_yes_q01",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Will the patient take Fluconazole 50 mg?",
+  "want": true,
+  "said": true,
+  "span": [
+   49.67,
+   52.69
+  ],
+  "gold": [
+   73.52,
+   77.6
+  ],
+  "top_idx": [
+   0,
+   6,
+   11,
+   13,
+   15,
+   19,
+   22,
+   24
+  ],
+  "best_idx": 22,
+  "oracle_idx": 22,
+  "oracle_iou": 0.7266187050359739,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_6_hard_no_q01",
+  "sid": "sample_6",
+  "type": "hard_negative",
+  "question": "Does the patient want to avoid antibiotics?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   6,
+   9,
+   11,
+   13,
+   15,
+   19,
+   24
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_6_yes_q02",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Is the patient complaining of sinus symptoms?",
+  "want": true,
+  "said": true,
+  "span": [
+   9.06,
+   12.28
+  ],
+  "gold": [
+   9.06,
+   12.28
+  ],
+  "top_idx": [
+   0,
+   3,
+   6,
+   7,
+   9,
+   11,
+   13,
+   19
+  ],
+  "best_idx": 9,
+  "oracle_idx": 3,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_6_yes_q06",
+  "sid": "sample_6",
+  "type": "positive",
+  "question": "Has penicillin been prescribed for seven days?",
+  "want": true,
+  "said": true,
+  "span": [
+   17.92,
+   19.18
+  ],
+  "gold": [
+   64.18,
+   69.68
+  ],
+  "top_idx": [
+   1,
+   6,
+   11,
+   15,
+   19,
+   20,
+   22,
+   23
+  ],
+  "best_idx": 22,
+  "oracle_idx": 19,
+  "oracle_iou": 0.4542772861356924,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_63_hard_no_q01",
+  "sid": "sample_63",
+  "type": "hard_negative",
+  "question": "Have complications of the diabetes been identified?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   8,
+   9,
+   10,
+   11,
+   14,
+   16,
+   17
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_63_hard_no_q04",
+  "sid": "sample_63",
+  "type": "hard_negative",
+  "question": "Did the patient describe new episodes of dizziness?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   3,
+   6,
+   8,
+   16,
+   17,
+   19,
+   23
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_63_hard_no_q02",
+  "sid": "sample_63",
+  "type": "hard_negative",
+  "question": "Is the treatment being changed to a new medication?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   7,
+   8,
+   16,
+   17,
+   19,
+   21
+  ],
+  "best_idx": 17
+ },
+ {
+  "qid": "sample_63_off_topic_q01",
+  "sid": "sample_63",
+  "type": "off_topic",
+  "question": "Was the patient's condition described as being caused by a mysterious disturbance in the Force?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   8,
+   9,
+   10,
+   13,
+   16,
+   17,
+   23
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_63_hard_no_q03",
+  "sid": "sample_63",
+  "type": "hard_negative",
+  "question": "Did the blood tests show impaired kidney function?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   6,
+   8,
+   9,
+   11,
+   13,
+   14,
+   16
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_63_yes_q01",
+  "sid": "sample_63",
+  "type": "positive",
+  "question": "Was the diabetes control judged to be good?",
+  "want": true,
+  "said": true,
+  "span": [
+   16.65,
+   19.81
+  ],
+  "gold": [
+   57.2,
+   61.92
+  ],
+  "top_idx": [
+   4,
+   5,
+   6,
+   10,
+   11,
+   13,
+   16,
+   17
+  ],
+  "best_idx": 16,
+  "oracle_idx": 16,
+  "oracle_iou": 0.7785123966942133,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_63_yes_q02",
+  "sid": "sample_63",
+  "type": "positive",
+  "question": "The lipid profile came back normal, didn't it?",
+  "want": true,
+  "said": true,
+  "span": [
+   35.61,
+   41.91
+  ],
+  "gold": [
+   0.0,
+   0.26
+  ],
+  "top_idx": [
+   3,
+   4,
+   11,
+   13,
+   14,
+   16,
+   17,
+   19
+  ],
+  "best_idx": 14,
+  "oracle_idx": 0,
+  "oracle_iou": 0.09420289855072465,
+  "oracle_in_topk": false,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_63_yes_q03",
+  "sid": "sample_63",
+  "type": "positive",
+  "question": "Was the HbA1c measured at 41 mmol/mol?",
+  "want": true,
+  "said": true,
+  "span": [
+   35.61,
+   41.91
+  ],
+  "gold": [
+   36.72,
+   41.92
+  ],
+  "top_idx": [
+   5,
+   6,
+   9,
+   10,
+   11,
+   13,
+   14,
+   16
+  ],
+  "best_idx": 11,
+  "oracle_idx": 11,
+  "oracle_iou": 0.8225039619651341,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.8225039619651341
+ },
+ {
+  "qid": "sample_63_yes_q05",
+  "sid": "sample_63",
+  "type": "positive",
+  "question": "Are annual check-ups planned to continue?",
+  "want": true,
+  "said": true,
+  "span": [
+   63.04,
+   67.42
+  ],
+  "gold": [
+   64.76,
+   70.16
+  ],
+  "top_idx": [
+   3,
+   6,
+   8,
+   16,
+   17,
+   18,
+   19,
+   23
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 0.5074074074074073,
+  "oracle_in_topk": true,
+  "chosen_idx": 17,
+  "iou": 0.37359550561797716
+ },
+ {
+  "qid": "sample_63_yes_q04",
+  "sid": "sample_63",
+  "type": "positive",
+  "question": "Did the patient report no new symptoms?",
+  "want": true,
+  "said": true,
+  "span": [
+   26.81,
+   27.45
+  ],
+  "gold": [
+   24.46,
+   27.46
+  ],
+  "top_idx": [
+   0,
+   3,
+   7,
+   8,
+   9,
+   10,
+   16,
+   17
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.9867986798679859,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.2133333333333335
+ },
+ {
+  "qid": "sample_64_yes_q04",
+  "sid": "sample_64",
+  "type": "positive",
+  "question": "Is dry skin the reason for this consultation?",
+  "want": true,
+  "said": true,
+  "span": [
+   74.78,
+   76.56
+  ],
+  "gold": [
+   39.42,
+   41.64
+  ],
+  "top_idx": [
+   9,
+   10,
+   13,
+   15,
+   16,
+   18,
+   20,
+   26
+  ],
+  "best_idx": 9,
+  "oracle_idx": 9,
+  "oracle_iou": 0.25284738041002264,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_64_yes_q01",
+  "sid": "sample_64",
+  "type": "positive",
+  "question": "Was the condition assessed as xerosis?",
+  "want": true,
+  "said": true,
+  "span": [
+   72.24,
+   73.98
+  ],
+  "gold": [
+   72.26,
+   73.98
+  ],
+  "top_idx": [
+   2,
+   9,
+   10,
+   13,
+   14,
+   15,
+   16,
+   25
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.3981481481481472,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.9885057471264309
+ },
+ {
+  "qid": "sample_64_hard_no_q01",
+  "sid": "sample_64",
+  "type": "hard_negative",
+  "question": "Did the doctor prescribe an antifungal cream?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   9,
+   15,
+   16,
+   18,
+   20,
+   26
+  ],
+  "best_idx": 18
+ },
+ {
+  "qid": "sample_64_yes_q03",
+  "sid": "sample_64",
+  "type": "positive",
+  "question": "A moisturizing cream was prescribed, wasn't it?",
+  "want": true,
+  "said": true,
+  "span": [
+   39.54,
+   46.84
+  ],
+  "gold": [
+   88.04,
+   91.22
+  ],
+  "top_idx": [
+   6,
+   9,
+   13,
+   15,
+   16,
+   18,
+   20,
+   26
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 0.5892193308550168,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_64_hard_no_q03",
+  "sid": "sample_64",
+  "type": "hard_negative",
+  "question": "Were open sores found on the feet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   9,
+   10,
+   11,
+   13,
+   14,
+   15,
+   23
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_64_hard_no_q04",
+  "sid": "sample_64",
+  "type": "hard_negative",
+  "question": "Was intense itching the main complaint?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   9,
+   11,
+   13,
+   14,
+   15,
+   16,
+   20,
+   25
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_64_hard_no_q02",
+  "sid": "sample_64",
+  "type": "hard_negative",
+  "question": "Does the patient complain of dryness on the hands?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   9,
+   10,
+   13,
+   15,
+   16,
+   18,
+   26
+  ],
+  "best_idx": 15
+ },
+ {
+  "qid": "sample_64_hard_no_q05",
+  "sid": "sample_64",
+  "type": "hard_negative",
+  "question": "Was the skin problem assessed as eczema?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   9,
+   13,
+   14,
+   15,
+   16,
+   18,
+   20,
+   26
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_64_yes_q02",
+  "sid": "sample_64",
+  "type": "positive",
+  "question": "Did the examination rule out any wounds?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   0.0,
+   0.16
+  ],
+  "top_idx": [
+   2,
+   6,
+   11,
+   13,
+   14,
+   16,
+   20,
+   25
+  ],
+  "best_idx": 14,
+  "oracle_idx": 0,
+  "oracle_iou": 0.044444444444444446,
+  "oracle_in_topk": false,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_64_off_topic_q01",
+  "sid": "sample_64",
+  "type": "off_topic",
+  "question": "Does the patient express a desire to change their employment status?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   6,
+   8,
+   9,
+   18,
+   25,
+   26
+  ],
+  "best_idx": 25
+ },
+ {
+  "qid": "sample_66_hard_no_q02",
+  "sid": "sample_66",
+  "type": "hard_negative",
+  "question": "Was the patient given a pneumococcal vaccination?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   3,
+   12,
+   16,
+   19,
+   63,
+   65
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_66_yes_q03",
+  "sid": "sample_66",
+  "type": "positive",
+  "question": "Was the vaccination given as part of diabetes care?",
+  "want": true,
+  "said": true,
+  "span": [
+   53.8,
+   58.22
+  ],
+  "gold": [
+   31.34,
+   35.18
+  ],
+  "top_idx": [
+   12,
+   16,
+   19,
+   20,
+   22,
+   44,
+   46,
+   65
+  ],
+  "best_idx": 19,
+  "oracle_idx": 12,
+  "oracle_iou": 0.9947916666666667,
+  "oracle_in_topk": true,
+  "chosen_idx": 19,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_66_hard_no_q01",
+  "sid": "sample_66",
+  "type": "hard_negative",
+  "question": "Did a local reaction develop at the injection site?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   7,
+   8,
+   9,
+   22,
+   39,
+   43,
+   61
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_66_yes_q04",
+  "sid": "sample_66",
+  "type": "positive",
+  "question": "The diabetes status was described as stable, wasn't it?",
+  "want": true,
+  "said": true,
+  "span": [
+   115.94,
+   116.3
+  ],
+  "gold": [
+   113.08,
+   114.86
+  ],
+  "top_idx": [
+   12,
+   19,
+   22,
+   36,
+   43,
+   44,
+   46,
+   47
+  ],
+  "best_idx": 46,
+  "oracle_idx": 46,
+  "oracle_iou": 0.9888268156424525,
+  "oracle_in_topk": true,
+  "chosen_idx": 47,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_66_hard_no_q03",
+  "sid": "sample_66",
+  "type": "hard_negative",
+  "question": "Was the patient's diabetes found to be unstable?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   12,
+   19,
+   20,
+   36,
+   43,
+   44,
+   46,
+   47
+  ],
+  "best_idx": 46
+ },
+ {
+  "qid": "sample_66_off_topic_q01",
+  "sid": "sample_66",
+  "type": "off_topic",
+  "question": "Is there any reference to the patient planning to watch a specific movie?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   3,
+   6,
+   8,
+   12,
+   20,
+   52,
+   65
+  ],
+  "best_idx": 0
+ },
+ {
+  "qid": "sample_66_hard_no_q05",
+  "sid": "sample_66",
+  "type": "hard_negative",
+  "question": "Has follow-up been discontinued going forward?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   8,
+   17,
+   26,
+   31,
+   51,
+   52,
+   64
+  ],
+  "best_idx": 52
+ },
+ {
+  "qid": "sample_66_hard_no_q04",
+  "sid": "sample_66",
+  "type": "hard_negative",
+  "question": "Did the doctor decide to adjust the diabetes medication?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   12,
+   19,
+   44,
+   46,
+   48,
+   50,
+   65
+  ],
+  "best_idx": 46
+ },
+ {
+  "qid": "sample_66_yes_q02",
+  "sid": "sample_66",
+  "type": "positive",
+  "question": "Is the patient free of any reaction after the injection?",
+  "want": true,
+  "said": true,
+  "span": [
+   97.16,
+   99.48
+  ],
+  "gold": [
+   93.14,
+   96.36
+  ],
+  "top_idx": [
+   12,
+   16,
+   19,
+   22,
+   36,
+   39,
+   43,
+   65
+  ],
+  "best_idx": 39,
+  "oracle_idx": 38,
+  "oracle_iou": 0.360248447204968,
+  "oracle_in_topk": false,
+  "chosen_idx": 39,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_66_yes_q01",
+  "sid": "sample_66",
+  "type": "positive",
+  "question": "Will the treatment continue without changes?",
+  "want": true,
+  "said": true,
+  "span": [
+   121.18,
+   122.94
+  ],
+  "gold": [
+   116.96,
+   122.94
+  ],
+  "top_idx": [
+   8,
+   17,
+   20,
+   43,
+   46,
+   48,
+   50,
+   52
+  ],
+  "best_idx": 50,
+  "oracle_idx": 48,
+  "oracle_iou": 0.3645484949832785,
+  "oracle_in_topk": true,
+  "chosen_idx": 50,
+  "iou": 0.2943143812709013
+ },
+ {
+  "qid": "sample_67_hard_no_q02",
+  "sid": "sample_67",
+  "type": "hard_negative",
+  "question": "Has the patient been referred to a dietitian?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   11,
+   14,
+   16,
+   20,
+   24,
+   28,
+   33
+  ],
+  "best_idx": 1
+ },
+ {
+  "qid": "sample_67_yes_q02",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "The doctor described the diabetes as stable, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   41.2,
+   43.42
+  ],
+  "gold": [
+   70.32,
+   72.42
+  ],
+  "top_idx": [
+   1,
+   14,
+   15,
+   17,
+   24,
+   25,
+   26,
+   28
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.5121951219512205,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_67_yes_q05",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Will the treatment be continued unchanged?",
+  "want": true,
+  "said": true,
+  "span": [
+   87.51,
+   93.03
+  ],
+  "gold": [
+   89.12,
+   90.98
+  ],
+  "top_idx": [
+   6,
+   14,
+   16,
+   24,
+   26,
+   27,
+   28,
+   32
+  ],
+  "best_idx": 28,
+  "oracle_idx": 28,
+  "oracle_iou": 0.3369565217391306,
+  "oracle_in_topk": true,
+  "chosen_idx": 28,
+  "iou": 0.3369565217391306
+ },
+ {
+  "qid": "sample_67_off_topic_q01",
+  "sid": "sample_67",
+  "type": "off_topic",
+  "question": "Was the patient planning to cook a specific dish for dinner mentioned?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   5,
+   11,
+   24,
+   26,
+   28,
+   30,
+   32
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_67_yes_q04",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Is the patient's self-care considered good?",
+  "want": true,
+  "said": true,
+  "span": [
+   36.57,
+   40.45
+  ],
+  "gold": [
+   72.78,
+   74.44
+  ],
+  "top_idx": [
+   1,
+   9,
+   10,
+   14,
+   24,
+   25,
+   26,
+   28
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.3980582524271842,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_67_hard_no_q01",
+  "sid": "sample_67",
+  "type": "hard_negative",
+  "question": "Is the diabetes described as poorly controlled?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   14,
+   20,
+   22,
+   24,
+   26,
+   28,
+   29
+  ],
+  "best_idx": 24
+ },
+ {
+  "qid": "sample_67_yes_q01",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Does the patient say they are doing well?",
+  "want": true,
+  "said": true,
+  "span": [
+   23.79,
+   24.61
+  ],
+  "gold": [
+   21.8,
+   24.62
+  ],
+  "top_idx": [
+   9,
+   10,
+   14,
+   17,
+   24,
+   25,
+   26,
+   28
+  ],
+  "best_idx": 10,
+  "oracle_idx": 9,
+  "oracle_iou": 0.4184397163120566,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.2907801418439717
+ },
+ {
+  "qid": "sample_67_yes_q06",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Is the patient sticking to the diet and lifestyle advice?",
+  "want": true,
+  "said": true,
+  "span": [
+   25.29,
+   27.69
+  ],
+  "gold": [
+   25.36,
+   27.72
+  ],
+  "top_idx": [
+   1,
+   11,
+   12,
+   14,
+   24,
+   28,
+   30,
+   32
+  ],
+  "best_idx": 11,
+  "oracle_idx": 11,
+  "oracle_iou": 0.9588477366255153,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.9588477366255153
+ },
+ {
+  "qid": "sample_67_yes_q07",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Has the weight remained stable?",
+  "want": true,
+  "said": true,
+  "span": [
+   39.45,
+   40.45
+  ],
+  "gold": [
+   39.48,
+   40.44
+  ],
+  "top_idx": [
+   11,
+   12,
+   14,
+   15,
+   16,
+   24,
+   26,
+   28
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.2474226804123712,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.9600000000000009
+ },
+ {
+  "qid": "sample_67_yes_q03",
+  "sid": "sample_67",
+  "type": "positive",
+  "question": "Was the HbA1c 43 mmol/mol?",
+  "want": true,
+  "said": true,
+  "span": [
+   51.71,
+   55.49
+  ],
+  "gold": [
+   51.68,
+   55.5
+  ],
+  "top_idx": [
+   0,
+   10,
+   14,
+   17,
+   18,
+   20,
+   24,
+   26
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 0.9895287958115185,
+  "oracle_in_topk": true,
+  "chosen_idx": 18,
+  "iou": 0.9895287958115185
+ },
+ {
+  "qid": "sample_69_yes_q02",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "Does the patient feel well?",
+  "want": true,
+  "said": true,
+  "span": [
+   28.46,
+   30.36
+  ],
+  "gold": [
+   30.92,
+   33.08
+  ],
+  "top_idx": [
+   0,
+   1,
+   11,
+   12,
+   15,
+   20,
+   27,
+   34
+  ],
+  "best_idx": 15,
+  "oracle_idx": 12,
+  "oracle_iou": 0.9907407407407409,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_69_yes_q01",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "Was the blood pressure normal?",
+  "want": true,
+  "said": true,
+  "span": [
+   42.54,
+   43.7
+  ],
+  "gold": [
+   42.5,
+   43.68
+  ],
+  "top_idx": [
+   12,
+   17,
+   18,
+   19,
+   20,
+   23,
+   24,
+   25
+  ],
+  "best_idx": 17,
+  "oracle_idx": 17,
+  "oracle_iou": 0.9499999999999982,
+  "oracle_in_topk": true,
+  "chosen_idx": 17,
+  "iou": 0.9499999999999982
+ },
+ {
+  "qid": "sample_69_yes_q03",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "Is the foot status normal?",
+  "want": true,
+  "said": true,
+  "span": [
+   46.06,
+   48.62
+  ],
+  "gold": [
+   44.22,
+   45.46
+  ],
+  "top_idx": [
+   12,
+   17,
+   18,
+   19,
+   20,
+   24,
+   25,
+   26
+  ],
+  "best_idx": 18,
+  "oracle_idx": 18,
+  "oracle_iou": 0.9104477611940267,
+  "oracle_in_topk": true,
+  "chosen_idx": 19,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_69_yes_q04",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "Will the regular check-ups be continued?",
+  "want": true,
+  "said": true,
+  "span": [
+   50.02,
+   51.46
+  ],
+  "gold": [
+   68.26,
+   69.96
+  ],
+  "top_idx": [
+   7,
+   20,
+   24,
+   27,
+   28,
+   29,
+   31,
+   33
+  ],
+  "best_idx": 28,
+  "oracle_idx": 28,
+  "oracle_iou": 0.9883040935672538,
+  "oracle_in_topk": true,
+  "chosen_idx": 20,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_69_yes_q06",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "The diabetes was judged to be stable, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   37.7,
+   39.48
+  ],
+  "gold": [
+   57.68,
+   58.9
+  ],
+  "top_idx": [
+   8,
+   12,
+   15,
+   17,
+   19,
+   23,
+   27,
+   30
+  ],
+  "best_idx": 23,
+  "oracle_idx": 23,
+  "oracle_iou": 0.6994219653179208,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_69_yes_q05",
+  "sid": "sample_69",
+  "type": "positive",
+  "question": "Are there no signs of complications?",
+  "want": true,
+  "said": true,
+  "span": [
+   44.12,
+   45.44
+  ],
+  "gold": [
+   59.28,
+   60.52
+  ],
+  "top_idx": [
+   9,
+   12,
+   18,
+   20,
+   24,
+   25,
+   27,
+   30
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.7469879518072317,
+  "oracle_in_topk": true,
+  "chosen_idx": 18,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_69_hard_no_q01",
+  "sid": "sample_69",
+  "type": "hard_negative",
+  "question": "Were wounds discovered on the feet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   11,
+   15,
+   16,
+   18,
+   19,
+   24,
+   27
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_69_off_topic_q01",
+  "sid": "sample_69",
+  "type": "off_topic",
+  "question": "Does the patient express interest in changing their work schedule?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   15,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34
+  ],
+  "best_idx": 30
+ },
+ {
+  "qid": "sample_69_hard_no_q02",
+  "sid": "sample_69",
+  "type": "hard_negative",
+  "question": "Is blood pressure medication being started?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   8,
+   9,
+   15,
+   17,
+   24,
+   27,
+   28
+  ],
+  "best_idx": 17
+ },
+ {
+  "qid": "sample_69_hard_no_q03",
+  "sid": "sample_69",
+  "type": "hard_negative",
+  "question": "Have early complications of the diabetes been detected?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   6,
+   8,
+   23,
+   24,
+   25,
+   27,
+   28
+  ],
+  "best_idx": 24
+ },
+ {
+  "qid": "sample_70_yes_q04",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "The vaccination went as planned, didn't it?",
+  "want": true,
+  "said": true,
+  "span": [
+   39.06,
+   42.5
+  ],
+  "gold": [
+   80.46000000000001,
+   83.34
+  ],
+  "top_idx": [
+   5,
+   7,
+   11,
+   14,
+   17,
+   18,
+   36,
+   37
+  ],
+  "best_idx": 17,
+  "oracle_idx": 27,
+  "oracle_iou": 0.7499999999999981,
+  "oracle_in_topk": false,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_70_yes_q06",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "Was the vaccine actually given?",
+  "want": true,
+  "said": true,
+  "span": [
+   47.66,
+   49.14
+  ],
+  "gold": [
+   54.54,
+   56.32
+  ],
+  "top_idx": [
+   5,
+   7,
+   11,
+   14,
+   17,
+   29,
+   36,
+   37
+  ],
+  "best_idx": 17,
+  "oracle_idx": 17,
+  "oracle_iou": 0.6742424242424245,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_70_hard_no_q03",
+  "sid": "sample_70",
+  "type": "hard_negative",
+  "question": "Was blood taken during the same visit?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   11,
+   14,
+   17,
+   24,
+   36,
+   37,
+   43
+  ],
+  "best_idx": 43
+ },
+ {
+  "qid": "sample_70_yes_q01",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "Were no further measures decided on?",
+  "want": true,
+  "said": true,
+  "span": [
+   114.96,
+   116.2
+  ],
+  "gold": [
+   116.98,
+   118.92
+  ],
+  "top_idx": [
+   23,
+   25,
+   27,
+   30,
+   37,
+   39,
+   40,
+   43
+  ],
+  "best_idx": 40,
+  "oracle_idx": 40,
+  "oracle_iou": 0.9896907216494866,
+  "oracle_in_topk": true,
+  "chosen_idx": 39,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_70_yes_q05",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "Is this vaccination something the patient receives annually?",
+  "want": true,
+  "said": true,
+  "span": [
+   24.11,
+   25.55
+  ],
+  "gold": [
+   19.48,
+   25.54
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   11,
+   14,
+   17,
+   36,
+   37
+  ],
+  "best_idx": 7,
+  "oracle_idx": 5,
+  "oracle_iou": 0.6237623762376235,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.23558484349258643
+ },
+ {
+  "qid": "sample_70_hard_no_q01",
+  "sid": "sample_70",
+  "type": "hard_negative",
+  "question": "Was the vaccination postponed to a later date?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   7,
+   11,
+   14,
+   17,
+   29,
+   36,
+   37
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_70_yes_q02",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "Can the patient leave without any additional treatment?",
+  "want": true,
+  "said": true,
+  "span": [
+   119.26,
+   120.88
+  ],
+  "gold": [
+   116.98,
+   124.66
+  ],
+  "top_idx": [
+   14,
+   37,
+   39,
+   40,
+   41,
+   43,
+   45,
+   47
+  ],
+  "best_idx": 40,
+  "oracle_idx": 43,
+  "oracle_iou": 0.25520833333333276,
+  "oracle_in_topk": true,
+  "chosen_idx": 41,
+  "iou": 0.21093749999999895
+ },
+ {
+  "qid": "sample_70_off_topic_q01",
+  "sid": "sample_70",
+  "type": "off_topic",
+  "question": "Did the patient discuss their college courses online?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   5,
+   12,
+   14,
+   34,
+   45,
+   46
+  ],
+  "best_idx": 46
+ },
+ {
+  "qid": "sample_70_yes_q03",
+  "sid": "sample_70",
+  "type": "positive",
+  "question": "Is the patient free of side effects after the vaccine?",
+  "want": true,
+  "said": true,
+  "span": [
+   79.53,
+   83.37
+  ],
+  "gold": [
+   80.46000000000001,
+   83.34
+  ],
+  "top_idx": [
+   7,
+   11,
+   17,
+   27,
+   29,
+   36,
+   37,
+   40
+  ],
+  "best_idx": 29,
+  "oracle_idx": 27,
+  "oracle_iou": 0.7499999999999981,
+  "oracle_in_topk": true,
+  "chosen_idx": 27,
+  "iou": 0.7499999999999981
+ },
+ {
+  "qid": "sample_70_hard_no_q02",
+  "sid": "sample_70",
+  "type": "hard_negative",
+  "question": "Is the patient asked to come back in a week for a second dose?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   5,
+   7,
+   11,
+   14,
+   36,
+   39,
+   43
+  ],
+  "best_idx": 0
+ },
+ {
+  "qid": "sample_71_hard_no_q02",
+  "sid": "sample_71",
+  "type": "hard_negative",
+  "question": "Has the patient been troubled by increased thirst?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   13,
+   14,
+   21,
+   22,
+   25,
+   30,
+   31
+  ],
+  "best_idx": 25
+ },
+ {
+  "qid": "sample_71_off_topic_q01",
+  "sid": "sample_71",
+  "type": "off_topic",
+  "question": "Was the patient discussing their pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   3,
+   13,
+   14,
+   21,
+   30,
+   31,
+   35
+  ],
+  "best_idx": 31
+ },
+ {
+  "qid": "sample_71_yes_q03",
+  "sid": "sample_71",
+  "type": "positive",
+  "question": "Did the creatinine come back normal?",
+  "want": true,
+  "said": true,
+  "span": [
+   78.86,
+   80.46
+  ],
+  "gold": [
+   78.86,
+   80.46
+  ],
+  "top_idx": [
+   6,
+   11,
+   13,
+   19,
+   22,
+   25,
+   30,
+   35
+  ],
+  "best_idx": 22,
+  "oracle_idx": 22,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 22,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_71_hard_no_q03",
+  "sid": "sample_71",
+  "type": "hard_negative",
+  "question": "Is the LDL cholesterol 4.2 mmol/L?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   11,
+   15,
+   17,
+   18,
+   20,
+   22,
+   25
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_71_yes_q04",
+  "sid": "sample_71",
+  "type": "positive",
+  "question": "Was the HbA1c 42 mmol/mol?",
+  "want": true,
+  "said": true,
+  "span": [
+   53.7,
+   57.78
+  ],
+  "gold": [
+   53.7,
+   57.78
+  ],
+  "top_idx": [
+   8,
+   15,
+   20,
+   21,
+   22,
+   25,
+   30,
+   31
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_71_hard_no_q01",
+  "sid": "sample_71",
+  "type": "hard_negative",
+  "question": "Did the creatinine turn out to be elevated?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   13,
+   15,
+   19,
+   21,
+   22,
+   25,
+   30
+  ],
+  "best_idx": 22
+ },
+ {
+  "qid": "sample_71_off_topic_q02",
+  "sid": "sample_71",
+  "type": "off_topic",
+  "question": "According to the conversation, was a specific type of sport played by the patient discussed?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   14,
+   21,
+   25,
+   30,
+   31,
+   33,
+   35
+  ],
+  "best_idx": 31
+ },
+ {
+  "qid": "sample_71_yes_q05",
+  "sid": "sample_71",
+  "type": "positive",
+  "question": "Are there no signs of complications?",
+  "want": true,
+  "said": true,
+  "span": [
+   40.42,
+   43.1
+  ],
+  "gold": [
+   89.46,
+   91.64
+  ],
+  "top_idx": [
+   7,
+   11,
+   12,
+   13,
+   22,
+   25,
+   26,
+   33
+  ],
+  "best_idx": 26,
+  "oracle_idx": 25,
+  "oracle_iou": 0.3670033670033683,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_71_yes_q01",
+  "sid": "sample_71",
+  "type": "positive",
+  "question": "Is the LDL cholesterol 2.2 mmol/L?",
+  "want": true,
+  "said": true,
+  "span": [
+   70.34,
+   74.32
+  ],
+  "gold": [
+   70.34,
+   74.32
+  ],
+  "top_idx": [
+   8,
+   11,
+   15,
+   17,
+   18,
+   20,
+   22,
+   25
+  ],
+  "best_idx": 20,
+  "oracle_idx": 20,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 20,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_71_yes_q02",
+  "sid": "sample_71",
+  "type": "positive",
+  "question": "The diabetes was described as stable, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   36.74,
+   39.66
+  ],
+  "gold": [
+   85.68,
+   88.92
+  ],
+  "top_idx": [
+   6,
+   8,
+   11,
+   13,
+   18,
+   22,
+   25,
+   30
+  ],
+  "best_idx": 25,
+  "oracle_idx": 25,
+  "oracle_iou": 0.5402684563758393,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_75_off_topic_q01",
+  "sid": "sample_75",
+  "type": "off_topic",
+  "question": "Does the conversation indicate the patient uses specific software?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   5,
+   6,
+   11,
+   34,
+   37,
+   41
+  ],
+  "best_idx": 41
+ },
+ {
+  "qid": "sample_75_yes_q01",
+  "sid": "sample_75",
+  "type": "positive",
+  "question": "Does the patient deny any known exposure to COVID-19?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   45.06,
+   46.48
+  ],
+  "top_idx": [
+   2,
+   17,
+   20,
+   24,
+   28,
+   31,
+   38,
+   41
+  ],
+  "best_idx": 20,
+  "oracle_idx": 22,
+  "oracle_iou": 0.9859154929577493,
+  "oracle_in_topk": false,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_75_yes_q02",
+  "sid": "sample_75",
+  "type": "positive",
+  "question": "Is the patient also feeling tired?",
+  "want": true,
+  "said": true,
+  "span": [
+   29.62,
+   31.94
+  ],
+  "gold": [
+   31.08,
+   31.94
+  ],
+  "top_idx": [
+   1,
+   15,
+   17,
+   28,
+   31,
+   37,
+   41,
+   42
+  ],
+  "best_idx": 15,
+  "oracle_idx": 15,
+  "oracle_iou": 0.37068965517241503,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.37068965517241503
+ },
+ {
+  "qid": "sample_75_hard_no_q05",
+  "sid": "sample_75",
+  "type": "hard_negative",
+  "question": "Is a bacterial infection thought to be the most likely cause?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   7,
+   15,
+   28,
+   29,
+   31,
+   32,
+   33,
+   38
+  ],
+  "best_idx": 31
+ },
+ {
+  "qid": "sample_75_yes_q04",
+  "sid": "sample_75",
+  "type": "positive",
+  "question": "Were rest and fluids recommended?",
+  "want": true,
+  "said": true,
+  "span": [
+   81.46,
+   83.6
+  ],
+  "gold": [
+   81.4,
+   83.6
+  ],
+  "top_idx": [
+   15,
+   17,
+   28,
+   31,
+   37,
+   38,
+   41,
+   42
+  ],
+  "best_idx": 37,
+  "oracle_idx": 37,
+  "oracle_iou": 0.972727272727278,
+  "oracle_in_topk": true,
+  "chosen_idx": 37,
+  "iou": 0.972727272727278
+ },
+ {
+  "qid": "sample_75_hard_no_q02",
+  "sid": "sample_75",
+  "type": "hard_negative",
+  "question": "Did the patient report a known exposure to COVID-19?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   11,
+   15,
+   20,
+   21,
+   24,
+   28,
+   31
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_75_hard_no_q03",
+  "sid": "sample_75",
+  "type": "hard_negative",
+  "question": "Will the patient be starting a course of antibiotics?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   2,
+   11,
+   31,
+   37,
+   38,
+   41,
+   42
+  ],
+  "best_idx": 38
+ },
+ {
+  "qid": "sample_75_yes_q03",
+  "sid": "sample_75",
+  "type": "positive",
+  "question": "Has the patient had a sore throat for a few days?",
+  "want": true,
+  "said": true,
+  "span": [
+   29.62,
+   31.94
+  ],
+  "gold": [
+   29.62,
+   35.9
+  ],
+  "top_idx": [
+   15,
+   16,
+   17,
+   24,
+   26,
+   31,
+   37,
+   42
+  ],
+  "best_idx": 17,
+  "oracle_idx": 15,
+  "oracle_iou": 0.3694267515923569,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.3694267515923569
+ },
+ {
+  "qid": "sample_75_hard_no_q04",
+  "sid": "sample_75",
+  "type": "hard_negative",
+  "question": "Was the patient found to have a fever?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   15,
+   21,
+   24,
+   28,
+   29,
+   31,
+   37
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_75_hard_no_q01",
+  "sid": "sample_75",
+  "type": "hard_negative",
+  "question": "Did the throat examination reveal pronounced swelling with pus?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   15,
+   17,
+   24,
+   26,
+   29,
+   31,
+   37
+  ],
+  "best_idx": 26
+ },
+ {
+  "qid": "sample_77_yes_q02",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Did the patient receive a tetanus vaccination?",
+  "want": true,
+  "said": true,
+  "span": [
+   81.0,
+   82.5
+  ],
+  "gold": [
+   77.72,
+   80.36
+  ],
+  "top_idx": [
+   9,
+   14,
+   20,
+   21,
+   29,
+   30,
+   33,
+   34
+  ],
+  "best_idx": 33,
+  "oracle_idx": 33,
+  "oracle_iou": 0.9848484848484879,
+  "oracle_in_topk": true,
+  "chosen_idx": 34,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_77_hard_no_q01",
+  "sid": "sample_77",
+  "type": "hard_negative",
+  "question": "Did the infection appear only two days after the injury?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   7,
+   8,
+   9,
+   11,
+   14,
+   20,
+   21
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_77_off_topic_q01",
+  "sid": "sample_77",
+  "type": "off_topic",
+  "question": "Does the patient talk about using a digital device for online shopping?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   10,
+   13,
+   25,
+   26,
+   28,
+   29,
+   30
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_77_yes_q03",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Was the infection judged to follow a penetrating trauma?",
+  "want": true,
+  "said": true,
+  "span": [
+   46.52,
+   49.0
+  ],
+  "gold": [
+   49.56,
+   52.96
+  ],
+  "top_idx": [
+   8,
+   14,
+   20,
+   21,
+   22,
+   29,
+   30,
+   34
+  ],
+  "best_idx": 20,
+  "oracle_idx": 21,
+  "oracle_iou": 0.9941520467836269,
+  "oracle_in_topk": true,
+  "chosen_idx": 20,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_77_yes_q07",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Have about two weeks passed since the injury?",
+  "want": true,
+  "said": true,
+  "span": [
+   25.04,
+   27.4
+  ],
+  "gold": [
+   16.5,
+   17.3
+  ],
+  "top_idx": [
+   2,
+   7,
+   9,
+   11,
+   14,
+   17,
+   20,
+   44
+  ],
+  "best_idx": 9,
+  "oracle_idx": 7,
+  "oracle_iou": 0.3738317757009348,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_77_yes_q04",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Did the trouble start after the patient pricked themselves on a thorn?",
+  "want": true,
+  "said": true,
+  "span": [
+   15.16,
+   17.3
+  ],
+  "gold": [
+   15.14,
+   19.3
+  ],
+  "top_idx": [
+   7,
+   8,
+   9,
+   15,
+   20,
+   21,
+   29,
+   34
+  ],
+  "best_idx": 21,
+  "oracle_idx": 7,
+  "oracle_iou": 0.5144230769230771,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 0.5144230769230771
+ },
+ {
+  "qid": "sample_77_hard_no_q02",
+  "sid": "sample_77",
+  "type": "hard_negative",
+  "question": "Was a foreign body found in the toe?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   7,
+   8,
+   14,
+   15,
+   20,
+   21,
+   34
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_77_yes_q06",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "The patient was treated with penicillin, correct?",
+  "want": true,
+  "said": true,
+  "span": [
+   67.84,
+   69.54
+  ],
+  "gold": [
+   67.84,
+   69.56
+  ],
+  "top_idx": [
+   0,
+   20,
+   21,
+   29,
+   30,
+   32,
+   34,
+   46
+  ],
+  "best_idx": 29,
+  "oracle_idx": 29,
+  "oracle_iou": 0.9883720930232581,
+  "oracle_in_topk": true,
+  "chosen_idx": 29,
+  "iou": 0.9883720930232581
+ },
+ {
+  "qid": "sample_77_yes_q05",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Is a foreign body ruled out?",
+  "want": true,
+  "said": true,
+  "span": [
+   35.48,
+   37.92
+  ],
+  "gold": [
+   32.7,
+   34.9
+  ],
+  "top_idx": [
+   14,
+   15,
+   17,
+   20,
+   21,
+   30,
+   37,
+   38
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 15,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_77_yes_q01",
+  "sid": "sample_77",
+  "type": "positive",
+  "question": "Does the patient have an infection in the big toe?",
+  "want": true,
+  "said": true,
+  "span": [
+   49.56,
+   52.98
+  ],
+  "gold": [
+   49.56,
+   52.96
+  ],
+  "top_idx": [
+   6,
+   8,
+   14,
+   20,
+   21,
+   22,
+   29,
+   34
+  ],
+  "best_idx": 6,
+  "oracle_idx": 21,
+  "oracle_iou": 0.9941520467836269,
+  "oracle_in_topk": true,
+  "chosen_idx": 21,
+  "iou": 0.9941520467836269
+ },
+ {
+  "qid": "sample_79_yes_q02",
+  "sid": "sample_79",
+  "type": "positive",
+  "question": "Is chondromalacia patellae suspected on clinical grounds?",
+  "want": true,
+  "said": true,
+  "span": [
+   84.65,
+   86.81
+  ],
+  "gold": [
+   82.96,
+   87.4
+  ],
+  "top_idx": [
+   8,
+   12,
+   24,
+   25,
+   27,
+   29,
+   37,
+   41
+  ],
+  "best_idx": 29,
+  "oracle_idx": 24,
+  "oracle_iou": 0.4864864864864844,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.4864864864864844
+ },
+ {
+  "qid": "sample_79_hard_no_q03",
+  "sid": "sample_79",
+  "type": "hard_negative",
+  "question": "Has the patient been referred to a physiotherapist instead of further procedures?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   29,
+   36,
+   37,
+   46,
+   55,
+   59,
+   60,
+   64
+  ],
+  "best_idx": 36
+ },
+ {
+  "qid": "sample_79_off_topic_q01",
+  "sid": "sample_79",
+  "type": "off_topic",
+  "question": "Does the patient express interest in learning Spanish?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   29,
+   32,
+   36,
+   46,
+   59,
+   60,
+   67
+  ],
+  "best_idx": 29
+ },
+ {
+  "qid": "sample_79_yes_q05",
+  "sid": "sample_79",
+  "type": "positive",
+  "question": "Do the pains come and go rather than being constant?",
+  "want": true,
+  "said": true,
+  "span": [
+   39.0,
+   41.5
+  ],
+  "gold": [
+   24.72,
+   28.16
+  ],
+  "top_idx": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   17,
+   32,
+   50
+  ],
+  "best_idx": 11,
+  "oracle_idx": 8,
+  "oracle_iou": 0.6991869918699187,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_79_hard_no_q04",
+  "sid": "sample_79",
+  "type": "hard_negative",
+  "question": "Does the pain sit on the back of the thigh?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   12,
+   14,
+   15,
+   16,
+   27,
+   41,
+   55
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_79_yes_q03",
+  "sid": "sample_79",
+  "type": "positive",
+  "question": "Does the patient have pain behind the kneecap?",
+  "want": true,
+  "said": true,
+  "span": [
+   23.24,
+   28.16
+  ],
+  "gold": [
+   24.72,
+   26.9
+  ],
+  "top_idx": [
+   8,
+   12,
+   14,
+   16,
+   25,
+   27,
+   41,
+   55
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.44308943089430874,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.44308943089430874
+ },
+ {
+  "qid": "sample_79_yes_q01",
+  "sid": "sample_79",
+  "type": "positive",
+  "question": "Did the patient show up in person for the consultation?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   0.0,
+   2.8
+  ],
+  "top_idx": [
+   0,
+   9,
+   29,
+   36,
+   46,
+   59,
+   60,
+   69
+  ],
+  "best_idx": 60,
+  "oracle_idx": 0,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_79_hard_no_q02",
+  "sid": "sample_79",
+  "type": "hard_negative",
+  "question": "Was the diagnosis of chondromalacia patellae confirmed by an MRI scan?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   14,
+   24,
+   25,
+   27,
+   29,
+   37,
+   41
+  ],
+  "best_idx": 24
+ },
+ {
+  "qid": "sample_79_hard_no_q01",
+  "sid": "sample_79",
+  "type": "hard_negative",
+  "question": "Are the knee pains constant throughout the day?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   8,
+   12,
+   14,
+   16,
+   25,
+   27,
+   38,
+   55
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_79_yes_q04",
+  "sid": "sample_79",
+  "type": "positive",
+  "question": "Was the suspicion reached without imaging?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   80.88,
+   87.4
+  ],
+  "top_idx": [
+   15,
+   23,
+   29,
+   32,
+   34,
+   37,
+   38,
+   41
+  ],
+  "best_idx": 29,
+  "oracle_idx": 23,
+  "oracle_iou": 0.5773353751914256,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_81_yes_q02",
+  "sid": "sample_81",
+  "type": "positive",
+  "question": "Is a viral cause thought to be the most likely explanation?",
+  "want": true,
+  "said": true,
+  "span": [
+   62.6,
+   69.56
+  ],
+  "gold": [
+   63.88,
+   68.32
+  ],
+  "top_idx": [
+   3,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   18
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.6379310344827572,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.6379310344827572
+ },
+ {
+  "qid": "sample_81_hard_no_q02",
+  "sid": "sample_81",
+  "type": "hard_negative",
+  "question": "Has the patient been given antibiotics for the illness?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   10,
+   12,
+   13,
+   14,
+   15,
+   17,
+   18,
+   22
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_81_hard_no_q04",
+  "sid": "sample_81",
+  "type": "hard_negative",
+  "question": "Is admission to hospital part of the plan?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   6,
+   12,
+   14,
+   15,
+   16,
+   18,
+   22
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_81_yes_q03",
+  "sid": "sample_81",
+  "type": "positive",
+  "question": "Did the patient receive advice about fluid intake?",
+  "want": true,
+  "said": true,
+  "span": [
+   86.28,
+   91.12
+  ],
+  "gold": [
+   86.58,
+   89.34
+  ],
+  "top_idx": [
+   11,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   22
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.5702479338842982,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.5702479338842982
+ },
+ {
+  "qid": "sample_81_hard_no_q01",
+  "sid": "sample_81",
+  "type": "hard_negative",
+  "question": "Is the patient complaining of chest symptoms?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   6,
+   10,
+   11,
+   14,
+   17,
+   18,
+   22
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_81_yes_q01",
+  "sid": "sample_81",
+  "type": "positive",
+  "question": "Does the patient describe symptoms of gastroenteritis?",
+  "want": true,
+  "said": true,
+  "span": [
+   12.62,
+   14.64
+  ],
+  "gold": [
+   12.62,
+   14.64
+  ],
+  "top_idx": [
+   2,
+   3,
+   6,
+   10,
+   11,
+   12,
+   17,
+   22
+  ],
+  "best_idx": 2,
+  "oracle_idx": 2,
+  "oracle_iou": 0.39299610894941645,
+  "oracle_in_topk": true,
+  "chosen_idx": 2,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_81_yes_q04",
+  "sid": "sample_81",
+  "type": "positive",
+  "question": "Was gastroenteritis the diagnosis arrived at?",
+  "want": true,
+  "said": true,
+  "span": [
+   62.6,
+   68.26
+  ],
+  "gold": [
+   63.88,
+   68.32
+  ],
+  "top_idx": [
+   2,
+   3,
+   6,
+   9,
+   10,
+   12,
+   18,
+   22
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.6379310344827572,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.7657342657342673
+ },
+ {
+  "qid": "sample_81_off_topic_q01",
+  "sid": "sample_81",
+  "type": "off_topic",
+  "question": "Does the conversation indicate the patient discussed their recent purchase of groceries?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   5,
+   6,
+   10,
+   11,
+   17,
+   18,
+   22
+  ],
+  "best_idx": 22
+ },
+ {
+  "qid": "sample_81_hard_no_q03",
+  "sid": "sample_81",
+  "type": "hard_negative",
+  "question": "Was the patient told to restrict fluid intake?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   10,
+   14,
+   15,
+   16,
+   17,
+   18,
+   22
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_81_hard_no_q05",
+  "sid": "sample_81",
+  "type": "hard_negative",
+  "question": "Was a bacterial cause considered the most likely one?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   16,
+   22
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_82_hard_no_q02",
+  "sid": "sample_82",
+  "type": "hard_negative",
+  "question": "Was the growth suspected to be a basal cell carcinoma?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   6,
+   8,
+   10,
+   12,
+   14,
+   20,
+   23
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_82_hard_no_q01",
+  "sid": "sample_82",
+  "type": "hard_negative",
+  "question": "Were seven small lesions counted in the area?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   7,
+   8,
+   10,
+   12,
+   14,
+   20,
+   23
+  ],
+  "best_idx": 10
+ },
+ {
+  "qid": "sample_82_off_topic_q01",
+  "sid": "sample_82",
+  "type": "off_topic",
+  "question": "Does the patient express interest in using a particular software?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   14,
+   18,
+   20,
+   27,
+   28,
+   29
+  ],
+  "best_idx": 27
+ },
+ {
+  "qid": "sample_82_hard_no_q03",
+  "sid": "sample_82",
+  "type": "hard_negative",
+  "question": "Has a cream been prescribed as the treatment?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   6,
+   14,
+   18,
+   20,
+   23,
+   28,
+   29
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_82_off_topic_q02",
+  "sid": "sample_82",
+  "type": "off_topic",
+  "question": "Did they talk about the weather being unusually hot?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   3,
+   4,
+   14,
+   23,
+   24,
+   27,
+   29
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_82_hard_no_q04",
+  "sid": "sample_82",
+  "type": "hard_negative",
+  "question": "Will the lesions be removed surgically?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   6,
+   9,
+   10,
+   12,
+   14,
+   18,
+   20,
+   29
+  ],
+  "best_idx": 20
+ },
+ {
+  "qid": "sample_82_yes_q03",
+  "sid": "sample_82",
+  "type": "positive",
+  "question": "The lesions will be treated with freezing, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   52.66,
+   58.2
+  ],
+  "gold": [
+   65.96,
+   67.4
+  ],
+  "top_idx": [
+   6,
+   10,
+   14,
+   18,
+   20,
+   23,
+   27,
+   29
+  ],
+  "best_idx": 20,
+  "oracle_idx": 18,
+  "oracle_iou": 0.9583333333333321,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_82_yes_q01",
+  "sid": "sample_82",
+  "type": "positive",
+  "question": "Do the elements resemble molluscs?",
+  "want": true,
+  "said": false,
+  "span": null,
+  "gold": [
+   52.66,
+   55.56
+  ],
+  "top_idx": [
+   2,
+   4,
+   6,
+   7,
+   8,
+   14,
+   23,
+   29
+  ],
+  "best_idx": 8,
+  "oracle_idx": 14,
+  "oracle_iou": 0.5234657039711196,
+  "oracle_in_topk": true,
+  "chosen_idx": null,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_82_yes_q02",
+  "sid": "sample_82",
+  "type": "positive",
+  "question": "Has the patient noticed a wart-like growth?",
+  "want": true,
+  "said": true,
+  "span": [
+   24.58,
+   28.46
+  ],
+  "gold": [
+   27.16,
+   28.46
+  ],
+  "top_idx": [
+   1,
+   6,
+   8,
+   9,
+   10,
+   14,
+   20,
+   29
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.33505154639175255,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.33505154639175255
+ },
+ {
+  "qid": "sample_82_yes_q04",
+  "sid": "sample_82",
+  "type": "positive",
+  "question": "Were three small lesions seen in the same area of the thorax?",
+  "want": true,
+  "said": true,
+  "span": [
+   40.18,
+   45.36
+  ],
+  "gold": [
+   40.24,
+   45.36
+  ],
+  "top_idx": [
+   6,
+   7,
+   8,
+   10,
+   11,
+   12,
+   14,
+   20
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.988416988416988,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.988416988416988
+ },
+ {
+  "qid": "sample_84_hard_no_q01",
+  "sid": "sample_84",
+  "type": "hard_negative",
+  "question": "Is the check-up being done because the patient has symptoms from the heart?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   13,
+   18,
+   30,
+   50,
+   68,
+   88,
+   89,
+   94
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_84_hard_no_q02",
+  "sid": "sample_84",
+  "type": "hard_negative",
+  "question": "Does the patient say that exercise is something they rarely do?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   13,
+   24,
+   29,
+   30,
+   31,
+   32,
+   33,
+   90
+  ],
+  "best_idx": 30
+ },
+ {
+  "qid": "sample_84_off_topic_q01",
+  "sid": "sample_84",
+  "type": "off_topic",
+  "question": "Was the patient referred to Doctor Strange for magical treatment?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   4,
+   6,
+   10,
+   30,
+   44,
+   69,
+   94
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_84_yes_q02",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Was it the patient's grandfather who died of a heart attack?",
+  "want": true,
+  "said": true,
+  "span": [
+   27.83,
+   30.71
+  ],
+  "gold": [
+   20.3,
+   23.42
+  ],
+  "top_idx": [
+   10,
+   13,
+   18,
+   30,
+   69,
+   88,
+   89,
+   94
+  ],
+  "best_idx": 10,
+  "oracle_idx": 10,
+  "oracle_iou": 0.9750000000000005,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_84_yes_q04",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Does the patient exercise regularly?",
+  "want": true,
+  "said": true,
+  "span": [
+   73.91,
+   75.97
+  ],
+  "gold": [
+   78.28,
+   79.52
+  ],
+  "top_idx": [
+   13,
+   29,
+   30,
+   31,
+   32,
+   33,
+   68,
+   88
+  ],
+  "best_idx": 33,
+  "oracle_idx": 33,
+  "oracle_iou": 0.967999999999995,
+  "oracle_in_topk": true,
+  "chosen_idx": 31,
+  "iou": 0.0
+ },
+ {
+  "qid": "sample_84_yes_q06",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Will both blood tests and an ECG be carried out?",
+  "want": true,
+  "said": true,
+  "span": [
+   195.56,
+   198.03
+  ],
+  "gold": [
+   193.64,
+   201.3
+  ],
+  "top_idx": [
+   30,
+   50,
+   83,
+   86,
+   87,
+   88,
+   89,
+   94
+  ],
+  "best_idx": 94,
+  "oracle_idx": 88,
+  "oracle_iou": 0.3577023498694517,
+  "oracle_in_topk": true,
+  "chosen_idx": 87,
+  "iou": 0.32245430809399356
+ },
+ {
+  "qid": "sample_84_yes_q05",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Was the blood pressure measured at 138 over 83?",
+  "want": true,
+  "said": true,
+  "span": [
+   119.96,
+   123.0
+  ],
+  "gold": [
+   119.92,
+   122.96
+  ],
+  "top_idx": [
+   11,
+   13,
+   29,
+   44,
+   53,
+   54,
+   57,
+   94
+  ],
+  "best_idx": 54,
+  "oracle_idx": 54,
+  "oracle_iou": 0.9740259740259746,
+  "oracle_in_topk": true,
+  "chosen_idx": 54,
+  "iou": 0.9740259740259746
+ },
+ {
+  "qid": "sample_84_yes_q01",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Does the patient report cardiovascular disease in the family?",
+  "want": true,
+  "said": true,
+  "span": [
+   27.83,
+   30.71
+  ],
+  "gold": [
+   27.86,
+   31.68
+  ],
+  "top_idx": [
+   9,
+   10,
+   13,
+   18,
+   30,
+   69,
+   88,
+   94
+  ],
+  "best_idx": 13,
+  "oracle_idx": 13,
+  "oracle_iou": 0.7402597402597404,
+  "oracle_in_topk": true,
+  "chosen_idx": 13,
+  "iou": 0.7402597402597404
+ },
+ {
+  "qid": "sample_84_yes_q03",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Did that grandfather die at the age of 52?",
+  "want": true,
+  "said": true,
+  "span": [
+   20.25,
+   23.45
+  ],
+  "gold": [
+   20.3,
+   25.38
+  ],
+  "top_idx": [
+   10,
+   11,
+   14,
+   17,
+   18,
+   22,
+   54,
+   69
+  ],
+  "best_idx": 11,
+  "oracle_idx": 10,
+  "oracle_iou": 0.614035087719298,
+  "oracle_in_topk": true,
+  "chosen_idx": 10,
+  "iou": 0.614035087719298
+ },
+ {
+  "qid": "sample_84_yes_q07",
+  "sid": "sample_84",
+  "type": "positive",
+  "question": "Is the patient otherwise healthy and living a healthy life?",
+  "want": true,
+  "said": true,
+  "span": [
+   72.13,
+   73.23
+  ],
+  "gold": [
+   69.72,
+   79.52
+  ],
+  "top_idx": [
+   13,
+   29,
+   30,
+   31,
+   44,
+   68,
+   81,
+   94
+  ],
+  "best_idx": 29,
+  "oracle_idx": 31,
+  "oracle_iou": 0.21020408163265336,
+  "oracle_in_topk": true,
+  "chosen_idx": 30,
+  "iou": 0.11224489795918458
+ },
+ {
+  "qid": "sample_86_off_topic_q01",
+  "sid": "sample_86",
+  "type": "off_topic",
+  "question": "Does the conversation mention a specific dish the patient plans to cook for dinner?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   9,
+   10,
+   18,
+   19,
+   21,
+   23,
+   24,
+   30
+  ],
+  "best_idx": 18
+ },
+ {
+  "qid": "sample_86_yes_q01",
+  "sid": "sample_86",
+  "type": "positive",
+  "question": "Is the patient free of fever?",
+  "want": true,
+  "said": true,
+  "span": [
+   34.92,
+   35.74
+  ],
+  "gold": [
+   35.14,
+   35.74
+  ],
+  "top_idx": [
+   7,
+   8,
+   9,
+   12,
+   13,
+   18,
+   28,
+   30
+  ],
+  "best_idx": 8,
+  "oracle_idx": 8,
+  "oracle_iou": 0.10135135135135157,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.7317073170731722
+ },
+ {
+  "qid": "sample_86_hard_no_q03",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Is the tenderness in the area described as severe?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   4,
+   5,
+   12,
+   13,
+   14,
+   18,
+   25
+  ],
+  "best_idx": 12
+ },
+ {
+  "qid": "sample_86_hard_no_q01",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Has surgery been scheduled to remove the swelling?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   11,
+   12,
+   13,
+   21,
+   22,
+   28,
+   29,
+   30
+  ],
+  "best_idx": 13
+ },
+ {
+  "qid": "sample_86_hard_no_q05",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Were both testicles found to be enlarged and abnormal?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   25
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_86_hard_no_q04",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Did the patient have a fever when he came in?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   7,
+   8,
+   9,
+   12,
+   13,
+   16,
+   18,
+   30
+  ],
+  "best_idx": 8
+ },
+ {
+  "qid": "sample_86_yes_q03",
+  "sid": "sample_86",
+  "type": "positive",
+  "question": "Both testicles felt normal at the examination, correct?",
+  "want": true,
+  "said": true,
+  "span": [
+   65.54,
+   69.92
+  ],
+  "gold": [
+   66.5,
+   69.94
+  ],
+  "top_idx": [
+   5,
+   10,
+   12,
+   14,
+   15,
+   16,
+   17,
+   25
+  ],
+  "best_idx": 14,
+  "oracle_idx": 14,
+  "oracle_iou": 0.5498392282958203,
+  "oracle_in_topk": true,
+  "chosen_idx": 14,
+  "iou": 0.7772727272727291
+ },
+ {
+  "qid": "sample_86_hard_no_q02",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Does the doctor suspect a testicular torsion?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   12,
+   14,
+   16,
+   17,
+   18,
+   25,
+   30
+  ],
+  "best_idx": 14
+ },
+ {
+  "qid": "sample_86_hard_no_q06",
+  "sid": "sample_86",
+  "type": "hard_negative",
+  "question": "Was the swelling located on the left side of the scrotum?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   5,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   25
+  ],
+  "best_idx": 5
+ },
+ {
+  "qid": "sample_86_yes_q02",
+  "sid": "sample_86",
+  "type": "positive",
+  "question": "Was a small swelling found around the epididymis?",
+  "want": true,
+  "said": true,
+  "span": [
+   50.98,
+   54.7
+  ],
+  "gold": [
+   50.66,
+   54.7
+  ],
+  "top_idx": [
+   5,
+   8,
+   12,
+   13,
+   14,
+   16,
+   17,
+   25
+  ],
+  "best_idx": 12,
+  "oracle_idx": 12,
+  "oracle_iou": 0.5470588235294123,
+  "oracle_in_topk": true,
+  "chosen_idx": 12,
+  "iou": 0.9207920792079208
+ },
+ {
+  "qid": "sample_90_yes_q04",
+  "sid": "sample_90",
+  "type": "positive",
+  "question": "Does the doctor consider the change harmless?",
+  "want": true,
+  "said": true,
+  "span": [
+   27.82,
+   28.94
+  ],
+  "gold": [
+   27.84,
+   28.98
+  ],
+  "top_idx": [
+   3,
+   6,
+   7,
+   8,
+   9,
+   12,
+   19,
+   20
+  ],
+  "best_idx": 6,
+  "oracle_idx": 6,
+  "oracle_iou": 0.5288461538461541,
+  "oracle_in_topk": true,
+  "chosen_idx": 6,
+  "iou": 0.9482758620689666
+ },
+ {
+  "qid": "sample_90_hard_no_q01",
+  "sid": "sample_90",
+  "type": "hard_negative",
+  "question": "Did the doctor find the change suspicious?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   6,
+   8,
+   9,
+   12,
+   19,
+   20
+  ],
+  "best_idx": 6
+ },
+ {
+  "qid": "sample_90_off_topic_q01",
+  "sid": "sample_90",
+  "type": "off_topic",
+  "question": "Does the patient talk about their job responsibilities?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   1,
+   8,
+   11,
+   12,
+   13,
+   19,
+   20
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_90_yes_q03",
+  "sid": "sample_90",
+  "type": "positive",
+  "question": "Did the patient notice a new mole?",
+  "want": true,
+  "said": true,
+  "span": [
+   13.5,
+   16.42
+  ],
+  "gold": [
+   14.46,
+   16.42
+  ],
+  "top_idx": [
+   3,
+   6,
+   8,
+   9,
+   11,
+   12,
+   14,
+   19
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.45161290322580666,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.6712328767123287
+ },
+ {
+  "qid": "sample_90_hard_no_q03",
+  "sid": "sample_90",
+  "type": "hard_negative",
+  "question": "Is the new mole sitting on the back?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   4,
+   8,
+   9,
+   12,
+   13,
+   14,
+   18
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_90_yes_q01",
+  "sid": "sample_90",
+  "type": "positive",
+  "question": "Was a photo sent in for assessment?",
+  "want": true,
+  "said": true,
+  "span": [
+   9.54,
+   12.1
+  ],
+  "gold": [
+   10.46,
+   12.1
+  ],
+  "top_idx": [
+   2,
+   4,
+   6,
+   8,
+   9,
+   11,
+   12,
+   15
+  ],
+  "best_idx": 2,
+  "oracle_idx": 2,
+  "oracle_iou": 0.5256410256410251,
+  "oracle_in_topk": true,
+  "chosen_idx": 2,
+  "iou": 0.6406249999999994
+ },
+ {
+  "qid": "sample_90_yes_q05",
+  "sid": "sample_90",
+  "type": "positive",
+  "question": "Has the doctor reviewed the photograph?",
+  "want": true,
+  "said": true,
+  "span": [
+   20.06,
+   21.92
+  ],
+  "gold": [
+   20.08,
+   21.92
+  ],
+  "top_idx": [
+   2,
+   4,
+   6,
+   8,
+   9,
+   12,
+   15,
+   20
+  ],
+  "best_idx": 4,
+  "oracle_idx": 4,
+  "oracle_iou": 0.5750000000000005,
+  "oracle_in_topk": true,
+  "chosen_idx": 4,
+  "iou": 0.9892473118279572
+ },
+ {
+  "qid": "sample_90_off_topic_q02",
+  "sid": "sample_90",
+  "type": "off_topic",
+  "question": "Does the patient mention owning a cat?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   3,
+   8,
+   10,
+   11,
+   12,
+   13,
+   19
+  ],
+  "best_idx": 19
+ },
+ {
+  "qid": "sample_90_hard_no_q02",
+  "sid": "sample_90",
+  "type": "hard_negative",
+  "question": "Does the patient describe the mole as small and unchanged?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   2,
+   3,
+   6,
+   8,
+   12,
+   13,
+   14,
+   19
+  ],
+  "best_idx": 3
+ },
+ {
+  "qid": "sample_90_yes_q02",
+  "sid": "sample_90",
+  "type": "positive",
+  "question": "Is the mole located on the thigh?",
+  "want": true,
+  "said": true,
+  "span": [
+   13.5,
+   17.84
+  ],
+  "gold": [
+   14.46,
+   16.42
+  ],
+  "top_idx": [
+   2,
+   3,
+   8,
+   9,
+   12,
+   13,
+   14,
+   19
+  ],
+  "best_idx": 3,
+  "oracle_idx": 3,
+  "oracle_iou": 0.45161290322580666,
+  "oracle_in_topk": true,
+  "chosen_idx": 3,
+  "iou": 0.45161290322580666
+ },
+ {
+  "qid": "sample_92_off_topic_q01",
+  "sid": "sample_92",
+  "type": "off_topic",
+  "question": "At any point does the patient talk about their pet?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   7,
+   10,
+   26,
+   37,
+   44,
+   46
+  ],
+  "best_idx": 26
+ },
+ {
+  "qid": "sample_92_hard_no_q02",
+  "sid": "sample_92",
+  "type": "hard_negative",
+  "question": "Has the result of the urine analysis already come back?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   8,
+   33,
+   34,
+   37,
+   40,
+   43,
+   44
+  ],
+  "best_idx": 43
+ },
+ {
+  "qid": "sample_92_hard_no_q03",
+  "sid": "sample_92",
+  "type": "hard_negative",
+  "question": "Is the pulse recorded as 92?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   9,
+   10,
+   12,
+   26,
+   28,
+   30,
+   31
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_92_yes_q03",
+  "sid": "sample_92",
+  "type": "positive",
+  "question": "Has a urine sample been sent off for albumin/creatinine ratio analysis?",
+  "want": true,
+  "said": true,
+  "span": [
+   108.64,
+   110.98
+  ],
+  "gold": [
+   108.62,
+   110.98
+  ],
+  "top_idx": [
+   7,
+   27,
+   33,
+   34,
+   37,
+   39,
+   43,
+   45
+  ],
+  "best_idx": 37,
+  "oracle_idx": 37,
+  "oracle_iou": 0.9915254237288152,
+  "oracle_in_topk": true,
+  "chosen_idx": 37,
+  "iou": 0.9915254237288152
+ },
+ {
+  "qid": "sample_92_yes_q02",
+  "sid": "sample_92",
+  "type": "positive",
+  "question": "Does the patient work as a staff manager in a retail chain?",
+  "want": true,
+  "said": true,
+  "span": [
+   74.14,
+   77.4
+  ],
+  "gold": [
+   74.38,
+   78.22
+  ],
+  "top_idx": [
+   2,
+   10,
+   20,
+   24,
+   26,
+   30,
+   32,
+   42
+  ],
+  "best_idx": 24,
+  "oracle_idx": 24,
+  "oracle_iou": 0.7401960784313754,
+  "oracle_in_topk": true,
+  "chosen_idx": 24,
+  "iou": 0.7401960784313754
+ },
+ {
+  "qid": "sample_92_hard_no_q04",
+  "sid": "sample_92",
+  "type": "hard_negative",
+  "question": "Are the patient's exercise habits limited to less than an hour a week?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   10,
+   12,
+   20,
+   21,
+   22,
+   26,
+   28
+  ],
+  "best_idx": 22
+ },
+ {
+  "qid": "sample_92_yes_q01",
+  "sid": "sample_92",
+  "type": "positive",
+  "question": "Did the patient ask to have his cholesterol level checked?",
+  "want": true,
+  "said": true,
+  "span": [
+   23.24,
+   26.38
+  ],
+  "gold": [
+   23.24,
+   26.38
+  ],
+  "top_idx": [
+   0,
+   6,
+   7,
+   10,
+   26,
+   28,
+   37,
+   46
+  ],
+  "best_idx": 7,
+  "oracle_idx": 7,
+  "oracle_iou": 1.0,
+  "oracle_in_topk": true,
+  "chosen_idx": 7,
+  "iou": 1.0
+ },
+ {
+  "qid": "sample_92_off_topic_q02",
+  "sid": "sample_92",
+  "type": "off_topic",
+  "question": "Is there any reference to the patient using specific software for work?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   1,
+   10,
+   24,
+   30,
+   33,
+   37,
+   42,
+   45
+  ],
+  "best_idx": 30
+ },
+ {
+  "qid": "sample_92_yes_q04",
+  "sid": "sample_92",
+  "type": "positive",
+  "question": "Was the previous LDL value 3.9?",
+  "want": true,
+  "said": true,
+  "span": [
+   30.92,
+   35.9
+  ],
+  "gold": [
+   30.92,
+   33.0
+  ],
+  "top_idx": [
+   7,
+   9,
+   23,
+   25,
+   26,
+   28,
+   30,
+   31
+  ],
+  "best_idx": 9,
+  "oracle_idx": 9,
+  "oracle_iou": 0.4176706827309236,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.4176706827309236
+ },
+ {
+  "qid": "sample_92_hard_no_q01",
+  "sid": "sample_92",
+  "type": "hard_negative",
+  "question": "Was the blood pressure measured at 160/95?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   3,
+   7,
+   9,
+   15,
+   26,
+   28,
+   31,
+   39
+  ],
+  "best_idx": 28
+ },
+ {
+  "qid": "sample_95_hard_no_q05",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Does the plan involve a check every third month from now on?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   14,
+   15,
+   16,
+   18,
+   20,
+   21,
+   24,
+   25
+  ],
+  "best_idx": 16
+ },
+ {
+  "qid": "sample_95_hard_no_q03",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Have the results of the blood tests already been gone through?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   5,
+   6,
+   11,
+   12,
+   13,
+   21
+  ],
+  "best_idx": 11
+ },
+ {
+  "qid": "sample_95_yes_q02",
+  "sid": "sample_95",
+  "type": "positive",
+  "question": "Were blood tests taken at this visit?",
+  "want": true,
+  "said": true,
+  "span": [
+   38.88,
+   41.94
+  ],
+  "gold": [
+   38.92,
+   40.52
+  ],
+  "top_idx": [
+   0,
+   1,
+   2,
+   5,
+   11,
+   12,
+   15,
+   21
+  ],
+  "best_idx": 11,
+  "oracle_idx": 11,
+  "oracle_iou": 0.5228758169934653,
+  "oracle_in_topk": true,
+  "chosen_idx": 11,
+  "iou": 0.5228758169934653
+ },
+ {
+  "qid": "sample_95_yes_q03",
+  "sid": "sample_95",
+  "type": "positive",
+  "question": "Has the patient been free of side effects?",
+  "want": true,
+  "said": true,
+  "span": [
+   27.26,
+   29.12
+  ],
+  "gold": [
+   25.52,
+   27.76
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   8,
+   9,
+   20,
+   21,
+   26
+  ],
+  "best_idx": 21,
+  "oracle_idx": 7,
+  "oracle_iou": 0.3687499999999996,
+  "oracle_in_topk": true,
+  "chosen_idx": 8,
+  "iou": 0.13888888888888884
+ },
+ {
+  "qid": "sample_95_off_topic_q01",
+  "sid": "sample_95",
+  "type": "off_topic",
+  "question": "Does the patient talk about having a pet hamster?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   4,
+   5,
+   9,
+   20,
+   21,
+   25,
+   26
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_95_hard_no_q04",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Was the follow-up handled by telephone?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   2,
+   5,
+   11,
+   12,
+   14,
+   19,
+   20
+  ],
+  "best_idx": 0
+ },
+ {
+  "qid": "sample_95_yes_q01",
+  "sid": "sample_95",
+  "type": "positive",
+  "question": "The treatment is considered well tolerated, right?",
+  "want": true,
+  "said": true,
+  "span": [
+   31.94,
+   34.24
+  ],
+  "gold": [
+   32.22,
+   34.26
+  ],
+  "top_idx": [
+   5,
+   6,
+   7,
+   9,
+   19,
+   20,
+   21,
+   25
+  ],
+  "best_idx": 9,
+  "oracle_idx": 9,
+  "oracle_iou": 0.4741784037558695,
+  "oracle_in_topk": true,
+  "chosen_idx": 9,
+  "iou": 0.8706896551724164
+ },
+ {
+  "qid": "sample_95_hard_no_q02",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Is the treatment being stopped because it is poorly tolerated?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   4,
+   5,
+   6,
+   9,
+   20,
+   21,
+   22,
+   26
+  ],
+  "best_idx": 9
+ },
+ {
+  "qid": "sample_95_hard_no_q01",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Did the patient report muscle pain as a side effect?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   5,
+   7,
+   9,
+   11,
+   13,
+   20,
+   21
+  ],
+  "best_idx": 21
+ },
+ {
+  "qid": "sample_95_hard_no_q06",
+  "sid": "sample_95",
+  "type": "hard_negative",
+  "question": "Has the dose been increased at this consultation?",
+  "want": false,
+  "said": false,
+  "span": null,
+  "gold": null,
+  "top_idx": [
+   0,
+   5,
+   6,
+   9,
+   12,
+   19,
+   20,
+   21
+  ],
+  "best_idx": 9
+ }
+]
