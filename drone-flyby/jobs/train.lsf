@@ -22,7 +22,7 @@ nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 source .venv/bin/activate
 
 # ---- run config (edit per variant: baseline / copy_paste / synthetic) ----
-MODEL=yolo11n.pt          # bump to yolo11s.pt / yolo11m.pt now that compute is free
+MODEL=yolo11s.pt          # bump to yolo11s.pt / yolo11m.pt now that compute is free
 EPOCHS=150
 IMGSZ=960
 BATCH=32                  # A100 headroom over the CPU run's batch=8
