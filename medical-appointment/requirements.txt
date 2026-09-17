@@ -8,3 +8,7 @@ pydantic>=2.7,<3          # [2.12.5]
 
 # Only needed by local_evaluator.py.
 requests>=2.31            # [2.32.5]
+
+# Local Needs
+# ASR — keep segment timestamps for evidence localization.
+faster-whisper>=1.0
