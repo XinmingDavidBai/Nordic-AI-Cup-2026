@@ -1,7 +1,7 @@
 """The endpoint the evaluation service calls.
 
-You should not need to change much in here. Put your model in ``example.py``
-and leave the transport alone.
+You should not need to change much in here: the model, tracking and camera
+logic live in ``pipeline/`` (see PIPELINE.md). Leave the transport alone.
 
 The URL you submit is used exactly as you give it, path included, so if you
 keep the ``/predict`` route below then submit ``http://<your-host>:9053/predict``
@@ -10,22 +10,35 @@ rather than just the host.
 
 import datetime
 import logging
+import os
 import time
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
 
 from dtos import DroneFlybyPredictRequestDto, DroneFlybyPredictResponseDto
-from example import predict
+# The full pipeline (detector + tracker + camera policy). The organisers'
+# baseline is still in example.py; swap this import back to compare.
+from pipeline.predictor import predict, warmup
 from utils import validate_response
 
 HOST = '0.0.0.0'
-PORT = 9053
+PORT = int(os.environ.get('PORT', 9053))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_app):
+    # Load weights and run dummy inferences before the first real frame: there
+    # is no timing allowance for a slow first request.
+    warmup()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 start_time = time.time()
 
 

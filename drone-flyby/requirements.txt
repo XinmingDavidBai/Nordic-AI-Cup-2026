@@ -12,3 +12,13 @@ requests>=2.31            # [2.34.2]
 # Only needed by local_evaluator.py. It is the same scorer the competition
 # uses, and the same version range.
 faster-coco-eval>=1.7.2,<2  # [1.7.2]
+
+# Pipeline (pipeline/, train_detector.py). Verified with the versions in brackets.
+# On Windows, pip installs the CPU build of torch. For GPU training install the
+# GPU build of torch FIRST, then run this file (without --upgrade):
+#   AMD (ROCm, Linux or Windows) or NVIDIA (CUDA): see PIPELINE.md, section 1a.
+torch>=2.2                # [2.14.0+cpu]
+torchvision>=0.17         # [matching torch]
+# The one exact pin: checkpoints are trained on one machine and served on another.
+ultralytics==8.4.154      # YOLO detector + training
+pyyaml>=6.0               # train_detector.py writes the dataset yaml
