@@ -1,0 +1,49 @@
+#!/bin/bash
+#BSUB -J medqa_finetune
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 8
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 4:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup/medical-appointment/logs/finetune_%J.out
+#BSUB -e /work3/s234812/nordic_cup/medical-appointment/logs/finetune_%J.err
+#
+# gpua100 has a long queue (checked 2026-09-18: ~1700 pending). gpua10 or
+# gpul40s are far shorter and plenty for a 3B-parameter LoRA fine-tune --
+# swap the #BSUB -q line above if you want faster turnaround; nothing else
+# in this script depends on the specific GPU model.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup/medical-appointment
+mkdir -p logs checkpoints
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+# Must match hpc_setup.sh's HF_HOME exactly, or this job re-downloads the base
+# model instead of finding what was cached there -- and compute nodes have no
+# internet, so that would fail outright (zhome's quota is also too small for it).
+export HF_HOME=/work3/s234812/nordic_cup/medical-appointment/.hf_cache
+
+module load python3/3.11.9
+source .venv/bin/activate
+unset PYTHONPATH  # module load leaves a PYTHONPATH that shadows the venv's own packages
+
+# 5 CV folds (each trains on the other 4/5, held out for evaluation) + one
+# final model on all 39 conversations for the model that would actually be
+# deployed. Sequential on one GPU; ~5 min/fold per the plan in NEXT_STEPS.md
+# section 5b -- adjust #BSUB -W above if a full 3B model run takes longer.
+for FOLD in 0 1 2 3 4 all; do
+    echo "=== fold $FOLD: $(date) ==="
+    python jobs/finetune_train.py --fold "$FOLD"
+done
+
+echo "Job finished $(date)"
+echo "Adapters are in checkpoints/fold0..4 and checkpoints/final (LoRA only, a few"
+echo "hundred MB total, not the full merged model). Copy them back, e.g.:"
+echo "  rsync -avz s234812@transfer.gbar.dtu.dk:/work3/s234812/nordic_cup/medical-appointment/checkpoints/ ./checkpoints/"
+echo "Then locally: python tools/export_gguf.py --adapter checkpoints/final --name llama3.2-medqa-ft"

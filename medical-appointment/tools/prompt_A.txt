@@ -1,0 +1,24 @@
+Transcript segments (index, timestamp, text):
+{context}
+
+Question: {question}
+
+Rules:
+- YES if the transcript confirms the claim, even if phrased differently. Common medical paraphrases:
+  • "listened to your chest / lungs / heart" or "lungs / chest / heart sound clear / normal" → stethoscope used / auscultation normal
+  • "chest and heart both sound normal" → lungs normal on auscultation / heart examination without abnormal findings
+  • "carry on as you are / continue as before / no changes" → treatment continues unchanged
+  • "I'll prescribe / here is a prescription / take [drug] / creating prescriptions for [drug]" → prescription issued / renewed for [drug]
+  • "referred / sent / booked you for" → referral made
+  • "annual / routine / follow-up check" → follow-up visit
+  • "still hurting / pain not better" → pain persists despite treatment
+  • "under cover of / along with / together with" → combined treatment
+  • "long-term sugar value / long-term blood sugar" → HbA1c
+  • "hormonal cause" → endocrine cause; "no X found / no X left / X is not present" → X ruled out / absent
+- The transcript comes from speech recognition, so drug, disease and test names are often misspelled phonetically (e.g. "Isomeprizol" = Esomeprazole, "Ibu Metin" = Ibumetin, "seboria caratosis" = seborrheic keratosis, "active L" = Activelle). Treat a name that sounds like the one in the question as the same name.
+- Numbers/quantities must match EXACTLY: "100 mg" is NOT "200 mg"; "2 weeks" is NOT "6 weeks". A near-miss on dose, number, or duration is NO.
+- NO if the topic is absent entirely, or a specific numeric value differs from what the question claims.
+- If YES, give the index of the ONE segment that most directly proves it.
+- If NO, "segment" must be null.
+
+Output JSON: {{"answer": true or false, "segment": integer or null}}
