@@ -199,4 +199,7 @@ POLICY_SWEEP_GLANCE_EVERY = _int('POLICY_SWEEP_GLANCE_EVERY', 4)
 # (the rules allow recording the validation sequence). Written on a background
 # thread so it does not cost latency.
 RECORD_DIR = _str('RECORD_DIR', '')
+# How many sequences' state one process keeps (least recently used dropped).
+# Only one attempt runs at a time; the rest guard against stray requests.
+SEQUENCE_STATES_KEPT = _int('SEQUENCE_STATES_KEPT', 4)
 LOG_TIMINGS = _bool('LOG_TIMINGS', True)
