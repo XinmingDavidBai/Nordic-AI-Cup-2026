@@ -71,6 +71,8 @@ reward differentiates and the SFT label (one oracle index) does not.
 | r1 | `--init e9` lr 2e-5 T 1.0 beta 0 G 8, 3 epochs, 5 folds | submitted 2026-09-18 evening, gpua10 |
 | r2 | `--init e9` lr 1e-5 T 1.3 beta 0.02 G 8, 3 epochs, 5 folds | submitted alongside r1 (diversified in case T=1.0 gives too little group variance) |
 | smoke (stage 2) | SmolLM2-135M on the login node CPU: SFT on `rl2_dataset.jsonl` (batch 1; the login node caps process memory), GRPO `--task clause` fresh LoRA, GRPO continuing that adapter | wiring OK |
+| x1 | stage 1, exact expected-reward (`jobs/rl_exact.lsf`, TASK=seg), init E9, lr 2e-5, entropy 0.03, 3 epochs | submitted 2026-09-18 ~20:00: per-fold `rl_x1_f0..4` on gpua100 (-W 0:45) + whole-run `medqa_rl_x1` on gpua10 |
+| xc1 | stage 2, exact expected-reward (TASK=clause), init = rl2 SFT adapters (trained by whichever of c1/xc1 gets there first) | submitted alongside: `rl_xc1_f0..4` on gpua100 (-W 1:30) + `medqa_rl_xc1` on gpua10 |
 | c1 | stage 2 (`jobs/rl2.lsf`): per fold SFT warm start (E9 recipe on the clause format) -> GRPO `--task clause` lr 2e-5 T 1.0 beta 0 G 8, 3 epochs | submitted 2026-09-18 evening, gpua10. Its `init` eval (the SFT policy) is itself a result: a learned segment+clause picker vs E9's SFT + embedding argmax |
 
 Queue layout (2026-09-18 ~19:00): gpua10 turned out to be a single physical
