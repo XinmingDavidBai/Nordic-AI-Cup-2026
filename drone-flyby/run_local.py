@@ -55,6 +55,8 @@ def main() -> int:
     if args.policy:
         env['POLICY_MODE'] = args.policy
     env.setdefault('PYTHONUNBUFFERED', '1')
+    # api.py records by default (for validation runs); local test runs don't need it.
+    env.setdefault('RECORD_DIR', '')
 
     log_dir = ROOT / 'debug_out'
     log_dir.mkdir(exist_ok=True)

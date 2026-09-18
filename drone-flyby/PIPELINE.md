@@ -169,9 +169,9 @@ both machines.
 Watch out: helsinki has one instance per class, and validation/evaluation use
 different scenes. The default val split (every 6th frame) leaks because
 neighbouring frames look almost the same. Ways to get more data:
-- `RECORD_DIR=recordings python api.py` during a **validation** run saves every
-  view (the rules allow recording the validation sequence). Label or
-  pseudo-label those views, then add them with `--extra-dataset`.
+- `python api.py` records every request of a **validation** run to
+  `recordings/` by default (the rules allow recording the validation sequence).
+  Label or pseudo-label those views, then add them with `--extra-dataset`.
 
 Then:
 
@@ -206,6 +206,21 @@ the checkpoint you meant to deploy (`certutil -hashfile weights\detector.pt SHA2
 first 12 characters). `detector.stats` counts frames where the detector raised
 or found nothing. The server also logs a `!!! DETECTOR ...` error when either
 happens on several frames in a row.
+
+**Run exactly one server process.** The tracker, ego-motion and camera patrol
+live in that process's memory, per `sequence_id`. Never use uvicorn `--workers`,
+several replicas, or a load balancer without sticky sessions. Call `/api` a few
+times: `process.pid` must be the same every time. A retried request (same
+`request_id`) gets its earlier answer back, and an out-of-order `frame_index` is
+answered from the current tracker; neither touches the state, both log a
+`!!! REPEATED` / `!!! OUT-OF-ORDER` warning and are counted in
+`sequences.stats`. Up to `SEQUENCE_STATES_KEPT` (4) sequences are kept, so a
+stray request for another sequence cannot wipe the run in progress.
+
+Every request is recorded to `recordings/<sequence_id>/` (view PNG plus request,
+response, arrival order and process id). Keep the recording of every validation
+run: it is the only way to debug one afterwards. `RECORD_DIR=` (empty) turns it
+off; `run_local.py` does that for local runs.
 
 `run_local.py` uses port 9063 by default, so it never collides with a server you
 left running on 9053.

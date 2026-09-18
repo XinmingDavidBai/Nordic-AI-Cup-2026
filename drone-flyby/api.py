@@ -21,7 +21,7 @@ from dtos import DroneFlybyPredictRequestDto, DroneFlybyPredictResponseDto
 # The full pipeline (detector + tracker + camera policy). The organisers'
 # baseline is still in example.py; swap this import back to compare.
 from pipeline import config
-from pipeline.predictor import detector_info, predict, warmup
+from pipeline.predictor import detector_info, predict, sequence_info, warmup
 from utils import validate_response
 
 HOST = '0.0.0.0'
@@ -30,6 +30,11 @@ PORT = int(os.environ.get('PORT', 9053))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# The server records every request unless RECORD_DIR is set (even to empty, which
+# turns it off): a validation run you did not record cannot be debugged afterwards.
+if 'RECORD_DIR' not in os.environ:
+    config.RECORD_DIR = str(config.ROOT / 'recordings')
+
 
 @asynccontextmanager
 async def lifespan(_app):
@@ -37,6 +42,8 @@ async def lifespan(_app):
     # is no timing allowance for a slow first request.
     warmup()
     check_detector()
+    logger.info('Process %s serving on port %s; recording to %s', os.getpid(), PORT,
+                config.RECORD_DIR or '(off)')
     yield
 
 
@@ -100,11 +107,19 @@ def predict_endpoint(request: DroneFlybyPredictRequestDto):
 @app.get('/api')
 def hello():
     """Check this before spending a validation attempt: detector.backend must be
-    'yolo' and detector.weights_sha256 must match the checkpoint you meant to deploy."""
+    'yolo' and detector.weights_sha256 must match the checkpoint you meant to deploy.
+    Several calls must all show the same process.pid: different ones mean several
+    processes answer, and each would track the run separately."""
     return {
         'service': 'drone-flyby-usecase',
         'uptime': '{}'.format(datetime.timedelta(seconds=time.time() - start_time)),
+        'process': {
+            'pid': os.getpid(),
+            'started_at': datetime.datetime.fromtimestamp(start_time, datetime.timezone.utc).isoformat(),
+            'recording_to': config.RECORD_DIR or None,
+        },
         'detector': detector_info(),
+        'sequences': sequence_info(),
     }
 
 

@@ -17,6 +17,7 @@ exception loses the frame, an empty answer only loses recall.
 import logging
 import threading
 import time
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -44,16 +45,30 @@ class SequenceState:
     tracker: Tracker = field(default_factory=Tracker)
     policy: CameraPolicy = field(default_factory=CameraPolicy)
     last_frame_index: Optional[int] = None
+    frames: int = 0
     # Consecutive frames on which the detector raised / ran but found nothing.
     failure_streak: int = 0
     empty_streak: int = 0
+    # Recent answers by request_id, so a retried request gets the same answer
+    # instead of advancing (or wiping) the state a second time.
+    responses: 'OrderedDict[str, DroneFlybyPredictResponseDto]' = field(default_factory=OrderedDict)
 
+    def remember(self, request_id: str, response: DroneFlybyPredictResponseDto) -> None:
+        self.responses[request_id] = response
+        while len(self.responses) > _REMEMBERED_RESPONSES:
+            self.responses.popitem(last=False)
+
+
+_REMEMBERED_RESPONSES = 16
 
 _lock = threading.Lock()
 _detector: Optional[Detector] = None
-_states: Dict[str, SequenceState] = {}
+# Most recently used last. A stray request for another sequence must not wipe
+# the run in progress, so a few are kept.
+_states: 'OrderedDict[str, SequenceState]' = OrderedDict()
 # Totals since the server started, reported by /api.
 _detector_stats = {'frames': 0, 'failed_frames': 0, 'empty_frames': 0, 'last_error': None}
+_sequence_stats = {'new_sequences': 0, 'restarts': 0, 'repeated_requests': 0, 'stale_requests': 0, 'evicted': 0}
 # Last per-frame debug info, read by debug_replay.py.
 last_debug: dict = {}
 
@@ -115,35 +130,109 @@ def _track_detector_health(state: SequenceState, request, detections, error: Opt
         )
 
 
+def sequence_info() -> dict:
+    """Which runs this process holds state for, and how requests arrived (served on /api)."""
+    with _lock:
+        return {
+            'kept': [
+                {'sequence_id': s.sequence_id, 'frames': s.frames, 'last_frame_index': s.last_frame_index}
+                for s in _states.values()
+            ],
+            'stats': dict(_sequence_stats),
+        }
+
+
 def reset() -> None:
     """Forget all sequence state (used between local runs)."""
     with _lock:
         _states.clear()
 
 
-def _state_for(request: DroneFlybyPredictRequestDto) -> SequenceState:
-    state = _states.get(request.sequence_id)
-    restarted = (
-        state is not None
-        and state.last_frame_index is not None
-        and request.frame_index <= state.last_frame_index
+def _route(request: DroneFlybyPredictRequestDto):
+    """Find this request's run state and decide how to answer it.
+
+    Returns (state, action): 'step' advances the pipeline, 'repeat' re-sends the
+    answer already given to this request_id, 'stale' answers an older frame from
+    the current tracker without advancing anything. State is only ever replaced
+    when the same sequence visibly starts over at frame_index 0.
+    """
+    sequence_id = request.sequence_id
+    state = _states.get(sequence_id)
+    if state is None:
+        _sequence_stats['new_sequences'] += 1
+        if _states:
+            logger.warning(
+                'New sequence %s while holding state for %s; keeping those too (up to %d).',
+                sequence_id, [s.sequence_id for s in _states.values()], config.SEQUENCE_STATES_KEPT,
+            )
+        state = _states[sequence_id] = SequenceState(sequence_id)
+        while len(_states) > max(1, config.SEQUENCE_STATES_KEPT):
+            evicted = _states.popitem(last=False)[1]
+            _sequence_stats['evicted'] += 1
+            logger.warning('Dropped state for least recently used sequence %s (%d frames).',
+                           evicted.sequence_id, evicted.frames)
+        return state, 'step'
+    _states.move_to_end(sequence_id)
+
+    if request.request_id in state.responses:
+        _sequence_stats['repeated_requests'] += 1
+        logger.warning(
+            '!!! REPEATED REQUEST %s (sequence %s, frame_index %s): re-sending the earlier answer, '
+            'state untouched. A client/proxy retry, or several requests racing.',
+            request.request_id, sequence_id, request.frame_index,
+        )
+        return state, 'repeat'
+
+    last = state.last_frame_index
+    if last is None or request.frame_index > last:
+        return state, 'step'
+    if request.frame_index == 0 and last > 0:
+        # A local evaluator rerun (always sequence 'local'), or a real restart.
+        _sequence_stats['restarts'] += 1
+        logger.warning('!!! Sequence %s started over at frame_index 0 (was at %s): new state.', sequence_id, last)
+        state = _states[sequence_id] = SequenceState(sequence_id)
+        return state, 'step'
+    _sequence_stats['stale_requests'] += 1
+    logger.warning(
+        '!!! OUT-OF-ORDER REQUEST for sequence %s: frame_index %s after %s (request %s). '
+        'Answering from the current tracker without advancing it.',
+        sequence_id, request.frame_index, last, request.request_id,
     )
-    if state is None or restarted:
-        if restarted:
-            logger.info('Sequence %s restarted, resetting state', request.sequence_id)
-        # Only one attempt runs at a time; drop older sequences to bound memory.
-        _states.clear()
-        state = SequenceState(request.sequence_id)
-        _states[request.sequence_id] = state
-    return state
+    return state, 'stale'
 
 
 def predict(request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictResponseDto:
     with _lock:
-        return _predict_locked(request)
+        try:
+            state, action = _route(request)
+        except Exception:
+            logger.exception('Routing failed for request %s; treating it as a new sequence', request.request_id)
+            state, action = SequenceState(request.sequence_id), 'step'
+        if action == 'repeat':
+            cached = state.responses[request.request_id]
+            response = cached.model_copy()
+        elif action == 'stale':
+            response = _stale_response(state, request)
+        else:
+            response = _predict_locked(request, state)
+        state.remember(request.request_id, response)
+    recorder.record(request, response)
+    return response
 
 
-def _predict_locked(request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictResponseDto:
+def _stale_response(state: SequenceState, request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictResponseDto:
+    """Best answer for an older frame: what the tracker currently believes, camera left alone."""
+    annotations: List[DroneFlybyPredictionDto] = []
+    try:
+        annotations = _to_annotations(state.tracker.outputs(state.last_frame_index), request)
+    except Exception:
+        logger.exception('Building annotations for stale request %s failed', request.request_id)
+    return DroneFlybyPredictResponseDto(
+        request_id=request.request_id, frame=request.frame, annotations=annotations, requested_view=None,
+    )
+
+
+def _predict_locked(request: DroneFlybyPredictRequestDto, state: SequenceState) -> DroneFlybyPredictResponseDto:
     timings = {}
     t0 = time.perf_counter()
 
@@ -156,12 +245,12 @@ def _predict_locked(request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictRe
     debug = {'frame': request.frame, 'frame_index': request.frame_index}
 
     try:
-        state = _state_for(request)
         view = request.view
         region = view.source_region_xyxy
         level = view.resolution_level
         gap = 1 if state.last_frame_index is None else max(1, request.frame_index - state.last_frame_index)
         state.last_frame_index = request.frame_index
+        state.frames += 1
 
         image = decode_view(view)
         timings['decode'] = time.perf_counter()
@@ -249,7 +338,6 @@ def _predict_locked(request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictRe
             stage_ms,
         )
 
-    recorder.record(request, response)
     return response
 
 
