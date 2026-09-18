@@ -330,12 +330,33 @@ Rules:
 Output JSON: {{"answer": true or false, "segment": integer or null}}"""
 
 
+_QUESTION_NORMALIZE: list[tuple[re.Pattern, str]] = [
+    (re.compile(r'\bHbA1c\b', re.IGNORECASE), 'HbA1c (long-term blood sugar)'),
+    (re.compile(r'\bendocrine\b', re.IGNORECASE), 'endocrine (hormonal)'),
+    (re.compile(r'\bruled out\b', re.IGNORECASE), 'ruled out (not found / absent)'),
+    (re.compile(r'\bmusculoskeletal\b', re.IGNORECASE), 'musculoskeletal (muscle and joint)'),
+    (re.compile(r'\bauscultation\b', re.IGNORECASE), 'auscultation (listening to the chest)'),
+]
+
+
+def _normalize_question(question: str) -> str:
+    """E3: expand a few clinical terms that appear in questions but rarely in
+    the (lay-paraphrased) transcript, targeting known false negatives without
+    touching the prompt rules that broke the 3B model in variants A/B/C.
+    """
+    out = question
+    for pattern, replacement in _QUESTION_NORMALIZE:
+        out = pattern.sub(replacement, out)
+    return out
+
+
 def ask(
     segments: list[dict],
     question: str,
     seg_embeddings: Optional[list[list[float]]] = None,
 ) -> tuple[bool, Optional[tuple[float, float]]]:
     """Query the LLM for one question; return (answer, span_or_None)."""
+    question = _normalize_question(question)
     top, best_idx = retrieve(segments, question, seg_embeddings=seg_embeddings)
     context = '\n'.join(
         f'[{i}] [{s["start"]:.1f}-{s["end"]:.1f}s]: {s["text"]}'
