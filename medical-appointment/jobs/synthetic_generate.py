@@ -97,7 +97,24 @@ Output ONLY this JSON (no markdown fences, no commentary):
 
 records = []
 n_fail = 0
-while len(records) < args.n:
+# Written incrementally (one line per record, flushed immediately) rather
+# than batched at the end -- generation at ~15-20s/record means a few
+# thousand can take longer than a typical job's walltime, and losing every
+# already-generated record to a walltime kill because nothing was saved yet
+# is a needless waste of GPU time.
+#
+# Resuming after a kill: rerun with the same --out and the same --n (the
+# CUMULATIVE target, not "how many more"). --n is adjusted down here by
+# however many lines are already in --out, so `bsub < jobs/synthetic_generate.lsf`
+# run twice in a row targets combined --n total, not 2x --n.
+already = 0
+if os.path.exists(args.out):
+    with open(args.out) as f:
+        already = sum(1 for _ in f)
+    print(f'resuming: {already} records already in {args.out}, targeting {args.n} cumulative')
+target = max(0, args.n - already)
+out_f = open(args.out, 'a' if os.path.exists(args.out) else 'w')
+while len(records) < target:
     resp = client.chat.completions.create(
         model=args.model,
         messages=[
@@ -118,10 +135,10 @@ while len(records) < args.n:
             print(f'  {n_fail} parse failures so far (last: {exc})')
         continue
     records.append(rec)
+    out_f.write(json.dumps(rec) + '\n')
+    out_f.flush()
     if len(records) % 50 == 0:
         print(f'{len(records)}/{args.n} generated ({n_fail} failures)', flush=True)
-
-with open(args.out, 'w') as f:
-    for rec in records:
-        f.write(json.dumps(rec) + '\n')
-print(f'wrote {len(records)} synthetic consultations to {args.out} ({n_fail} generation failures discarded)')
+out_f.close()
+print(f'wrote {len(records)} new synthetic consultations to {args.out} '
+      f'({already + len(records)} cumulative, {n_fail} generation failures discarded this run)')
