@@ -30,16 +30,16 @@ from peft import LoraConfig, PeftModel  # noqa: E402
 from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: E402
 from trl import GRPOConfig, GRPOTrainer  # noqa: E402
 
-import rl_common as rc  # noqa: E402
 
 BASE_MODEL = os.getenv('BASE_MODEL', 'unsloth/Llama-3.2-3B-Instruct')
-E9_DIR = os.getenv('E9_ADAPTERS', 'checkpoints_e9')  # fold0..4, final (copied from E9's run)
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--fold', required=True, help='0-4 (leave that fold out) or "all"')
 ap.add_argument('--run', default='r1', help='run name: results -> rl_results/<run>/, adapters -> checkpoints_rl/<run>/')
-ap.add_argument('--init', choices=['e9', 'base'], default='e9')
-ap.add_argument('--reward', choices=list(rc.REWARDS), default='metric')
+ap.add_argument('--init', choices=['e9', 'base'], default='e9', help='e9: continue an SFT adapter from --init-dir; base: fresh LoRA')
+ap.add_argument('--init-dir', default=None, help='adapter dir with fold0..4,final (default: checkpoints_e9 for --task seg, checkpoints_rl2_sft for --task clause)')
+ap.add_argument('--task', choices=['seg', 'clause'], default='seg', help='seg: stage 1 (segment index, jobs/rl_common); clause: stage 2 (clause range, jobs/rl2_common)')
+ap.add_argument('--reward', choices=['metric', 'tiou'], default='metric')
 ap.add_argument('--epochs', type=float, default=3)
 ap.add_argument('--lr', type=float, default=2e-5)
 ap.add_argument('--beta', type=float, default=0.0, help='KL coef vs the init policy (0 = off)')
@@ -53,6 +53,12 @@ ap.add_argument('--max-steps', type=int, default=-1, help='debug: cap optimizer 
 ap.add_argument('--model', default=None, help='debug: override base model (e.g. a tiny one for a CPU smoke test)')
 ap.add_argument('--eval-limit', type=int, default=0, help='debug: evaluate only the first N held-out records')
 args = ap.parse_args()
+
+if args.task == 'seg':
+    import rl_common as rc
+else:
+    import rl2_common as rc
+E9_DIR = args.init_dir or ('checkpoints_e9' if args.task == 'seg' else 'checkpoints_rl2_sft')
 
 base_model = args.model or BASE_MODEL
 res_dir = os.path.join('rl_results', args.run)
@@ -74,7 +80,7 @@ else:
     if args.eval_limit:
         held_out = held_out[:args.eval_limit]
     init_adapter = os.path.join(E9_DIR, f'fold{fold}')
-print(f'{tag}: {len(train_records)} train prompts, {len(held_out)} held out; init={args.init} '
+print(f'{tag} [{args.task}]: {len(train_records)} train prompts, {len(held_out)} held out; init={args.init} '
       f'reward={args.reward} lr={args.lr} beta={args.beta} T={args.temperature} G={args.num_generations}', flush=True)
 
 tok = AutoTokenizer.from_pretrained(base_model)
@@ -89,9 +95,9 @@ model.to('cuda' if torch.cuda.is_available() else 'cpu')
 peft_config = None
 if args.init == 'e9':
     if not os.path.isdir(init_adapter):
-        sys.exit(f'missing E9 adapter {init_adapter} (copy E9 checkpoints/ to {E9_DIR}/)')
+        sys.exit(f'missing init adapter {init_adapter}')
     model = PeftModel.from_pretrained(model, init_adapter, is_trainable=True)
-    print(f'continuing E9 adapter from {init_adapter}', flush=True)
+    print(f'continuing SFT adapter from {init_adapter}', flush=True)
 else:
     peft_config = LoraConfig(
         r=16, lora_alpha=32, lora_dropout=0.05, bias='none', task_type='CAUSAL_LM',

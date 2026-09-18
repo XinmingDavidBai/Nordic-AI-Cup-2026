@@ -35,9 +35,10 @@ ap.add_argument('--fold', required=True, help='0-4 to leave that fold out, or "a
 ap.add_argument('--epochs', type=float, default=3)
 ap.add_argument('--lr', type=float, default=2e-4)
 ap.add_argument('--out', default=None)
+ap.add_argument('--data', default=DATA_PATH, help='prompt/target jsonl (default: E9 data; stage-2 uses tools/rl2_dataset.jsonl)')
 args = ap.parse_args()
 
-records = [json.loads(l) for l in open(DATA_PATH)]
+records = [json.loads(l) for l in open(args.data)]
 if args.fold == 'all':
     train_records = records
     out_dir = args.out or 'checkpoints/final'

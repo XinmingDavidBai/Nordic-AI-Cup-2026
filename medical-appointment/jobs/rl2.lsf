@@ -1,0 +1,61 @@
+#!/bin/bash
+#BSUB -J medqa_rl2_clause
+#BSUB -q gpua10
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 8:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl2_%J.out
+#BSUB -e /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl2_%J.err
+#
+# Stage 2 (clause-level action space, RL_TIOU_NOTES.md section 4). Per fold:
+#   1. SFT warm start on tools/rl2_dataset.jsonl (new output format, oracle
+#      clause-range labels; same recipe as E9) -> checkpoints_rl2_sft/fold{k}
+#   2. GRPO from that adapter with closed-form tIoU reward -> checkpoints_rl/<RUN>/fold{k}
+#      (evaluates the SFT policy = "init" and the RL policy = "final" on the held-out fold)
+# Both steps are skipped if their output already exists, so a walltime kill
+# just needs a resubmit with the same RUN. Same env/gotchas as rl_grpo.lsf.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup_rl/medical-appointment
+mkdir -p logs rl_results checkpoints_rl checkpoints_rl2_sft
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+SHARED=/work3/s234812/nordic_cup/medical-appointment
+export HF_HOME=$SHARED/.hf_cache
+export HF_HUB_OFFLINE=1
+export XDG_CACHE_HOME=/work3/s234812/nordic_cup_rl/.cache
+mkdir -p "$XDG_CACHE_HOME"
+
+module load python3/3.11.9
+source $SHARED/.venv/bin/activate
+unset PYTHONPATH
+
+RUN=${RUN:-c1}
+FOLDS=${FOLDS:-"0 1 2 3 4"}
+SFT_EXTRA=${SFT_EXTRA:-}      # e.g. "--epochs 3 --lr 2e-4" (E9 defaults)
+EXTRA=${EXTRA:-}              # GRPO args, e.g. "--lr 2e-5 --temperature 1.0 --beta 0"
+
+for FOLD in $FOLDS; do
+    if [ ! -f "checkpoints_rl2_sft/fold$FOLD/adapter_model.safetensors" ]; then
+        echo "=== SFT warm start fold $FOLD: $(date) ==="
+        python jobs/finetune_train.py --fold "$FOLD" --data tools/rl2_dataset.jsonl --out "checkpoints_rl2_sft/fold$FOLD" $SFT_EXTRA
+    else
+        echo "=== SFT fold $FOLD exists, skipping ==="
+    fi
+    if [ -f "rl_results/$RUN/fold${FOLD}_final.json" ]; then
+        echo "=== GRPO fold $FOLD already done for run $RUN, skipping ==="
+        continue
+    fi
+    echo "=== GRPO fold $FOLD: $(date) ==="
+    python jobs/rl_grpo_train.py --task clause --fold "$FOLD" --run "$RUN" --init e9 --init-dir checkpoints_rl2_sft $EXTRA
+done
+
+echo "Job finished $(date)"
+python tools/rl_pool.py "rl_results/$RUN" || true
