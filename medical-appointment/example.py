@@ -58,7 +58,16 @@ WHISPER_DEVICE = os.getenv('WHISPER_DEVICE', 'cpu')
 WHISPER_COMPUTE = os.getenv('WHISPER_COMPUTE', 'int8')
 
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
-OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.2:3b')
+# E9: LoRA fine-tune of llama3.2:3b on this project's own (system, prompt) ->
+# {"answer","segment"} format, validated CV-pooled offline 0.726 (leave-
+# conversation-out, 5-fold) and live worst-case round trip 35453ms, both
+# clearing the plan's adoption bar. REQUIRES the model to actually exist on
+# whatever host runs this -- deploy via tools/export_gguf.py (see its
+# docstring and NEXT_STEPS.md section 7) BEFORE this code reaches that host,
+# or every LLM call fails and the pipeline floors at the same 0.200 the
+# Azure VM hit when it was missing llama3.2:3b/nomic-embed-text. Fall back to
+# OLLAMA_MODEL=llama3.2:3b if the fine-tuned model isn't deployed yet.
+OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.2-medqa-ft')
 EMBED_MODEL = os.getenv('EMBED_MODEL', 'nomic-embed-text')
 # llama3.2:3b with format:json only needs ~60-80 tokens to output the answer.
 LLM_NUM_PREDICT = int(os.getenv('LLM_NUM_PREDICT', '80'))
