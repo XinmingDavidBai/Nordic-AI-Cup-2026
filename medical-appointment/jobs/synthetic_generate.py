@@ -97,6 +97,15 @@ Output ONLY this JSON (no markdown fences, no commentary):
 
 records = []
 n_fail = 0
+# Written incrementally (one line per record, flushed immediately) rather
+# than batched at the end -- generation at ~15-20s/record means a few
+# thousand can take longer than a typical job's walltime, and losing every
+# already-generated record to a walltime kill because nothing was saved yet
+# is a needless waste of GPU time. Resuming after a kill: rerun with the
+# same --out; already-written records aren't tracked/skipped here (the
+# few-shot examples are drawn fresh each run anyway), so treat a resumed
+# run as its own batch and concatenate the .jsonl files.
+out_f = open(args.out, 'a' if os.path.exists(args.out) else 'w')
 while len(records) < args.n:
     resp = client.chat.completions.create(
         model=args.model,
@@ -118,10 +127,9 @@ while len(records) < args.n:
             print(f'  {n_fail} parse failures so far (last: {exc})')
         continue
     records.append(rec)
+    out_f.write(json.dumps(rec) + '\n')
+    out_f.flush()
     if len(records) % 50 == 0:
         print(f'{len(records)}/{args.n} generated ({n_fail} failures)', flush=True)
-
-with open(args.out, 'w') as f:
-    for rec in records:
-        f.write(json.dumps(rec) + '\n')
+out_f.close()
 print(f'wrote {len(records)} synthetic consultations to {args.out} ({n_fail} generation failures discarded)')
