@@ -127,6 +127,84 @@ carries all the clause-level headroom; longer clause ranges add nothing. The
 stage-2 action is therefore "segment index + one of {whole, clause k, clauses
 k..k+1}", ~5 candidates per segment.
 
+## 6. Literature review (2026-09-18, while the first jobs queued)
+
+Searched for work on the same problem shape: a yes/no claim grounded in a
+spoken transcript, scored by temporal IoU, small model, ~400 labelled items.
+
+**Directly relevant, and it changes the plan:**
+
+- *Why Sample What You Can Enumerate? Exact Policy Optimization*
+  (FGPO, arXiv 2609.10221, Sept 2026). For enumerable action spaces, score
+  every candidate by teacher forcing, softmax over the (length-normalised)
+  candidate log-probs, and optimise the exact expectation sum_a q(a) r(a) plus
+  an entropy bonus (0.03). Beat GRPO in all 15 of their cells (+6.75 avg) and
+  diagnosed why: as the policy sharpens, GRPO's sampled rewards collide and the
+  group-normalised advantage vanishes ("dead groups", 20-80% of prompts for a
+  converged policy). That is exactly our situation: 9 valid completions in
+  stage 1, ~37 in stage 2, a peaked SFT init, and a precomputed reward for
+  every candidate. Built as `jobs/rl_exact_train.py` + `jobs/rl_exact.lsf`
+  (runs x1 = stage 1, xc1 = stage 2). No generation, so a fold takes minutes.
+- *Time-R1* (NeurIPS 2025, arXiv 2503.13377): r = IoU * (1-|ds|/T) * (1-|de|/T)
+  + binary format reward, GRPO, 2.5K samples chosen by difficulty (Gaussian
+  around IoU 0.3, drop IoU>0.7 each epoch), 150-sample LoRA cold start. RL
+  60.8 vs SFT-LoRA 51.7 R1@0.5 on Charades (7B). Lesson for us: filter/weight
+  prompts where the init already gets IoU>0.7 (they add nothing) and keep the
+  ones in the middle.
+- *TempSamp-R1* (NeurIPS 2025): mixes the ground-truth completion into each
+  GRPO group with an anchored advantage, because on-policy samples rarely hit
+  high-tIoU spans. Our exact-expectation trainer makes this moot (the oracle
+  candidate is always scored), but it is the fix if GRPO r1/r2 show high
+  `frac_reward_zero_std`.
+- *Temporal-R1* (github appletea233): variance-aware data selection (repeat
+  inference, keep prompts whose samples disagree) and RL 53.9 vs SFT 46.0 mIoU;
+  the SFT model lost the ability to emit valid options on other tasks, RL did
+  not.
+- *Topic-to-Timestamp Alignment by Constrained Evidence Selection*
+  (arXiv 2606.20890): transcript domain. Select a chunk ID instead of
+  generating a timestamp (fewer invalid outputs, smaller error tail), hybrid
+  dense+BM25 retrieval was the biggest win, and their error analysis names the
+  same "later restatement vs earliest mention" failure we see. Mistral-7B,
+  no fine-tuning. Confirms the index-selection framing; nothing new on the
+  duplicate-mention problem.
+- *ECPO* (arXiv 2605.21993): a "feasible sampler" that masks invalid
+  candidate indices during RL rollouts. Same effect as our reward-table
+  fallback plus format penalty; the exact trainer only ever scores valid
+  candidates, so this is covered.
+
+**Spoken QA with time-span answers** -- NMSQA / DUAL (Interspeech 2022),
+SpeechDPR, GSQA: the metric family is ours (Audio Overlap Score = IoU on
+time), but the models are textless speech encoders trained on tens of
+thousands of TTS questions; not transferable at 39 conversations.
+
+**Timestamp precision -- checked, not a lever.** Whisper word boundaries in
+`tools/words_cache.json` sit within 0.1s of the gold boundaries for 93% (start)
+/ 97% (end) of spans; the oracle word-range IoU over the conversation is
+0.980. WhisperX / "Whisper has an internal word aligner" (arXiv 2509.09987) /
+MFA would not help. The gold spans were evidently produced from the same kind
+of word alignment.
+
+**What the analysis found instead: gold spans straddle whisper segments.**
+45/195 positives (23%) cover more than one whisper segment. Ceilings (mean
+tIoU, positives):
+
+| action space | ceiling |
+|---|---|
+| clause range inside one top-8 segment (stage 2 as built) | 0.808 |
+| clause range allowed to end in the next transcript segment, both in top-8 | 0.868 |
+| same, any segments | 0.906 |
+| any word range across segments | 0.980 |
+
+This is the same phenomenon E1's union rule patched (+0.004 live) and explains
+why "best citable index" (0.657) beats "oracle whole segment" (0.629). Stage-2
+v2 should let a range end in the following segment (e.g. `"to_segment"`), or
+merge adjacent top-8 segments into one candidate block in the prompt.
+
+**Medical dialogue datasets** (ACI-Bench, the 2026 robot/doctor-patient
+dialogue benchmark, PriMock57-style corpora): note generation or response
+selection, no evidence-span labels; not usable as extra supervision for this
+metric. The E10 synthetic route remains the only data-scaling option.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from

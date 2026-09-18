@@ -1,0 +1,76 @@
+#!/bin/bash
+#BSUB -J medqa_rl_exact
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 1:30
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl_exact_%J.out
+#BSUB -e /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl_exact_%J.err
+#
+# Exact expected-reward optimisation over the enumerable action space
+# (jobs/rl_exact_train.py, RL_TIOU_NOTES.md section 6). No generation, so a
+# fold is minutes, not an hour; submit per fold with FOLDS=k for backfill.
+#   TASK=seg    RUN=x1  -> stage-1 action space, init E9 adapters
+#   TASK=clause RUN=xc1 -> stage-2 action space, init the rl2 SFT adapters (trained here if missing)
+# Same fold locks as rl_grpo.lsf / rl2.lsf, keyed by RUN.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup_rl/medical-appointment
+mkdir -p logs rl_results checkpoints_rl checkpoints_rl2_sft
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+SHARED=/work3/s234812/nordic_cup/medical-appointment
+export HF_HOME=$SHARED/.hf_cache
+export HF_HUB_OFFLINE=1
+export XDG_CACHE_HOME=/work3/s234812/nordic_cup_rl/.cache
+mkdir -p "$XDG_CACHE_HOME"
+
+module load python3/3.11.9
+source $SHARED/.venv/bin/activate
+unset PYTHONPATH
+
+TASK=${TASK:-seg}
+RUN=${RUN:-x1}
+FOLDS=${FOLDS:-"0 1 2 3 4"}
+EXTRA=${EXTRA:-}
+if [ "$TASK" = "clause" ]; then INIT_DIR=checkpoints_rl2_sft; else INIT_DIR=checkpoints_e9; fi
+
+for FOLD in $FOLDS; do
+    if [ -f "rl_results/$RUN/fold${FOLD}_final.json" ]; then
+        echo "=== fold $FOLD already done for run $RUN, skipping ==="
+        continue
+    fi
+    LOCK="rl_results/$RUN/fold${FOLD}.lock"
+    mkdir -p "rl_results/$RUN"
+    if ! mkdir "$LOCK" 2>/dev/null; then
+        echo "=== fold $FOLD locked by another job ($(cat "$LOCK/owner" 2>/dev/null)), skipping ==="
+        continue
+    fi
+    echo "${LSB_JOBID:-?} $(hostname) $(date)" > "$LOCK/owner"
+    trap 'rm -f "$LOCK/owner" 2>/dev/null; rmdir "$LOCK" 2>/dev/null' EXIT TERM INT
+    if [ "$TASK" = "clause" ] && [ ! -f "checkpoints_rl2_sft/fold$FOLD/adapter_model.safetensors" ]; then
+        # shared with rl2.lsf (c1); its own lock covers the race on this directory
+        SLOCK="checkpoints_rl2_sft/fold$FOLD.lock"
+        if mkdir "$SLOCK" 2>/dev/null; then
+            echo "=== SFT warm start fold $FOLD: $(date) ==="
+            python jobs/finetune_train.py --fold "$FOLD" --data tools/rl2_dataset.jsonl --out "checkpoints_rl2_sft/fold$FOLD"
+            rmdir "$SLOCK"
+        else
+            echo "=== SFT fold $FOLD being trained by another job; waiting up to 40 min ==="
+            for i in $(seq 1 80); do [ -f "checkpoints_rl2_sft/fold$FOLD/adapter_model.safetensors" ] && break; sleep 30; done
+        fi
+    fi
+    echo "=== exact fold $FOLD ($TASK): $(date) ==="
+    python jobs/rl_exact_train.py --task "$TASK" --fold "$FOLD" --run "$RUN" --init e9 --init-dir "$INIT_DIR" $EXTRA
+    rm -f "$LOCK/owner"; rmdir "$LOCK"; trap - EXIT TERM INT
+done
+
+echo "Job finished $(date)"
+python tools/rl_pool.py "rl_results/$RUN" || true
