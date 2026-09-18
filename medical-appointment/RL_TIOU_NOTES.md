@@ -90,6 +90,21 @@ warm start on the oracle clause range first (new format), then GRPO. Costs
 latency budget, but the 3B model's known fragility to format changes (E2, E6)
 is the risk; only worth it if stage 1 shows RL learning at all.
 
+Headroom, computed in closed form from `tools/words_cache.json` + the reward
+table (2026-09-18, positives only, score column assumes accuracy 1.0):
+
+| action space | ceiling mean tIoU | ceiling score |
+|---|---|---|
+| stage 1: best citable segment index, pipeline refine (E9 actual: 0.560) | 0.657 | 0.794 |
+| stage 2: whole / single clause / adjacent clause pair, over all top-8 segments | 0.808 | 0.885 |
+| any contiguous clause range over all top-8 (36 candidates/question on average) | 0.808 | 0.885 |
+| any word range (upper bound, not a practical action space) | 0.850 | 0.910 |
+
+So the pipeline's existing candidate set (whole/clause/adjacent pair) already
+carries all the clause-level headroom; longer clause ranges add nothing. The
+stage-2 action is therefore "segment index + one of {whole, clause k, clauses
+k..k+1}", ~5 candidates per segment.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
