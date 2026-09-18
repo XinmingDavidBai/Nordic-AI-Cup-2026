@@ -1,0 +1,82 @@
+[
+  {
+    "gen": 0,
+    "best_fitness": 797.843783804535,
+    "best_survived": 866.2333333334618,
+    "elite_fitness": 688.9394513079892,
+    "all_time_best": 797.843783804535,
+    "seconds": 1476.7048637866974
+  },
+  {
+    "gen": 1,
+    "best_fitness": 794.0236193997537,
+    "best_survived": 848.0000000001243,
+    "elite_fitness": 700.424590484499,
+    "all_time_best": 797.843783804535,
+    "seconds": 2063.1474945545197
+  },
+  {
+    "gen": 2,
+    "best_fitness": 935.7912909978103,
+    "best_survived": 1011.0333333334365,
+    "elite_fitness": 795.0553424830866,
+    "all_time_best": 935.7912909978103,
+    "seconds": 2958.98429274559
+  },
+  {
+    "gen": 3,
+    "best_fitness": 861.2083095725148,
+    "best_survived": 949.2333333334519,
+    "elite_fitness": 806.2953971330207,
+    "all_time_best": 935.7912909978103,
+    "seconds": 3072.9626636505127
+  },
+  {
+    "gen": 4,
+    "best_fitness": 836.5039254485247,
+    "best_survived": 882.6000000001321,
+    "elite_fitness": 765.6852227255891,
+    "all_time_best": 935.7912909978103,
+    "seconds": 2345.7535903453827
+  },
+  {
+    "gen": 5,
+    "best_fitness": 929.5774427394686,
+    "best_survived": 1078.4333333333768,
+    "elite_fitness": 881.3078741059115,
+    "all_time_best": 935.7912909978103,
+    "seconds": 3258.2431547641754
+  },
+  {
+    "gen": 6,
+    "best_fitness": 1113.7559193067095,
+    "best_survived": 1142.8000000000561,
+    "elite_fitness": 939.0025645061544,
+    "all_time_best": 1113.7559193067095,
+    "seconds": 3544.4853079319
+  },
+  {
+    "gen": 7,
+    "best_fitness": 1004.0394936404066,
+    "best_survived": 1088.0000000000643,
+    "elite_fitness": 916.292495771246,
+    "all_time_best": 1113.7559193067095,
+    "seconds": 3145.681052684784
+  },
+  {
+    "gen": 8,
+    "best_fitness": 640.8221423721906,
+    "best_survived": 697.8666666667568,
+    "elite_fitness": 593.422764012702,
+    "all_time_best": 1113.7559193067095,
+    "seconds": 3156.287777662277
+  },
+  {
+    "gen": 9,
+    "best_fitness": 744.9230809647701,
+    "best_survived": 903.9666666667512,
+    "elite_fitness": 713.3588281089408,
+    "all_time_best": 1113.7559193067095,
+    "seconds": 2651.037368297577
+  }
+]
