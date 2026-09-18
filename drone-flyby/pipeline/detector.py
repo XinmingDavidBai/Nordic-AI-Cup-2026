@@ -5,10 +5,12 @@ Pick one with ``DETECTOR_BACKEND`` (see config.py). All of them take the decoded
 ``source_region_xyxy``.
 """
 
+import hashlib
 import logging
 import random
 from dataclasses import dataclass
-from typing import List
+from pathlib import Path
+from typing import List, Optional
 
 import numpy as np
 
@@ -26,6 +28,14 @@ from pipeline.geometry import (
 logger = logging.getLogger(__name__)
 
 
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 @dataclass
 class Detection:
     object_id: str
@@ -35,6 +45,8 @@ class Detection:
 
 class Detector:
     name = 'base'
+    # Set by warmup() when the dummy inference raised; api.py refuses to start then.
+    warmup_error: Optional[str] = None
 
     def detect(self, image: np.ndarray, request: DroneFlybyPredictRequestDto) -> List[Detection]:
         raise NotImplementedError
@@ -43,11 +55,17 @@ class Detector:
         dummy = np.zeros((540, 960, 3), dtype=np.uint8)
         try:
             self._warmup_image(dummy)
-        except Exception:
+            self.warmup_error = None
+        except Exception as error:
+            self.warmup_error = f'{type(error).__name__}: {error}'
             logger.exception('Detector warmup failed (continuing)')
 
     def _warmup_image(self, image: np.ndarray) -> None:
         pass
+
+    def describe(self) -> dict:
+        """What is loaded, for the /api endpoint and the startup check."""
+        return {'backend': self.name, 'warmup_error': self.warmup_error}
 
 
 class NullDetector(Detector):
@@ -69,15 +87,38 @@ class YoloDetector(Detector):
     name = 'yolo'
 
     def __init__(self, weights_path):
+        import ultralytics
         from ultralytics import YOLO
 
+        weights_path = Path(weights_path)
+        # Without this, ultralytics treats a missing path as a name to download.
+        if not weights_path.is_file():
+            raise FileNotFoundError(f'DETECTOR_WEIGHTS {weights_path} does not exist')
+        self.weights_path = weights_path.resolve()
+        self.weights_sha256 = _sha256(self.weights_path)
+        self.weights_bytes = self.weights_path.stat().st_size
+        self.ultralytics_version = ultralytics.__version__
         self.model = YOLO(str(weights_path))
         self.device = config.DETECTOR_DEVICE or self._auto_device()
         self.names = {int(k): v for k, v in self.model.names.items()}
         unknown = [n for n in self.names.values() if n not in OBJECT_CLASSES]
         if unknown:
             logger.warning('Model has classes the protocol does not accept, they will be dropped: %s', unknown)
-        logger.info('YOLO detector loaded from %s on %s', weights_path, self.device)
+        logger.info(
+            'YOLO detector loaded from %s (sha256 %s) on %s',
+            self.weights_path, self.weights_sha256[:12], self.device,
+        )
+
+    def describe(self):
+        return {
+            **super().describe(),
+            'weights_path': str(self.weights_path),
+            'weights_sha256': self.weights_sha256[:12],
+            'weights_bytes': self.weights_bytes,
+            'num_classes': len(self.names),
+            'device': self.device,
+            'ultralytics_version': self.ultralytics_version,
+        }
 
     @staticmethod
     def _auto_device() -> str:

@@ -85,6 +85,17 @@ DETECTOR_MIN_CONF = _float('DETECTOR_MIN_CONF', 0.10)
 DETECTOR_NMS_IOU = _float('DETECTOR_NMS_IOU', 0.50)
 DETECTOR_HALF = _bool('DETECTOR_HALF', False)          # fp16, GPU only
 
+# api.py refuses to start unless the detector resolved to a working 'yolo':
+# a gt/none/edges server answers "healthy" while detecting nothing on the real
+# sequence. Set this to 1 to start one of those on purpose, for local debugging.
+ALLOW_NON_YOLO_DETECTOR = _bool('ALLOW_NON_YOLO_DETECTOR', False)
+# Log a loud error when the detector raised on this many consecutive frames, or
+# ran but found nothing on DETECTOR_EMPTY_ALERT_FRAMES consecutive frames. Both
+# repeat every DETECTOR_ALERT_REPEAT_FRAMES frames while the streak lasts.
+DETECTOR_FAILURE_ALERT_FRAMES = _int('DETECTOR_FAILURE_ALERT_FRAMES', 3)
+DETECTOR_EMPTY_ALERT_FRAMES = _int('DETECTOR_EMPTY_ALERT_FRAMES', 10)
+DETECTOR_ALERT_REPEAT_FRAMES = _int('DETECTOR_ALERT_REPEAT_FRAMES', 25)
+
 # gt backend: minimum longest side, in transmitted-view pixels, for an object to
 # count as "visible" at a level; optional minimum shortest side of the visible
 # part (raise it to stop reporting thin slivers); and an optional minimum share

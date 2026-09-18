@@ -44,11 +44,16 @@ class SequenceState:
     tracker: Tracker = field(default_factory=Tracker)
     policy: CameraPolicy = field(default_factory=CameraPolicy)
     last_frame_index: Optional[int] = None
+    # Consecutive frames on which the detector raised / ran but found nothing.
+    failure_streak: int = 0
+    empty_streak: int = 0
 
 
 _lock = threading.Lock()
 _detector: Optional[Detector] = None
 _states: Dict[str, SequenceState] = {}
+# Totals since the server started, reported by /api.
+_detector_stats = {'frames': 0, 'failed_frames': 0, 'empty_frames': 0, 'last_error': None}
 # Last per-frame debug info, read by debug_replay.py.
 last_debug: dict = {}
 
@@ -65,6 +70,49 @@ def warmup() -> None:
     started = time.perf_counter()
     get_detector().warmup()
     logger.info('Warmup done in %.0f ms (detector: %s)', (time.perf_counter() - started) * 1e3, get_detector().name)
+
+
+def detector_info() -> dict:
+    """What detector is loaded plus how it has done so far (served on /api)."""
+    with _lock:
+        return {**get_detector().describe(), 'stats': dict(_detector_stats)}
+
+
+def _alert_due(streak: int, threshold: int) -> bool:
+    if threshold <= 0 or streak < threshold:
+        return False
+    repeat = max(1, config.DETECTOR_ALERT_REPEAT_FRAMES)
+    return (streak - threshold) % repeat == 0
+
+
+def _track_detector_health(state: SequenceState, request, detections, error: Optional[str]) -> None:
+    _detector_stats['frames'] += 1
+    if error is not None:
+        _detector_stats['failed_frames'] += 1
+        _detector_stats['last_error'] = error
+        state.failure_streak += 1
+        state.empty_streak = 0
+        if _alert_due(state.failure_streak, config.DETECTOR_FAILURE_ALERT_FRAMES):
+            logger.error(
+                '!!! DETECTOR FAILED ON EVERY ONE OF THE LAST %d FRAMES (sequence %s, now frame %s, '
+                'backend %s). Every answer is going out EMPTY, so this run scores ~0. Last error: %s',
+                state.failure_streak, request.sequence_id, request.frame, get_detector().name, error,
+            )
+        return
+    state.failure_streak = 0
+    if detections:
+        state.empty_streak = 0
+        return
+    _detector_stats['empty_frames'] += 1
+    state.empty_streak += 1
+    # The null detector finding nothing is expected; it only runs by explicit override.
+    if get_detector().name != 'none' and _alert_due(state.empty_streak, config.DETECTOR_EMPTY_ALERT_FRAMES):
+        logger.error(
+            '!!! DETECTOR FOUND NOTHING ON EVERY ONE OF THE LAST %d FRAMES (sequence %s, now frame %s, '
+            'backend %s). It is running without errors but detecting nothing: check the weights '
+            '(GET /api) and DETECTOR_MIN_CONF.',
+            state.empty_streak, request.sequence_id, request.frame, get_detector().name,
+        )
 
 
 def reset() -> None:
@@ -125,12 +173,15 @@ def _predict_locked(request: DroneFlybyPredictRequestDto) -> DroneFlybyPredictRe
         displacement = state.ego.displacement_at_center(gap)
         timings['ego'] = time.perf_counter()
 
+        detector_error = None
         try:
             detections = get_detector().detect(image, request)
-        except Exception:
+        except Exception as error:
             logger.exception('Detector failed on frame %s', request.frame)
             detections = []
+            detector_error = f'{type(error).__name__}: {error}'
         timings['detect'] = time.perf_counter()
+        _track_detector_health(state, request, detections, detector_error)
 
         try:
             state.tracker.step(request.frame_index, state.ego, detections, region, level, gap)
