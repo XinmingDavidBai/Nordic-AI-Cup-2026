@@ -5,7 +5,14 @@
 #BSUB -n 8
 #BSUB -R "span[hosts=1]"
 #BSUB -R "rusage[mem=32GB]"
-#BSUB -W 10:00
+#BSUB -W 6:00
+# 6h not 10h: the scheduler needs confidence it can run the WHOLE requested
+# walltime uninterrupted before it'll start the job at all -- a 10h request
+# sat PEND ("not enough slots or resources for whole duration") on this same
+# queue where 6h requests had started within seconds. Now that
+# synthetic_generate.py writes incrementally, a walltime kill costs a
+# resubmit-to-continue, not lost work, so there's no reason to ask for more
+# than the queue schedules quickly.
 #BSUB -B
 #BSUB -N
 #BSUB -u s234812@dtu.dk
