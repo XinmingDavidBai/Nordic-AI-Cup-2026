@@ -79,3 +79,12 @@ cython_debug/
 .vscode
 .devcontainer
 .jupyter
+
+# Pipeline outputs (debug_replay, run_local, train_detector, recorder)
+debug_out/
+datasets/
+runs/
+recordings/
+models_weights/
+# .env holds NAIC_API_KEY. Never commit it (.env is also covered above).
+.env
