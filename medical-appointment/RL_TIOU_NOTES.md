@@ -73,6 +73,14 @@ reward differentiates and the SFT label (one oracle index) does not.
 | smoke (stage 2) | SmolLM2-135M on the login node CPU: SFT on `rl2_dataset.jsonl` (batch 1; the login node caps process memory), GRPO `--task clause` fresh LoRA, GRPO continuing that adapter | wiring OK |
 | c1 | stage 2 (`jobs/rl2.lsf`): per fold SFT warm start (E9 recipe on the clause format) -> GRPO `--task clause` lr 2e-5 T 1.0 beta 0 G 8, 3 epochs | submitted 2026-09-18 evening, gpua10. Its `init` eval (the SFT policy) is itself a result: a learned segment+clause picker vs E9's SFT + embedding argmax |
 
+Queue layout (2026-09-18 ~19:00): gpua10 turned out to be a single physical
+GPU shared by everyone (its short pending list serialises), so each run is
+queued twice with per-fold `mkdir` locks: a whole-run job on gpua10 and five
+per-fold jobs (`-W 1:30` / `2:00`, which backfill far better than 6h requests)
+on gpua100. Whichever dispatches first takes the fold; the other skips it.
+Jobs: `medqa_rl_grpo` (r1), `medqa_rl_grpo_r2`, `medqa_rl2_clause` (c1) on
+gpua10; `rl_r1_f0..4`, `rl2_c1_f0..4` on gpua100. Status: `ssh hpc 'bash -lc "bjobs -w"'`.
+
 Adoption rule (same spirit as NEXT_STEPS.md): RL final pooled must beat the
 *init* pooled HF number by >= 0.01 AND its Mac-side CV replay must beat
 0.7255; then the `final` (all-39) adapter gets exported and the live worst-case
