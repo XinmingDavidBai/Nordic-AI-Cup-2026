@@ -35,6 +35,7 @@ ap.add_argument('--fold', required=True, help='0-4 to leave that fold out, or "a
 ap.add_argument('--epochs', type=float, default=3)
 ap.add_argument('--lr', type=float, default=2e-4)
 ap.add_argument('--out', default=None)
+ap.add_argument('--batch-size', type=int, default=4)
 ap.add_argument('--data', default=DATA_PATH, help='prompt/target jsonl (default: E9 data; stage-2 uses tools/rl2_dataset.jsonl)')
 args = ap.parse_args()
 
@@ -82,7 +83,7 @@ def to_prompt_completion(r):
 ds = Dataset.from_list([to_prompt_completion(r) for r in train_records])
 
 model = AutoModelForCausalLM.from_pretrained(
-    BASE_MODEL, torch_dtype=torch.bfloat16, device_map='auto',
+    BASE_MODEL, dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32, device_map='auto',
 )
 
 lora_config = LoraConfig(
@@ -93,14 +94,14 @@ lora_config = LoraConfig(
 training_args = SFTConfig(
     output_dir=os.path.join(out_dir, 'trainer_state'),
     num_train_epochs=args.epochs,
-    per_device_train_batch_size=4,
+    per_device_train_batch_size=args.batch_size,
     gradient_accumulation_steps=4,
     learning_rate=args.lr,
     lr_scheduler_type='cosine',
     warmup_ratio=0.03,
     logging_steps=10,
     save_strategy='no',
-    bf16=True,
+    bf16=torch.cuda.is_available(),  # True on the GPU nodes (as E9 ran); lets a CPU smoke test run
     max_length=2048,
     packing=False,
     completion_only_loss=True,  # requires the prompt/completion dataset format above

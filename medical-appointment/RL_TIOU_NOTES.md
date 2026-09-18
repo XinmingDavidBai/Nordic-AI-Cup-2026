@@ -70,6 +70,8 @@ reward differentiates and the SFT label (one oracle index) does not.
 | smoke | SmolLM2-135M on the login node CPU, 2 steps | wiring OK (init eval -> train -> save -> final eval), continue-adapter path OK with beta 0 and 0.02 |
 | r1 | `--init e9` lr 2e-5 T 1.0 beta 0 G 8, 3 epochs, 5 folds | submitted 2026-09-18 evening, gpua10 |
 | r2 | `--init e9` lr 1e-5 T 1.3 beta 0.02 G 8, 3 epochs, 5 folds | submitted alongside r1 (diversified in case T=1.0 gives too little group variance) |
+| smoke (stage 2) | SmolLM2-135M on the login node CPU: SFT on `rl2_dataset.jsonl` (batch 1; the login node caps process memory), GRPO `--task clause` fresh LoRA, GRPO continuing that adapter | wiring OK |
+| c1 | stage 2 (`jobs/rl2.lsf`): per fold SFT warm start (E9 recipe on the clause format) -> GRPO `--task clause` lr 2e-5 T 1.0 beta 0 G 8, 3 epochs | submitted 2026-09-18 evening, gpua10. Its `init` eval (the SFT policy) is itself a result: a learned segment+clause picker vs E9's SFT + embedding argmax |
 
 Adoption rule (same spirit as NEXT_STEPS.md): RL final pooled must beat the
 *init* pooled HF number by >= 0.01 AND its Mac-side CV replay must beat
@@ -77,7 +79,7 @@ Adoption rule (same spirit as NEXT_STEPS.md): RL final pooled must beat the
 round trip checked <= 50s (unchanged model size, so latency should be E9's
 35.5s).
 
-## 4. Stage 2 (not built yet): clause-level action space
+## 4. Stage 2 (built 2026-09-18, job c1): clause-level action space
 
 The refinement picker is the other known gap (0.708 achieved vs 0.823 oracle
 given the gold segment, embedding argmax, six rejected heuristic variants in
@@ -86,9 +88,21 @@ boundaries inside each segment in the prompt (`[4a] ... | [4b] ...`) and emit
 `{"answer", "segment", "clauses": [i, j]}`; reward = tIoU computed directly from
 word timestamps (`example._clauses`, pure Python, no embeddings). Needs an SFT
 warm start on the oracle clause range first (new format), then GRPO. Costs
-~+50 prompt tokens and ~+8 output tokens per question, i.e. well under the
-latency budget, but the 3B model's known fragility to format changes (E2, E6)
-is the risk; only worth it if stage 1 shows RL learning at all.
++14% prompt characters (median 1905 -> 2179) and ~+8 output tokens per
+question, i.e. well under the latency budget, but the 3B model's known
+fragility to format changes (E2, E6) is the risk -- mitigated by the SFT
+warm start on the exact format, which is what made E9 work where prompt
+edits failed.
+
+Built as: `tools/build_rl2_dataset.py` -> `tools/rl2_dataset.jsonl` (prompt
+format `[4] [11.9-16.4s]: (1) clause. (2) clause.`, output
+`{"answer", "segment", "from", "to"}`, labels = oracle clause range, 189/195
+positives learnable, oracle 0.806), `jobs/rl2_common.py` (closed-form reward,
+fallbacks: unknown segment -> whole `best_idx`, bad range -> whole segment),
+`jobs/rl_grpo_train.py --task clause`, `jobs/finetune_train.py --data`,
+`jobs/rl2.lsf`. Serving it live needs a small stage-2 `ask()` variant in
+`example.py` (parse from/to -> clause bounds from the word timestamps) -- not
+written yet, only worth doing if c1 beats E9 on CV.
 
 Headroom, computed in closed form from `tools/words_cache.json` + the reward
 table (2026-09-18, positives only, score column assumes accuracy 1.0):

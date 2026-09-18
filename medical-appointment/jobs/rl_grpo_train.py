@@ -94,7 +94,7 @@ model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
 peft_config = None
 if args.init == 'e9':
-    if not os.path.isdir(init_adapter):
+    if not os.path.isfile(os.path.join(init_adapter, 'adapter_config.json')):
         sys.exit(f'missing init adapter {init_adapter}')
     model = PeftModel.from_pretrained(model, init_adapter, is_trainable=True)
     print(f'continuing SFT adapter from {init_adapter}', flush=True)
