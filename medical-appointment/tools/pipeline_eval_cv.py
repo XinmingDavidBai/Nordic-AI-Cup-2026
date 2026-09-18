@@ -4,17 +4,33 @@ ONLY that fold's held-out conversations (never the ones it was trained on),
 then pools all 195 conversations' worth of results into one score comparable
 to results_E3.json / results_E7.json.
 
-Requires: the fold models already created locally via tools/export_gguf.py
-(llama3.2-medqa-ft-fold0 .. fold4), and tools/finetune_dataset.jsonl (for the
-fold assignment -- must be the same file used to train them).
+Disk on this machine can't hold all 5 fold models (each ~6.4GB unquantized)
+at once alongside the base pipeline's own ollama models, so this runs one
+fold at a time: export the fold's model (tools/export_gguf.py), evaluate it
+here, `ollama rm` it, move to the next fold. Results accumulate into OUT
+(records for a re-run fold are replaced, not duplicated) so folds can be
+done in separate invocations, in any order, resuming after an interruption.
 
-Usage: python3 tools/pipeline_eval_cv.py results_E9_cv.json
+Usage:
+    python3 tools/pipeline_eval_cv.py results_E9_cv.json --fold 0
+    python3 tools/pipeline_eval_cv.py results_E9_cv.json --fold 1
+    ...
+    python3 tools/pipeline_eval_cv.py results_E9_cv.json --pool   # print the pooled score so far
+
+Without --fold/--pool, runs all 5 folds in one go (only if you have the disk
+for all 5 models at once -- see MODEL_PREFIX / disk note above).
 """
 import csv, json, os, sys, time
 sys.path.insert(0, os.getcwd())
 
 MODEL_PREFIX = os.getenv('CV_MODEL_PREFIX', 'llama3.2-medqa-ft-fold')
-OUT = os.path.join(os.path.dirname(__file__), sys.argv[1] if len(sys.argv) > 1 else 'pipeline_results_cv.json')
+OUT = os.path.join(os.path.dirname(__file__), sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith('--') else 'pipeline_results_cv.json')
+
+FOLD_ARG = None
+POOL_ONLY = '--pool' in sys.argv
+for i, a in enumerate(sys.argv):
+    if a == '--fold' and i + 1 < len(sys.argv):
+        FOLD_ARG = int(sys.argv[i + 1])
 
 CACHE = os.path.join(os.path.dirname(__file__), 'words_cache.json')
 cache = json.load(open(CACHE))
@@ -34,9 +50,26 @@ def iou(a, b):
     return inter / union if union > 0 else 0.0
 
 
-records = []
+def report(records):
+    pos = [x for x in records if x['gold'] is not None]
+    acc = sum(x['said'] == x['want'] for x in records) / len(records)
+    mt = sum(x['iou'] for x in pos) / len(pos)
+    done_folds = sorted(set(x['fold'] for x in records))
+    print(f'\nCV-pooled so far (folds {done_folds}, {len(records)} questions / {len(sids)} conversations total):')
+    print(f'accuracy {acc:.3f}  mean tIoU {mt:.3f}  score {0.4*acc+0.6*mt:.3f}')
+    print(f'compare against results_E3.json (0.697 offline) with tools/pickrule.py once all 5 folds are done')
+
+
+existing = json.load(open(OUT)) if os.path.isfile(OUT) else []
+
+if POOL_ONLY:
+    report(existing)
+    sys.exit(0)
+
+folds_to_run = [FOLD_ARG] if FOLD_ARG is not None else list(range(5))
+records = [x for x in existing if x['fold'] not in folds_to_run]  # drop stale records for folds we're re-running
 t0 = time.time()
-for fold in range(5):
+for fold in folds_to_run:
     os.environ['OLLAMA_MODEL'] = f'{MODEL_PREFIX}{fold}'
     import example
     import importlib
@@ -65,11 +98,6 @@ for fold in range(5):
                 rec['iou'] = iou(gold, span) if span else 0.0
             records.append(rec)
         print(f'  {sid}: done ({time.time()-t0:.0f}s)', flush=True)
+    json.dump(records, open(OUT, 'w'), indent=1)  # save after each fold, not just at the end
 
-json.dump(records, open(OUT, 'w'), indent=1)
-pos = [x for x in records if x['gold'] is not None]
-acc = sum(x['said'] == x['want'] for x in records) / len(records)
-mt = sum(x['iou'] for x in pos) / len(pos)
-print(f'\nCV-pooled (leave-conversation-out, {len(sids)} conversations across 5 folds):')
-print(f'accuracy {acc:.3f}  mean tIoU {mt:.3f}  score {0.4*acc+0.6*mt:.3f}')
-print(f'compare against results_E7.json (or the current best offline baseline) with tools/pickrule.py')
+report(records)

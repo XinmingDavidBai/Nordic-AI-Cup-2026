@@ -32,8 +32,19 @@ nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 # here instead of using what was already cached (and zhome's quota is too
 # small for a 32B/70B model either way).
 export HF_HOME=/work3/s234812/nordic_cup/medical-appointment/.hf_cache
+# Defensive catch-all: several tools (flashinfer's JIT build cache, torch's
+# inductor/compile cache, ninja) default to $HOME/.cache and don't all respect
+# HF_HOME. Redirect the whole XDG cache root off zhome too.
+export XDG_CACHE_HOME=/work3/s234812/nordic_cup/medical-appointment/.cache
+mkdir -p "$XDG_CACHE_HOME"
 
 module load python3/3.11.9
+# vLLM's flashinfer sampling backend JIT-compiles a CUDA kernel the first time
+# it runs (RuntimeError: "Could not find nvcc" without this -- found the hard
+# way on 2026-09-18). 12.4.1 loads but its nvcc is too old for a flag
+# flashinfer's build passes (`nvcc fatal: Unknown option '--compress-mode=size'`,
+# also found the hard way); 12.8.1's nvcc was verified to accept that flag.
+module load cuda/12.8.1
 source .venv-vllm/bin/activate  # separate venv from .venv (finetune deps); see hpc_setup_vllm.sh
 unset PYTHONPATH  # module load leaves a PYTHONPATH that shadows the venv's own packages
 
@@ -50,8 +61,10 @@ python -m vllm.entrypoints.openai.api_server \
 VLLM_PID=$!
 
 echo "Waiting for vLLM server to come up..."
+# 900s not 600s: the first-ever run also JIT-compiles the flashinfer kernel
+# (one-off cost, cached under XDG_CACHE_HOME after that).
 READY=0
-for i in $(seq 1 60); do
+for i in $(seq 1 90); do
     if curl -s http://localhost:8000/v1/models > /dev/null 2>&1; then
         echo "vLLM ready after ${i}0s"
         READY=1
@@ -60,7 +73,7 @@ for i in $(seq 1 60); do
     sleep 10
 done
 if [ "$READY" -eq 0 ]; then
-    echo "vLLM server never came up after 600s -- check logs/vllm_server_${LSB_JOBID:-local}.log" >&2
+    echo "vLLM server never came up after 900s -- check logs/vllm_server_${LSB_JOBID:-local}.log" >&2
     kill $VLLM_PID 2>/dev/null || true
     exit 1
 fi
