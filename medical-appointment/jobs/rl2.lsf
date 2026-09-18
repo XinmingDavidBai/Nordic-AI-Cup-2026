@@ -43,18 +43,31 @@ SFT_EXTRA=${SFT_EXTRA:-}      # e.g. "--epochs 3 --lr 2e-4" (E9 defaults)
 EXTRA=${EXTRA:-}              # GRPO args, e.g. "--lr 2e-5 --temperature 1.0 --beta 0"
 
 for FOLD in $FOLDS; do
+    if [ -f "rl_results/$RUN/fold${FOLD}_final.json" ]; then
+        echo "=== GRPO fold $FOLD already done for run $RUN, skipping ==="
+        continue
+    fi
+    # Fold lock: the same RUN may be submitted to several queues (per-fold jobs
+    # on gpua100 next to a whole-run job on gpua10); mkdir is atomic, so only
+    # one job trains a given fold. Released on exit; a lock left by a job that
+    # was SIGKILLed at its walltime must be cleared by hand (rmdir it).
+    LOCK="rl_results/$RUN/fold${FOLD}.lock"
+    mkdir -p "rl_results/$RUN"
+    if ! mkdir "$LOCK" 2>/dev/null; then
+        echo "=== fold $FOLD locked by another job ($(cat "$LOCK/owner" 2>/dev/null)), skipping ==="
+        continue
+    fi
+    echo "${LSB_JOBID:-?} $(hostname) $(date)" > "$LOCK/owner"
+    trap 'rmdir "$LOCK" 2>/dev/null; rm -f "$LOCK/owner" 2>/dev/null; rmdir "$LOCK" 2>/dev/null' EXIT TERM INT
     if [ ! -f "checkpoints_rl2_sft/fold$FOLD/adapter_model.safetensors" ]; then
         echo "=== SFT warm start fold $FOLD: $(date) ==="
         python jobs/finetune_train.py --fold "$FOLD" --data tools/rl2_dataset.jsonl --out "checkpoints_rl2_sft/fold$FOLD" $SFT_EXTRA
     else
         echo "=== SFT fold $FOLD exists, skipping ==="
     fi
-    if [ -f "rl_results/$RUN/fold${FOLD}_final.json" ]; then
-        echo "=== GRPO fold $FOLD already done for run $RUN, skipping ==="
-        continue
-    fi
     echo "=== GRPO fold $FOLD: $(date) ==="
     python jobs/rl_grpo_train.py --task clause --fold "$FOLD" --run "$RUN" --init e9 --init-dir checkpoints_rl2_sft $EXTRA
+    rm -f "$LOCK/owner"; rmdir "$LOCK"; trap - EXIT TERM INT
 done
 
 echo "Job finished $(date)"
