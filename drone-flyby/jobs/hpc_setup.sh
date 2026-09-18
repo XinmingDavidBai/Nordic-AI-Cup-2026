@@ -28,4 +28,13 @@ pip install -r requirements.txt
 
 python -c "import torch; print('torch', torch.__version__, 'cuda available:', torch.cuda.is_available())"
 
+# LSF needs the -o/-e directories to exist before the job is dispatched.
+mkdir -p logs
+
+# Compute nodes (gpua100) have no internet access, so ultralytics can't
+# lazily download the base checkpoint mid-job. Fetch it now, on the login
+# node, into drone-flyby/ (where train.lsf's cwd will find it). Keep this
+# in sync with MODEL= in train.lsf if you change which checkpoint it trains.
+python -c "from ultralytics import YOLO; YOLO('yolo11s.pt')"
+
 echo "Setup done. Submit the training job with: bsub < jobs/train.lsf"
