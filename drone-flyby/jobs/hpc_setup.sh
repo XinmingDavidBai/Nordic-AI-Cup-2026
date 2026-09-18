@@ -10,22 +10,22 @@
 #   bsub < drone-flyby/jobs/train.lsf
 
 set -euo pipefail
-cd "$(dirname "$0")/.."   # -> drone-flyby/
+cd /work3/s234812/nordic_cup/drone-flyby
 
-# Adjust if DTU HPC's default `python3` isn't new enough. Check available
-# versions with `module avail python` and load one, e.g.:
-#   module load python3/3.11.9
+# Load a recent Python (DTU HPC default may be too old)
+module load python3/3.11.9
+
 python3 -m venv .venv
 source .venv/bin/activate
 
 pip install --upgrade pip
+
+# Install CUDA torch FIRST so requirements.txt does not overwrite it with a CPU wheel.
+# gpua100 nodes run CUDA 12.x; cu124 covers 12.4+.
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
 pip install -r requirements.txt
 
-# CUDA torch: the requirements.txt torch entry may resolve to a CPU wheel
-# depending on the index pip uses on the login node. If `python -c "import
-# torch; print(torch.cuda.is_available())"` prints False after this, reinstall
-# explicitly, e.g. for CUDA 12.1:
-#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 python -c "import torch; print('torch', torch.__version__, 'cuda available:', torch.cuda.is_available())"
 
 # LSF needs the -o/-e directories to exist before the job is dispatched.
