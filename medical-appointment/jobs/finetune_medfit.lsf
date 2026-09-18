@@ -1,0 +1,51 @@
+#!/bin/bash
+#BSUB -J medqa_finetune_medfit
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 8
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 6:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup/medical-appointment/logs/finetune_medfit_%J.out
+#BSUB -e /work3/s234812/nordic_cup/medical-appointment/logs/finetune_medfit_%J.err
+#
+# Side experiment: same LoRA recipe and the same tools/finetune_dataset.jsonl
+# as E9, but starting from a healthcare-tuned base (adityak74/medfit-llm-3B,
+# itself a LoRA fine-tune of Llama-3.2-3B-Instruct on healthcare Q&A) instead
+# of vanilla unsloth/Llama-3.2-3B-Instruct. Question: does prior medical-QA
+# tuning help or hurt once fine-tuned on this project's transcript-grounded,
+# hard-negative-strict task -- risk is it carries over a "confident answer
+# from learned knowledge" habit that conflicts with strict grounding.
+# Writes to checkpoints_medfit/ (NOT checkpoints/) so it can't clobber E9's
+# already-validated (CV-pooled 0.726) adapters.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup/medical-appointment
+mkdir -p logs checkpoints_medfit
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+export HF_HOME=/work3/s234812/nordic_cup/medical-appointment/.hf_cache
+export BASE_MODEL=adityak74/medfit-llm-3B
+
+module load python3/3.11.9
+source .venv/bin/activate
+unset PYTHONPATH
+
+for FOLD in 0 1 2 3 4 all; do
+    echo "=== fold $FOLD: $(date) ==="
+    if [ "$FOLD" = "all" ]; then
+        OUT=checkpoints_medfit/final
+    else
+        OUT=checkpoints_medfit/fold$FOLD
+    fi
+    python jobs/finetune_train.py --fold "$FOLD" --out "$OUT"
+done
+
+echo "Job finished $(date)"
+echo "Adapters are in checkpoints_medfit/fold0..4 and checkpoints_medfit/final. Copy them back, e.g.:"
+echo "  rsync -avz s234812@transfer.gbar.dtu.dk:/work3/s234812/nordic_cup/medical-appointment/checkpoints_medfit/ ./checkpoints_medfit/"

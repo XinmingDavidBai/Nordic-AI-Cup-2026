@@ -81,6 +81,7 @@ cython_debug/
 .devcontainer
 .jupyter
 NEXT_STEPS.md
+TIOU_RL_SCOPE.md
 # per-experiment replay outputs
 tools/results_E*.json
 tools/pipeline_results_cv.json
