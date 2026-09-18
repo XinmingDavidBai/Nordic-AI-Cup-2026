@@ -83,3 +83,17 @@ cython_debug/
 NEXT_STEPS.md
 # per-experiment replay outputs
 tools/results_E*.json
+tools/pipeline_results_cv.json
+results_E9_cv.json
+
+# E9 fine-tuning: LoRA adapters (~680MB, downloaded from the HPC run) and
+# local GGUF-export scratch (isolated venv, llama.cpp clone, per-model export
+# workdirs) -- see NEXT_STEPS.md section 7 for how to reproduce/redeploy
+# these on another host.
+checkpoints/
+tools/.export/
+tools/.export-venv/
+tools/.llama.cpp/
+
+# E10 synthetic data generation output (HPC), if pulled down locally
+jobs/synthetic_data.jsonl
