@@ -190,6 +190,23 @@ Startup loads the model and runs warmup inferences before the first request.
 Every request logs its per-stage timing (`decode / ego / detect / track /
 policy / total`).
 
+`api.py` refuses to start unless the detector resolves to a working `yolo`
+(missing weights, `gt`, `none`, `edges` or a failing warmup all stop it), because
+any of those answers every real frame with a valid, empty response. Set
+`ALLOW_NON_YOLO_DETECTOR=1` to start one on purpose for local debugging
+(`run_local.py --detector gt` does this for you). Before spending a validation
+attempt, check what is deployed:
+
+```cmd
+curl http://<your-host>:9053/api
+```
+
+`detector.backend` must be `yolo` and `detector.weights_sha256` must match
+the checkpoint you meant to deploy (`certutil -hashfile weights\detector.pt SHA256`,
+first 12 characters). `detector.stats` counts frames where the detector raised
+or found nothing. The server also logs a `!!! DETECTOR ...` error when either
+happens on several frames in a row.
+
 `run_local.py` uses port 9063 by default, so it never collides with a server you
 left running on 9053.
 

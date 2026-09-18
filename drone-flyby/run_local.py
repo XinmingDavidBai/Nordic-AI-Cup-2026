@@ -46,6 +46,10 @@ def main() -> int:
     env['PORT'] = str(args.port)
     if args.detector:
         env['DETECTOR_BACKEND'] = args.detector
+        # Explicitly asked for a debug detector on this local test server, so let
+        # api.py start with it (it refuses non-yolo detectors by default).
+        if args.detector.lower() not in ('auto', 'yolo'):
+            env['ALLOW_NON_YOLO_DETECTOR'] = '1'
     if args.weights:
         env['DETECTOR_WEIGHTS'] = str(Path(args.weights).resolve())
     if args.policy:
