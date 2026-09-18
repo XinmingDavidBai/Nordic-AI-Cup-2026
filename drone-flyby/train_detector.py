@@ -27,6 +27,7 @@ validation views (RECORD_DIR) that you label or pseudo-label can be added with
 """
 
 import argparse
+import json
 import random
 import shutil
 import sys
@@ -202,23 +203,58 @@ def train(args, data_yaml: Path) -> None:
         hsv_v=0.4,
         plots=True,
     )
-    best = Path(model.trainer.best)
+    best, last = Path(model.trainer.best), Path(model.trainer.last)
     print(f'best checkpoint: {best}')
     if args.no_install or not best.is_file():
         return
-    target = ROOT / 'weights' / 'detector.pt'
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(best, target)
-    print(f'installed -> {target}  (the server picks it up with DETECTOR_BACKEND=auto)')
+    fitness = float(model.trainer.best_fitness or 0.0)
+    print(f'best fitness (ultralytics accuracy score for this run): {fitness:.4f}')
 
-    # Keep a persistent, non-overwritten history of best checkpoints alongside
-    # the server-facing copy above (that one gets overwritten every run).
+    # Keep 4 files total: the best.pt and last.pt of this run and of the
+    # previous one (a rolling 2-run window), tracked in a manifest alongside
+    # them since each run is a fresh process. Whichever run's best.pt has the
+    # higher fitness -- not just whichever ran most recently -- becomes
+    # weights/detector.pt, what the server loads; last.pt is kept for
+    # reference/resuming only and never competes for that slot.
     archive_dir = ROOT / 'models_weights'
     archive_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = archive_dir / 'manifest.json'
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else []
+
     stamp = time.strftime('%Y%m%d_%H%M%S')
-    archived = archive_dir / f'{args.name}_{stamp}.pt'
-    shutil.copy2(best, archived)
-    print(f'archived  -> {archived}')
+    best_file = f'{args.name}_{stamp}_best.pt'
+    last_file = f'{args.name}_{stamp}_last.pt'
+    shutil.copy2(best, archive_dir / best_file)
+    if last.is_file():
+        shutil.copy2(last, archive_dir / last_file)
+    else:
+        last_file = None
+    manifest.insert(0, {
+        'name': args.name, 'timestamp': stamp, 'fitness': fitness,
+        'best_file': best_file, 'last_file': last_file,
+    })
+    print(f'archived  -> {archive_dir / best_file}' + (f' and {archive_dir / last_file}' if last_file else ''))
+
+    while len(manifest) > 2:
+        stale = manifest.pop()
+        for key in ('best_file', 'last_file'):
+            stale_path = archive_dir / stale[key] if stale[key] else None
+            if stale_path and stale_path.is_file():
+                stale_path.unlink()
+                print(f'pruned    -> {stale_path.name} (older than the last 2 runs)')
+
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+
+    primary = max(manifest, key=lambda entry: entry['fitness'])
+    target = ROOT / 'weights' / 'detector.pt'
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(archive_dir / primary['best_file'], target)
+    print(f'installed -> {target}  (from {primary["best_file"]}, fitness {primary["fitness"]:.4f}; '
+          f'the server picks it up with DETECTOR_BACKEND=auto)')
+    for entry in manifest:
+        role = 'primary' if entry is primary else 'secondary'
+        print(f'  kept ({role}): best={entry["best_file"]}  last={entry["last_file"]}  '
+              f'fitness={entry["fitness"]:.4f}  run={entry["name"]}')
 
     results_png = Path(model.trainer.save_dir) / 'results.png'
     if results_png.is_file():

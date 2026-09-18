@@ -97,14 +97,26 @@ Reference numbers (helsinki, 25 frames, GT detector, default settings, CPU lapto
 | run | mAP@0.50 |
 |---|---|
 | `debug_replay --detector gt` (greedy policy) | 0.774 |
-| `--policy sweep_l1` | 0.889 |
+| `--policy sweep_l1` | 0.969 |
 | `--policy hold_l0` | 0.875 |
 | `run_local --detector gt` (HTTP, 25/25 frames) | 0.774 |
-| `GT_MIN_VIEW_PIXELS=14`: hold_l0 / sweep_l1 / greedy | 0.527 / 0.837 / 0.715 |
+| `GT_MIN_VIEW_PIXELS=14`: hold_l0 / sweep_l1 / greedy | 0.527 / 0.831 / 0.715 |
 
 The last row matters most. How much zooming is worth depends on how small an
 object your real detector can still find at L0. Once you have a model, check
 this with the real detector rather than trusting the GT numbers.
+
+`sweep_l1`'s fixed 6-waypoint L1 patrol is the minimum needed for full-frame
+coverage under the per-frame movement cap, so any one cell only gets a close
+look once every 6 frames -- an object that enters and leaves inside that
+window is missed no matter how the waypoints are ordered (this is exactly what
+tanked `medium_plane` to 0.000 AP in the helsinki reference run: it's only on
+screen for 5 frames, timed just after the patrol's last pass through that
+corner). `_SWEEP_GLANCE_EVERY` in `camera_policy.py` periodically detours to a
+level-0 (whole-frame) glance between L1 stops -- always a legal single-frame
+move from any L1 waypoint -- to catch short-lived objects anywhere, without
+changing the L1 patrol's own coverage. That's what raised sweep_l1 from 0.889
+to 0.969 above.
 
 Greedy is sensitive to small changes: one different camera choice early on can
 mirror its whole patrol. For example, greedy at `POLICY_CANDIDATE_STEP` 100 /
@@ -123,10 +135,22 @@ Training images are rendered the same way the evaluator renders views
 (crop + `INTER_AREA` resize) at L0, L1 and L2: 1 L0 view, 6 L1 views and 12 L2
 views per frame, 75% of them placed near objects. The dataset is built from
 `src/` (in git) with a fixed `--seed`, so every machine builds the same images;
-no dataset needs to be copied around. The best checkpoint gets copied to
-`weights/detector.pt` (what `DETECTOR_BACKEND=auto` loads) and archived under
-`models_weights/<name>_<timestamp>.pt`. Both folders' `.pt` files are
-gitignored: share checkpoints outside git.
+no dataset needs to be copied around.
+
+Every run archives both its `best.pt` and `last.pt` to
+`models_weights/<name>_<timestamp>_{best,last}.pt` (gitignored, local only)
+alongside a `manifest.json` tracking each archived run's timestamp and
+ultralytics fitness score. Only the **last 2 runs** are kept -- archiving a
+3rd deletes the oldest run's pair, so 4 files total (2 runs x best+last).
+Of the 2 runs' `best.pt`, whichever scored higher gets copied to
+`weights/detector.pt`, regardless of which one ran more recently -- that's
+what `DETECTOR_BACKEND=auto` loads, and it **is** tracked in git
+(`.gitignore` only excludes `models_weights/`), so `git pull` is how a
+teammate picks up the latest validated weights. `last.pt` is kept purely for
+reference/resuming and never competes for that slot. If you want anything
+else out of `models_weights/` (the runner-up, or a `last.pt`), grab it
+directly -- that folder isn't pushed, so ask whoever trained it or pull it
+over `scp`.
 
 Before a long GPU run, do the 1-epoch smoke run and check that the checkpoint
 loads on the machine that will serve it:

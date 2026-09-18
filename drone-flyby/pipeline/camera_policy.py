@@ -40,6 +40,16 @@ from utils import describe_camera_rejection, source_region_for_view
 logger = logging.getLogger(__name__)
 
 _SWEEP_L1 = [(960, 540), (1920, 540), (2880, 540), (2880, 1620), (1920, 1620), (960, 1620)]
+# Every L1 waypoint is <=1102px (the L1 delta cap) from FULL_FRAME_CENTER, so a
+# level-0 glance is always a legal single-frame detour from anywhere in the
+# patrol. sweep_l1's 6-waypoint cycle is the minimum needed for full L1
+# coverage under the per-frame movement cap (any 2 rows x 3 cols grid tiling
+# the source at that cap needs all 6 stops), so a cell only gets a close look
+# once per 6 frames -- something that enters and leaves inside that window is
+# missed entirely regardless of waypoint order. A periodic low-res glance at
+# the whole frame closes that gap without changing the L1 patrol's coverage.
+# Interval is config.POLICY_SWEEP_GLANCE_EVERY (env-overridable, like every
+# other policy knob).
 
 
 class CameraPolicy:
@@ -50,6 +60,7 @@ class CameraPolicy:
         self.detail = np.zeros((self.rows, self.cols), dtype=np.float32)
         self._carry = np.zeros(2)          # sub-cell ground motion not yet applied
         self._sweep_index = 0
+        self._frames_since_glance = 0
         self.last_choice_debug = {}
 
     # ------------------------------------------------------------------ #
@@ -175,6 +186,12 @@ class CameraPolicy:
         if 1 not in allowed:
             # On L2: step back out to L1 first.
             return (1, *self._clamp_to_level(request, 1))
+
+        self._frames_since_glance += 1
+        if self._frames_since_glance > config.POLICY_SWEEP_GLANCE_EVERY and 0 in allowed:
+            self._frames_since_glance = 0
+            return (0, *FULL_FRAME_CENTER)
+
         target = _SWEEP_L1[self._sweep_index % len(_SWEEP_L1)]
         view = request.view
         if view.resolution_level == 1 and (view.center_x, view.center_y) == target:

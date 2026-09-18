@@ -173,6 +173,12 @@ POLICY_LEVEL_BIAS = {
 }
 # 'greedy' (value map) | 'hold_l0' (never zoom) | 'sweep_l1' (fixed patrol)
 POLICY_MODE = _str('POLICY_MODE', 'sweep_l1')
+# sweep_l1 only: every this many frames, detour to a level-0 (whole-frame)
+# glance between L1 waypoints, to catch objects that enter and leave inside
+# the patrol's ~6-frame revisit window. Always a legal single-frame move from
+# any L1 waypoint. Tuned against the GT detector (see PIPELINE.md); revisit
+# once real detector numbers are in, since level 0 is much lower resolution.
+POLICY_SWEEP_GLANCE_EVERY = _int('POLICY_SWEEP_GLANCE_EVERY', 4)
 
 # --------------------------------------------------------------------------- #
 # Recording / logging
