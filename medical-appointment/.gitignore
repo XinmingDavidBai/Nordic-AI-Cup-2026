@@ -98,3 +98,8 @@ tools/.llama.cpp/
 
 # E10 synthetic data generation output (HPC), if pulled down locally
 jobs/synthetic_data.jsonl
+
+# RL-tIoU branch (see RL_TIOU_NOTES.md): HPC-side outputs if pulled down locally
+rl_results/
+checkpoints_rl/
+checkpoints_e9/

@@ -1,0 +1,63 @@
+#!/bin/bash
+#BSUB -J medqa_rl_grpo
+#BSUB -q gpua10
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 6:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl_grpo_%J.out
+#BSUB -e /work3/s234812/nordic_cup_rl/medical-appointment/logs/rl_grpo_%J.err
+#
+# RL (GRPO) with the real eval metric as reward -- see RL_TIOU_NOTES.md.
+#
+# gpua10, not gpua100: checked 2026-09-18 18:30, gpua100 had ~2000 pending
+# jobs vs 8 on gpua10, and a 3B bf16 model + LoRA + 8 sampled completions per
+# prompt fits a 24GB A10 with gradient checkpointing. Nothing here depends on
+# the GPU model; swap the -q line for gpul40s/gpua100 if gpua10 backs up.
+#
+# This is the RL branch's OWN workspace (/work3/s234812/nordic_cup_rl), kept
+# separate from the leaderboard branch's /work3/s234812/nordic_cup so neither
+# session's rsync/jobs can clobber the other. It deliberately REUSES that
+# workspace's .venv (already has trl 1.13 / peft 0.21 / torch 2.6+cu124) and
+# HF cache (already has the base model) read-only -- see hpc_setup_rl.sh.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup_rl/medical-appointment
+mkdir -p logs rl_results checkpoints_rl
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+SHARED=/work3/s234812/nordic_cup/medical-appointment
+export HF_HOME=$SHARED/.hf_cache          # base model is cached here; compute nodes have no internet
+export HF_HUB_OFFLINE=1                   # never even try to reach the hub from the compute node
+export XDG_CACHE_HOME=/work3/s234812/nordic_cup_rl/.cache   # torch/inductor/etc caches off zhome's small quota
+mkdir -p "$XDG_CACHE_HOME"
+
+module load python3/3.11.9
+source $SHARED/.venv/bin/activate
+unset PYTHONPATH  # module load leaves a PYTHONPATH that shadows the venv's own packages
+
+RUN=${RUN:-r1}
+FOLDS=${FOLDS:-"0 1 2 3 4"}
+EXTRA=${EXTRA:-}   # e.g. EXTRA="--lr 1e-5 --beta 0.02 --temperature 1.2"
+
+# Resumable: a fold whose final eval exists is skipped, so a walltime kill
+# just costs a resubmit with the same RUN.
+for FOLD in $FOLDS; do
+    if [ -f "rl_results/$RUN/fold${FOLD}_final.json" ]; then
+        echo "=== fold $FOLD already done for run $RUN, skipping ==="
+        continue
+    fi
+    echo "=== fold $FOLD: $(date) ==="
+    python jobs/rl_grpo_train.py --fold "$FOLD" --run "$RUN" $EXTRA
+done
+
+echo "Job finished $(date)"
+python tools/rl_pool.py "rl_results/$RUN" || true
+echo "Pull results back with:"
+echo "  rsync -avz hpc-transfer:/work3/s234812/nordic_cup_rl/medical-appointment/rl_results/ medical-appointment/rl_results/"
