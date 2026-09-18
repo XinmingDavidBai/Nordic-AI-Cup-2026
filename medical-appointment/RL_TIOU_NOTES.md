@@ -83,6 +83,12 @@ on gpua100. Whichever dispatches first takes the fold; the other skips it.
 Jobs: `medqa_rl_grpo` (r1), `medqa_rl_grpo_r2`, `medqa_rl2_clause` (c1) on
 gpua10; `rl_r1_f0..4`, `rl2_c1_f0..4` on gpua100. Status: `ssh hpc 'bash -lc "bjobs -w"'`.
 
+**2026-09-18 20:00: DTU HPC service window until Monday 21/09 08:00, no
+logins.** All 25 jobs were still PEND when it started. On Monday: check
+`bjobs -w` first; if the queue was flushed by the maintenance, resubmit with
+the same commands (section 3 / section 5), the fold locks and result files
+make that idempotent.
+
 Adoption rule (same spirit as NEXT_STEPS.md): RL final pooled must beat the
 *init* pooled HF number by >= 0.01 AND its Mac-side CV replay must beat
 0.7255; then the `final` (all-39) adapter gets exported and the live worst-case
