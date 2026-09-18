@@ -1,0 +1,77 @@
+#!/bin/bash
+#BSUB -J medqa_synthetic
+#BSUB -q gpua100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 8
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=32GB]"
+#BSUB -W 6:00
+#BSUB -B
+#BSUB -N
+#BSUB -u s234812@dtu.dk
+#BSUB -o /work3/s234812/nordic_cup/medical-appointment/logs/synthetic_%J.out
+#BSUB -e /work3/s234812/nordic_cup/medical-appointment/logs/synthetic_%J.err
+#
+# Defaults to a 32B AWQ model (~18GB weights) rather than the 70B the plan
+# mentions as an example, because I could not verify from the login node
+# whether DTU's gpua100 pool is 40GB or 80GB cards, or the correct LSF
+# resource-selection string for it (a guessed `select[gpu80gb]` risked a
+# flat "Bad resource requirement syntax" rejection on submit, worse than a
+# smaller model). If you know the nodes are 80GB, add the right `-R select[...]`
+# line yourself and set VLLM_MODEL=hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4
+# below for closer alignment with the plan's suggestion.
+
+set -euo pipefail
+cd /work3/s234812/nordic_cup/medical-appointment
+mkdir -p logs
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+# Must match hpc_setup_vllm.sh's HF_HOME exactly, or the model re-downloads
+# here instead of using what was already cached (and zhome's quota is too
+# small for a 32B/70B model either way).
+export HF_HOME=/work3/s234812/nordic_cup/medical-appointment/.hf_cache
+
+module load python3/3.11.9
+source .venv-vllm/bin/activate  # separate venv from .venv (finetune deps); see hpc_setup_vllm.sh
+unset PYTHONPATH  # module load leaves a PYTHONPATH that shadows the venv's own packages
+
+VLLM_MODEL=${VLLM_MODEL:-Qwen/Qwen2.5-32B-Instruct-AWQ}
+
+echo "Starting vLLM server ($VLLM_MODEL) ..."
+python -m vllm.entrypoints.openai.api_server \
+    --model "$VLLM_MODEL" \
+    --quantization awq \
+    --max-model-len 4096 \
+    --gpu-memory-utilization 0.90 \
+    --port 8000 \
+    > logs/vllm_server_${LSB_JOBID:-local}.log 2>&1 &
+VLLM_PID=$!
+
+echo "Waiting for vLLM server to come up..."
+READY=0
+for i in $(seq 1 60); do
+    if curl -s http://localhost:8000/v1/models > /dev/null 2>&1; then
+        echo "vLLM ready after ${i}0s"
+        READY=1
+        break
+    fi
+    sleep 10
+done
+if [ "$READY" -eq 0 ]; then
+    echo "vLLM server never came up after 600s -- check logs/vllm_server_${LSB_JOBID:-local}.log" >&2
+    kill $VLLM_PID 2>/dev/null || true
+    exit 1
+fi
+
+echo "Generating synthetic consultations..."
+python jobs/synthetic_generate.py --n 2000 --model "$VLLM_MODEL" --out jobs/synthetic_data.jsonl
+
+kill $VLLM_PID 2>/dev/null || true
+echo "Job finished $(date)"
+echo "Copy jobs/synthetic_data.jsonl back, e.g.:"
+echo "  rsync -avz s234812@transfer.gbar.dtu.dk:/work3/s234812/nordic_cup/medical-appointment/jobs/synthetic_data.jsonl ./jobs/"
+echo "Then locally: python tools/build_synthetic_finetune_data.py"
+echo "  (appends synthetic examples to tools/finetune_dataset.jsonl for E9;"
+echo "   judge any model trained on this by its held-out REAL folds only, per E10's risk note)"
