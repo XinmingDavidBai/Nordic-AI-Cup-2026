@@ -371,6 +371,15 @@ def ask(
     llm_seg_idx = data.get('segment')
     top_indices = {i for i, _ in top}
     if isinstance(llm_seg_idx, int) and 0 <= llm_seg_idx < len(segments) and llm_seg_idx in top_indices:
+        # E1: when the LLM citation and the retrieval best disagree by exactly one
+        # segment, the fact is often stated twice (patient states it, doctor
+        # confirms it) and the gold span sometimes straddles both; union their
+        # refined spans instead of picking one. Do not widen for |delta| > 1.
+        if abs(llm_seg_idx - best_idx) == 1:
+            lo, hi = min(llm_seg_idx, best_idx), max(llm_seg_idx, best_idx)
+            lo_span = refine_span(segments[lo], question)
+            hi_span = refine_span(segments[hi], question)
+            return True, (lo_span[0], hi_span[1])
         # Facts are often stated twice; annotators tend to mark the first mention.
         center_idx = min(llm_seg_idx, best_idx)
     else:
