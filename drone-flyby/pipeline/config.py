@@ -172,7 +172,7 @@ POLICY_LEVEL_BIAS = {
     2: _float('POLICY_LEVEL_BIAS_2', 1.0),
 }
 # 'greedy' (value map) | 'hold_l0' (never zoom) | 'sweep_l1' (fixed patrol)
-POLICY_MODE = _str('POLICY_MODE', 'greedy')
+POLICY_MODE = _str('POLICY_MODE', 'sweep_l1')
 
 # --------------------------------------------------------------------------- #
 # Recording / logging
