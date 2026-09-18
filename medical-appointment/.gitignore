@@ -81,3 +81,5 @@ cython_debug/
 .devcontainer
 .jupyter
 NEXT_STEPS.md
+# per-experiment replay outputs
+tools/results_E*.json
