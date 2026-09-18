@@ -1,5 +1,8 @@
 #!/bin/bash
-# Run this ON THE VM that serves medical-appointment's api.py.
+# Run this on whatever machine serves medical-appointment's api.py --
+# a cloud VM or your own Linux PC, doesn't matter. Verified against Ubuntu
+# (bash + systemd); other Linux distros should work the same way as long as
+# they also use systemd, which is most of them.
 #
 # Installs ollama, starts it in the background, and pulls/creates the models
 # example.py needs. `llama3.2-medqa-ft` (the fine-tuned model, now the code's
@@ -21,6 +24,17 @@ echo "=== 1/4: installing ollama ==="
 curl -fsSL https://ollama.com/install.sh | sh
 
 echo "=== 2/4: starting ollama serve in the background ==="
+# On Ubuntu (and most systemd Linux), ollama's installer auto-starts it as a
+# systemd service. That instance won't see CUDA_VISIBLE_DEVICES/
+# OLLAMA_MAX_LOADED_MODELS exported below -- systemd services get their
+# environment from systemd, not from this shell -- so it has to be stopped
+# first and replaced with a manually-started process that does see them.
+if systemctl is-active --quiet ollama 2>/dev/null; then
+    echo "stopping the auto-started ollama systemd service (so our env vars actually apply)..."
+    sudo systemctl stop ollama
+    sudo systemctl disable ollama > /dev/null 2>&1 || true
+fi
+
 export CUDA_VISIBLE_DEVICES=0
 export OLLAMA_MAX_LOADED_MODELS=2
 nohup ollama serve > /tmp/ollama_serve.log 2>&1 &
