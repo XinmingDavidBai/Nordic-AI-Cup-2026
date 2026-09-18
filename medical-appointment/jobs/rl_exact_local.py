@@ -48,7 +48,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--fold', required=True)
 ap.add_argument('--run', default='m1')
 ap.add_argument('--init-dir', default='checkpoints_e9')
-ap.add_argument('--reward', choices=['metric', 'tiou'], default='metric')
+ap.add_argument('--reward', choices=['metric', 'tiou', 'segment'], default='metric')
 ap.add_argument('--epochs', type=int, default=2)
 ap.add_argument('--lr', type=float, default=2e-5)
 ap.add_argument('--entropy', type=float, default=0.03)
@@ -62,6 +62,12 @@ ap.add_argument('--limit', type=int, default=0, help='debug: only this many trai
 ap.add_argument('--eval-limit', type=int, default=0)
 ap.add_argument('--check', action='store_true', help='verify cached scoring == full-sequence scoring on one prompt, then exit')
 ap.add_argument('--seed', type=int, default=0)
+ap.add_argument('--eval-mode', choices=['score', 'generate'], default='score',
+                help='score: argmax over the 9 valid completions by summed log-prob (3s/prompt, greedy-equivalent for a peaked model); '
+                     'generate: HF greedy decoding (hung on MPS on 2026-09-18, ~40s/batch when it worked)')
+ap.add_argument('--no-length-norm', action='store_true',
+                help='policy = softmax over SUMMED candidate log-probs (the actual sequence distribution, peaked) instead of mean-per-token (flat; collapsed and hurt fold 0 in run m1)')
+ap.add_argument('--kl', type=float, default=0.0, help='weight of KL(q || q_init) toward the init policy over the candidate set (reference pass cached per run)')
 ap.add_argument('--prompt-grad', action='store_true',
                 help='also backpropagate through the prompt forward (exact gradient; measured 212s/19GB per prompt on the M1 Pro, so off by default: the default trains only through the candidate tails reading a fixed prompt encoding)')
 args = ap.parse_args()
@@ -112,7 +118,7 @@ def candidates_for(r):
     return out
 
 
-def cand_logprobs(prompt, texts):
+def cand_logprobs(prompt, texts, return_sum=False):
     """Mean token log-prob of each candidate completion (+eos) given the prompt,
     with the prompt forwarded once. Returns a tensor of shape (n,) with grad."""
     p_ids = tok(prompt, add_special_tokens=True)['input_ids']
@@ -142,7 +148,9 @@ def cand_logprobs(prompt, texts):
     lp_rest = torch.gather(F.log_softmax(logits[:, :-1], -1), 2, cand[:, 1:].unsqueeze(-1)).squeeze(-1)  # (n, C-1)
     lp_rest = (lp_rest * mask[:, 1:]).sum(1)
     total = lp_first + lp_rest
-    return total / mask.sum(1)
+    if return_sum:
+        return total / mask.sum(1), total
+    return total if args.no_length_norm else total / mask.sum(1)
 
 
 def full_logprob(prompt, text):
@@ -188,14 +196,54 @@ if args.check:
     sys.exit(0)
 
 
+def eval_by_scoring(name):
+    """Pick the best of the 9 valid completions by summed log-prob (what greedy
+    decoding lands on when the model is confident) and score it exactly like
+    rc.eval_records. Also records the length-normalised policy's argmax."""
+    model.eval()
+    out = []
+    for k, r in enumerate(held_out):
+        e = table[r['question_id']]
+        cands = candidates_for(r)
+        with torch.no_grad():
+            mean_lp, sum_lp = cand_logprobs(rc.render_prompt(r), [c for c, _ in cands], return_sum=True)
+        best = int(sum_lp.argmax()); best_norm = int(mean_lp.argmax())
+        text = cands[best][0]
+        answer, seg = rc.parse_completion(text)
+        said, span, iou = rc.pipeline_outcome(e, bool(answer), seg)
+        rec = {
+            'qid': r['question_id'], 'sid': e['sid'], 'type': e['type'], 'fold': fold,
+            'want': e['want'], 'said': said, 'span': span, 'gold': e['gold'],
+            'top_idx': e['top_idx'], 'best_idx': e['best_idx'],
+            'cited': seg, 'parsed': True, 'raw': text, 'reward': rc.reward_metric(e, answer, seg),
+            'p_argmax': float(torch.softmax(sum_lp, 0)[best]), 'argmax_norm_same': best == best_norm,
+            'reward_norm_argmax': cands[best_norm][1],
+        }
+        if e['gold']:
+            rec['iou'] = iou; rec['oracle_idx'] = e['oracle_idx']; rec['oracle_in_topk'] = e['oracle_in_topk']
+        out.append(rec)
+        if (k + 1) % 20 == 0:
+            print(f'  {name} eval {k+1}/{len(held_out)}', flush=True)
+        if device == 'mps':
+            torch.mps.empty_cache()
+    model.train()
+    return out
+
+
 def do_eval(name):
     if args.skip_eval or not held_out:
         return None
     t = time.time()
-    recs = rc.eval_records(model, tok, held_out, table, fold, batch_size=args.eval_batch, desc=name)
+    if args.eval_mode == 'score':
+        recs = eval_by_scoring(name)
+    else:
+        recs = rc.eval_records(model, tok, held_out, table, fold, batch_size=args.eval_batch, desc=name)
     path = os.path.join(res_dir, f'{tag}_{name}.json')
     json.dump(recs, open(path, 'w'), indent=1)
     s = rc.summarize(recs)
+    if args.eval_mode == 'score':
+        s['norm_argmax_differs'] = sum(1 for x in recs if not x['argmax_norm_same'])
+        s['mean_p_argmax'] = round(sum(x['p_argmax'] for x in recs) / len(recs), 3)
     print(f'[{tag} {name}] {s}  ({time.time()-t:.0f}s) -> {path}', flush=True)
     return s
 
@@ -206,12 +254,36 @@ if args.resume and os.path.isfile(state_path):
     print(f'resuming at epoch {state["epoch"]} prompt {state["idx"]} step {state["step"]}', flush=True)
 
 init_summary = None
-if not (args.resume and state['step'] > 0):
+if args.resume and state['step'] > 0:
+    if os.path.isfile(os.path.join(res_dir, f'{tag}_init.json')):
+        init_summary = rc.summarize(json.load(open(os.path.join(res_dir, f'{tag}_init.json'))))
+    if args.eval_only:  # evaluate the resumed checkpoint (e.g. at an epoch boundary) and exit
+        do_eval(f'epoch{state["epoch"]}_step{state["step"]}')
+        sys.exit(0)
+else:
     init_summary = do_eval('init')
-elif os.path.isfile(os.path.join(res_dir, f'{tag}_init.json')):
-    init_summary = rc.summarize(json.load(open(os.path.join(res_dir, f'{tag}_init.json'))))
-if args.eval_only:
-    sys.exit(0)
+    if args.eval_only:
+        sys.exit(0)
+
+ref_lps = {}
+if args.kl > 0:
+    ref_path = os.path.join(res_dir, f'{tag}_ref_lps.json')
+    if os.path.isfile(ref_path):
+        ref_lps = json.load(open(ref_path))
+    todo = [r for r in train_records if r['question_id'] not in ref_lps]
+    if todo:
+        print(f'reference pass (init policy candidate log-probs) for {len(todo)} prompts ...', flush=True)
+        model.eval(); t_ref = time.time()
+        for k, r in enumerate(todo):
+            with torch.no_grad():
+                lp = cand_logprobs(rc.render_prompt(r), [c for c, _ in candidates_for(r)])
+            ref_lps[r['question_id']] = lp.float().cpu().tolist()
+            if device == 'mps':
+                torch.mps.empty_cache()
+            if (k + 1) % 50 == 0:
+                print(f'  ref {k+1}/{len(todo)} ({(time.time()-t_ref)/60:.0f} min)', flush=True)
+        json.dump(ref_lps, open(ref_path, 'w'))
+        model.train()
 
 opt = torch.optim.AdamW(trainable, lr=args.lr, weight_decay=0.0)
 steps_per_epoch = math.ceil(len(train_records) / args.prompts_per_step)
@@ -246,7 +318,12 @@ for epoch in range(state['epoch'], args.epochs):
             q = torch.softmax(lps, 0)
             J = (q * rew).sum()
             H = -(q * torch.log(q + 1e-12)).sum()
-            loss = -(J + args.entropy * H) / args.prompts_per_step
+            loss = -(J + args.entropy * H)
+            if args.kl > 0:
+                q_ref = torch.softmax(torch.tensor(ref_lps[r['question_id']], device=device), 0)
+                kl = (q * (torch.log(q + 1e-12) - torch.log(q_ref + 1e-12))).sum()
+                loss = loss + args.kl * kl
+            loss = loss / args.prompts_per_step
             loss.backward()
             ev_sum += J.item(); ent_sum += H.item(); pbest_sum += q[rew.argmax()].item()
             acc_n += 1

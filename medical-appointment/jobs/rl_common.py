@@ -113,7 +113,43 @@ def reward_tiou(entry, answer, seg):
     return 1.0 if not said else 0.0
 
 
-REWARDS = {'metric': reward_metric, 'tiou': reward_tiou}
+_SEG_BOUNDS = None
+
+
+def _seg_bounds(sid):
+    """Whole-segment (start, end) per index from tools/words_cache.json (lazy)."""
+    global _SEG_BOUNDS
+    if _SEG_BOUNDS is None:
+        cache = json.load(open(os.path.join(HERE, '..', 'tools', 'words_cache.json')))
+        _SEG_BOUNDS = {k: [(s['start'], s['end']) for s in v] for k, v in cache.items()}
+    return _SEG_BOUNDS[sid]
+
+
+def _iou(a, b):
+    inter = max(0.0, min(a[1], b[1]) - max(a[0], b[0]))
+    union = max(a[1], b[1]) - min(a[0], b[0])
+    return inter / union if union > 0 else 0.0
+
+
+def reward_segment(entry, answer, seg):
+    """Like reward_metric but the localisation term is the IoU of the CITED
+    segment itself (whole-segment bounds), without the pipeline's earlier-pick /
+    E1-union post-processing. Run m1 (2026-09-18) showed that post-processing
+    creates reward ties (any later index falls back to retrieval's pick and
+    scores the same), which the policy exploited by drifting one index later --
+    a habit that transferred to held-out prompts and cost tIoU. This reward has
+    a unique best index per prompt."""
+    if answer is None:
+        return FORMAT_PENALTY
+    said = bool(answer)
+    r = 0.4 * float(said == entry['want'])
+    if entry['want'] and said:
+        if seg is not None and seg in entry['top_idx']:
+            r += 1.2 * _iou(entry['gold'], _seg_bounds(entry['sid'])[seg])
+    return r
+
+
+REWARDS = {'metric': reward_metric, 'tiou': reward_tiou, 'segment': reward_segment}
 
 
 def make_reward_fn(table, kind='metric'):
