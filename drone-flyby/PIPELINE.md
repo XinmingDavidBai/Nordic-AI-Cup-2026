@@ -169,9 +169,13 @@ both machines.
 Watch out: helsinki has one instance per class, and validation/evaluation use
 different scenes. The default val split (every 6th frame) leaks because
 neighbouring frames look almost the same. Ways to get more data:
+- The synthetic set (`synth/README.md`): the helsinki objects composited onto
+  varied open aerial imagery, added with `--extra-dataset datasets/synth_v2/train`.
 - `python api.py` records every request of a **validation** run to
-  `recordings/` by default (the rules allow recording the validation sequence).
-  Label or pseudo-label those views, then add them with `--extra-dataset`.
+  `recordings/` by default. The rules would allow training on those views, but
+  team rule: they are for **evaluation and decisions only**, never training
+  input, labelled or not (`synth/guard.py` refuses them). Summarise them with
+  `summarize_recordings.py` and score checkpoints on them with `synth/evaluate.py`.
 
 Then:
 
