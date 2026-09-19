@@ -98,3 +98,5 @@ tools/.llama.cpp/
 
 # E10 synthetic data generation output (HPC), if pulled down locally
 jobs/synthetic_data.jsonl
+
+medqa_deploy
