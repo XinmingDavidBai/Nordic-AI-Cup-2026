@@ -8,6 +8,19 @@
 #   PREFLIGHT_ONLY=1 bash jobs/train.lsf    # optional: checks the inputs in a second, no GPU, no queue
 #   bsub < jobs/train.lsf
 #
+# Two ways to train (settings below can be overridden from the submit command;
+# LSF hands the submitting shell's environment to the job):
+#   From scratch (yolo11s.pt, 100 epochs, ~1.5-2 h):
+#     bsub < jobs/train.lsf
+#   Fine-tune an earlier checkpoint (40 epochs, about 40 % of the GPU time):
+#     INIT_WEIGHTS=weights/candidate_<name>_<jobid>.pt bsub < jobs/train.lsf
+#   INIT_WEIGHTS replaces MODEL and makes EPOCHS default to 40 (set EPOCHS=... to
+#   change it); the run gets its own name (..._ft) so it never overwrites the
+#   from-scratch run. Default data is synth_v3 (dark object silhouettes like the
+#   validation renderer, long cast shadows, backgrounds at any angle, red-roof
+#   residential hard negatives; synth/README.md); SYNTH=synth_v2 rebuilds the old set.
+#   A synth_v3 composed by an older version of the recipe is refused: delete it.
+#
 # The job runs in the folder it was submitted from and writes logs/ there; LSF
 # mails the submitting user (no username is hard-coded, anyone can submit it).
 # Data steps are skipped when their output already exists, so a resubmit after a
@@ -39,39 +52,51 @@ if [ ! -f train_detector.py ]; then
 fi
 mkdir -p logs
 
-# ---- run config -------------------------------------------------------------
-MODEL=yolo11s.pt          # must be cached by hpc_setup.sh (compute nodes are offline)
-EPOCHS=100                # ~6600 images/epoch (plus helsinki crops): ~45 s/epoch on an A100
-IMGSZ=960
-BATCH=32
+# ---- run config (each can be set from the submit command, see above) ---------
+INIT_WEIGHTS=${INIT_WEIGHTS:-}   # set: fine-tune this checkpoint instead of training MODEL from scratch
+MODEL=${MODEL:-yolo11s.pt}       # must be cached by hpc_setup.sh (compute nodes are offline)
+if [ -n "$INIT_WEIGHTS" ]; then
+    MODEL=$INIT_WEIGHTS
+    EPOCHS=${EPOCHS:-40}
+fi
+EPOCHS=${EPOCHS:-100}            # ~6600 images/epoch (plus helsinki crops): ~45 s/epoch on an A100
+IMGSZ=${IMGSZ:-960}
+BATCH=${BATCH:-32}
 WORKERS=$(( ${LSB_DJOB_NUMPROC:-8} - 1 ))
-USE_SYNTH=1               # 0 = helsinki crops only (the old baseline job)
-SYNTH=synth_v2            # name, sizes and seed must match to reproduce synth_v2 exactly
+USE_SYNTH=${USE_SYNTH:-1}        # 0 = helsinki crops only (the old baseline job)
+SYNTH=${SYNTH:-synth_v3}         # name, sizes, seed and recipe must match to reproduce a set exactly
 SYNTH_TRAIN=6000
 SYNTH_VAL=600
 SYNTH_SEED=0
-NAME=drone_detector_synth
+case "$SYNTH" in
+    synth_v2) COMPOSE_ARGS=(--legacy-v2) ;;              # the old recipe, byte-identical
+    *) COMPOSE_ARGS=() ;;                                # current recipe (synth/compose.py RECIPE)
+esac
+NAME=${NAME:-drone_detector_${SYNTH}${INIT_WEIGHTS:+_ft}}
 # ------------------------------------------------------------------------------
 
 ASSETS=datasets/synth_assets
 problems=()
 [ -f .venv/bin/activate ] || problems+=("no .venv: run 'bash jobs/hpc_setup.sh' on the login node")
-[ -f "$MODEL" ] || problems+=("$MODEL not cached here: run 'bash jobs/hpc_setup.sh' on the login node")
+if [ -n "$INIT_WEIGHTS" ]; then
+    [ -f "$INIT_WEIGHTS" ] || problems+=("INIT_WEIGHTS=$INIT_WEIGHTS does not exist (path relative to drone-flyby/)")
+else
+    [ -f "$MODEL" ] || problems+=("$MODEL not cached here: run 'bash jobs/hpc_setup.sh' on the login node")
+fi
 [ -d src/helsinki/images ] || problems+=("src/helsinki/images missing: incomplete clone?")
-if [ "$USE_SYNTH" = 1 ] && [ ! -f "datasets/$SYNTH/manifest.json" ]; then
-    [ -f synth/backgrounds_pinned.json ] || problems+=("synth/backgrounds_pinned.json missing: git pull")
-    [ -f "$ASSETS/backgrounds/backgrounds.json" ] || problems+=("no synthetic backgrounds in $ASSETS/backgrounds: run 'bash jobs/hpc_setup.sh' on the login node, or copy them from the laptop (synth/README.md)")
-    if [ ! -f "$ASSETS/cutouts/cutouts.json" ] && [ ! -f "$ASSETS/mobile_sam.pt" ]; then
-        problems+=("no cut-out bank ($ASSETS/cutouts, committed: git pull) and no SAM checkpoint to build one")
-    fi
+if [ "$USE_SYNTH" = 1 ]; then
+    # Stale composed set (older recipe), missing pinned backgrounds (on the login node:
+    # bash jobs/hpc_setup.sh re-fetches them), missing cut-outs. Standard library only.
+    while IFS= read -r line; do problems+=("$line"); done < <(python3 -m synth.preflight "$SYNTH" || true)
 fi
 if [ ${#problems[@]} -gt 0 ]; then
     echo "NOT READY:" >&2
     printf '  - %s\n' "${problems[@]}" >&2
     exit 1
 fi
+echo "Config: model $MODEL, $EPOCHS epochs, data helsinki$([ "$USE_SYNTH" = 1 ] && echo " + $SYNTH ${COMPOSE_ARGS[*]:-}"), run name $NAME"
 if [ "${PREFLIGHT_ONLY:-0}" = 1 ]; then
-    echo "Preflight OK. Submit with: bsub < jobs/train.lsf"
+    echo "Preflight OK. Submit with the same settings, e.g.: ${INIT_WEIGHTS:+INIT_WEIGHTS=$INIT_WEIGHTS }bsub < jobs/train.lsf"
     exit 0
 fi
 
@@ -91,7 +116,7 @@ if [ "$USE_SYNTH" = 1 ]; then
         resume=()
         [ -d "datasets/$SYNTH" ] && resume=(--resume)    # an earlier job was cut off mid-compose
         python -m synth.compose --name "$SYNTH" --train "$SYNTH_TRAIN" --val "$SYNTH_VAL" --seed "$SYNTH_SEED" \
-            --workers "$WORKERS" ${resume[@]+"${resume[@]}"}
+            --workers "$WORKERS" ${COMPOSE_ARGS[@]+"${COMPOSE_ARGS[@]}"} ${resume[@]+"${resume[@]}"}
     fi
     EXTRA_ARGS=(--extra-dataset "datasets/$SYNTH/train")
 fi
@@ -121,7 +146,8 @@ cp "runs/$NAME/weights/last.pt" "weights/candidate_${TAG}.pt"
 cp "runs/$NAME/weights/best.pt" "weights/candidate_${TAG}_helsinki_best.pt"
 
 if [ "$USE_SYNTH" = 1 ]; then
-    # Held-out synthetic locations: compare with 0.03 mAP50 (both old checkpoints on synth_v2 val).
+    # Held-out synthetic locations. synth_v3 val holds dark objects too, so it is
+    # harder than synth_v2 val: compare checkpoints on the same val set.
     echo "== Scoring on datasets/$SYNTH val ($(date))"
     python -m synth.evaluate "weights/candidate_${TAG}.pt" "weights/candidate_${TAG}_helsinki_best.pt" \
         --synthetic "datasets/$SYNTH/data.yaml" --device 0 --out "logs/eval_${TAG}.json"

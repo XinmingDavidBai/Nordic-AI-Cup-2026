@@ -90,6 +90,10 @@ DETECTOR_IMGSZ = _int('DETECTOR_IMGSZ', 960)           # try 1280 for tiny objec
 DETECTOR_MIN_CONF = _float('DETECTOR_MIN_CONF', 0.10)
 DETECTOR_NMS_IOU = _float('DETECTOR_NMS_IOU', 0.50)
 DETECTOR_HALF = _bool('DETECTOR_HALF', False)          # fp16, GPU only
+# Test-time gamma on the detector input: out = 255 * (in / 255) ** gamma. Below 1
+# lifts dark pixels (the validation renderer draws objects as dark silhouettes);
+# 1.0 = off. A probe, not a fix: a model trained on dark objects should not need it.
+DETECTOR_GAMMA = _float('DETECTOR_GAMMA', 1.0)
 
 # api.py refuses to start unless the detector resolved to a working 'yolo':
 # a gt/none/edges server answers "healthy" while detecting nothing on the real

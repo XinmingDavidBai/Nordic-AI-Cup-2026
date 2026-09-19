@@ -1,6 +1,7 @@
 """Composite object cut-outs onto aerial backgrounds, rendered like the evaluator.
 
-    python -m synth.compose                               # datasets/synth_v2: 6000 train + 600 val views
+    python -m synth.compose                               # datasets/synth_v3: 6000 train + 600 val views
+    python -m synth.compose --name synth_v2 --legacy-v2   # the previous set, byte-identical
     python -m synth.compose --resume                      # finish an interrupted run (same arguments)
     python -m synth.compose --train 24 --val 8 --name synth_smoke   # quick look
 
@@ -10,12 +11,17 @@ objects at their real source-pixel size, then INTER_AREA it down to 960x540.
 
 Per image:
 - background: a random crop of an aerial mosaic, scaled so one source pixel is
-  ~0.12-0.26 m (the drone's scale), random 90-degree turn / flip, mild colour shift;
+  ~0.12-0.26 m (the drone's scale), turned to any angle (cut from inside the
+  turned area, no empty corners) / flipped, mild colour shift; 15 %
+  (--residential-share) on dense residential / red-roof scenes, half of those
+  empty and the rest 1-2 objects (hard negatives for the ta-ta flood);
 - objects: 0-8 cut-outs, classes balanced, any rotation (the box is re-fitted
   tightly to the rotated mask, so rotation stays exact), +-15 % size, flips,
-  brightness / contrast / saturation / hue jitter, a soft drop shadow, a little
-  blur and noise; some placed across the view edge (labelled if >= 40 % visible,
-  like train_detector.py);
+  brightness / contrast / saturation / hue jitter, a cast shadow (the outline
+  swept away from the sun, length scaled with object size, towers longest, a
+  third of them dark; the label box stays on the object), a little blur and noise; some placed across the view edge (labelled if >= 40 % visible,
+  like train_detector.py); 60 % (--dark-share) rendered as dark, flat, desaturated
+  silhouettes, as the validation renderer draws them (dark_render);
 - lighting: whole-image white balance, gamma, hue and saturation shifts, and
   25 % of images greyscale (--gray-share), so colour and lighting are not cues
   the model can lean on (they did not transfer to the validation scene);
@@ -58,6 +64,9 @@ from synth.fetch_backgrounds import EXCLUDE_BBOX  # noqa: E402
 from synth.guard import assert_training_input  # noqa: E402
 
 ASSETS = ROOT / 'datasets' / 'synth_assets'
+# Written to manifest.json. Bump it whenever the default recipe changes: the
+# training scripts refuse a composed set whose recipe differs.
+RECIPE = 'v3-dark-castshadow-rotation-residential'
 CLASS_INDEX = {name: i for i, name in enumerate(OBJECT_CLASSES)}
 VIEW_W, VIEW_H = TRANSMITTED_VIEW_SIZE
 
@@ -84,8 +93,12 @@ def load_cutouts(root: Path):
     return bank, manifest
 
 
-def load_backgrounds(root: Path):
+def load_backgrounds(root: Path, include_tagged=True):
+    """Backgrounds by split. include_tagged=False leaves out tagged extras (e.g. the
+    residential hard negatives added after synth_v2), which --legacy-v2 needs."""
     index = json.loads((root / 'backgrounds.json').read_text(encoding='utf-8'))
+    if not include_tagged:
+        index = {**index, 'images': [e for e in index['images'] if not e.get('tag')]}
     by_split = {'train': [], 'val': []}
     lon0, lat0, lon1, lat1 = (float(v) for v in EXCLUDE_BBOX.split(','))
     for e in index['images']:
@@ -117,8 +130,10 @@ class BackgroundCache:
 # Image pieces
 # --------------------------------------------------------------------------- #
 
-def background_canvas(rng, cache, entry, level):
+def background_canvas(rng, cache, entry, level, free_rotation=False):
     """Source-resolution canvas for one view at ``level``; returns (canvas, m_per_source_px)."""
+    if free_rotation:
+        return background_canvas_rotated(rng, cache, entry, level)
     mosaic = cache.get(entry)
     mpp = float(entry['m_per_px'])
     w, h = SOURCE_REGION_SIZES[level]
@@ -141,6 +156,33 @@ def background_canvas(rng, cache, entry, level):
     return canvas, target
 
 
+def background_canvas_rotated(rng, cache, entry, level):
+    """Like background_canvas, at any angle (the validation flight runs diagonally
+    over its roads and blocks, 90-degree turns never show that). The crop is cut
+    from inside the rotated area, so there are no empty corners."""
+    mosaic = cache.get(entry)
+    mpp = float(entry['m_per_px'])
+    w, h = SOURCE_REGION_SIZES[level]
+    angle = rng.uniform(0, 360)
+    c, s = abs(math.cos(math.radians(angle))), abs(math.sin(math.radians(angle)))
+    bw, bh = int(math.ceil(w * c + h * s)) + 4, int(math.ceil(w * s + h * c)) + 4   # canvas px holding the turned view
+    mh, mw = mosaic.shape[:2]
+    target = rng.uniform(0.12, 0.26)                        # metres per SOURCE pixel we want
+    target = min(target, (mw - 1) * mpp / bw, (mh - 1) * mpp / bh)   # the mosaic must cover the turned view
+    crop_w, crop_h = int(math.ceil(bw * target / mpp)), int(math.ceil(bh * target / mpp))
+    x0, y0 = rng.randint(0, mw - crop_w), rng.randint(0, mh - crop_h)
+    crop = mosaic[y0:y0 + crop_h, x0:x0 + crop_w]
+    big = cv2.resize(crop, (bw, bh), interpolation=cv2.INTER_AREA if crop_w > bw else cv2.INTER_LINEAR)
+    m = cv2.getRotationMatrix2D((bw / 2, bh / 2), angle, 1.0)
+    m[0, 2] += w / 2 - bw / 2
+    m[1, 2] += h / 2 - bh / 2
+    canvas = cv2.warpAffine(big, m, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    if rng.random() < 0.5:
+        canvas = canvas[:, ::-1]
+    canvas = jitter_colour(rng, canvas.astype(np.float32), strength=1.0)
+    return canvas, target
+
+
 def jitter_colour(rng, img, strength=1.0):
     """Brightness / contrast / saturation / hue jitter on a float32 BGR image."""
     b = 1.0 + rng.uniform(-0.22, 0.18) * strength
@@ -151,6 +193,29 @@ def jitter_colour(rng, img, strength=1.0):
     hsv[..., 0] = (hsv[..., 0] + rng.uniform(-4, 4) * strength) % 180
     hsv[..., 1] *= 1.0 + rng.uniform(-0.25, 0.2) * strength
     return cv2.cvtColor(np.clip(hsv, 0, 255).astype(np.uint8), cv2.COLOR_HSV2BGR).astype(np.float32)
+
+
+def dark_render(rng, bgr, alpha, ground_v):
+    """Render an object as the validation renderer does: a dark, flat, washed-out silhouette.
+
+    In the recorded validation run objects sit at about 0.3-0.4x the brightness (V)
+    of the ground around them (V ~45-65 on V ~140-175 ground), with little colour
+    or texture; helsinki's sit at ~0.7x and, pasted on our darker backgrounds, at
+    ~1.0x. So the target is set against the ground it lands on, not as a fixed
+    factor: flatten contrast, darken to 0.28-0.6x the local ground (never
+    brighten), drain saturation, sometimes blur away fine texture. Shape is what
+    is left."""
+    w = alpha[..., None]
+    mean = (bgr * w).sum(axis=(0, 1), keepdims=True) / max(float(w.sum()), 1e-4)
+    bgr = (bgr - mean) * rng.uniform(0.4, 1.0) + mean
+    obj_v = float((bgr.max(axis=2) * alpha).sum() / max(float(alpha.sum()), 1e-4))
+    bgr = bgr * min(1.0, ground_v * rng.uniform(0.28, 0.6) / max(obj_v, 1.0))
+    hsv = cv2.cvtColor(np.clip(bgr, 0, 255).astype(np.uint8), cv2.COLOR_BGR2HSV).astype(np.float32)
+    hsv[..., 1] *= rng.uniform(0.2, 0.7)
+    bgr = cv2.cvtColor(np.clip(hsv, 0, 255).astype(np.uint8), cv2.COLOR_HSV2BGR).astype(np.float32)
+    if rng.random() < 0.5:
+        bgr = cv2.GaussianBlur(bgr, (0, 0), rng.uniform(0.5, 1.2))
+    return bgr
 
 
 def transform_object(rng, rgba):
@@ -184,10 +249,16 @@ def paste(canvas, bgr, alpha, x, y, shadow):
     """Alpha-composite at (x, y) (may hang over the edge); returns the visible box or None."""
     H, W = canvas.shape[:2]
     h, w = alpha.shape
-    if shadow is not None:
+    if shadow is not None and len(shadow) == 5:     # cast shadow: silhouette swept along the sun direction
+        dx, dy, strength, blur, _ = shadow
+        s, ox, oy = cast_shadow(alpha, dx, dy)
+        s = cv2.GaussianBlur(s, (0, 0), blur) * strength
+        _blend(canvas, np.zeros(s.shape + (3,), np.float32), s, x + ox, y + oy)
+    elif shadow is not None:                         # synth_v2: one soft offset copy
         dx, dy, strength, blur = shadow
         s = cv2.GaussianBlur(alpha, (0, 0), blur) * strength
         _blend(canvas, np.zeros_like(bgr), s, x + dx, y + dy)
+    # The label box below comes from the object's alpha alone, never the shadow.
     _blend(canvas, bgr, alpha, x, y)
     ys, xs = np.nonzero(alpha > 0.35)
     bx1, by1, bx2, by2 = x + xs.min(), y + ys.min(), x + xs.max() + 1, y + ys.max() + 1
@@ -196,6 +267,22 @@ def paste(canvas, bgr, alpha, x, y, shadow):
     if vx2 <= vx1 or vy2 <= vy1:
         return None, 0.0
     return (vx1, vy1, vx2, vy2), (vx2 - vx1) * (vy2 - vy1) / full
+
+
+def cast_shadow(alpha, dx, dy):
+    """The silhouette swept from the object to (dx, dy): a tall thing's shadow is its
+    outline stretched away from the sun. Returns (mask, x offset, y offset)."""
+    h, w = alpha.shape
+    ox, oy = min(0, dx), min(0, dy)
+    out = np.zeros((h + abs(dy), w + abs(dx)), np.float32)
+    steps = max(1, int(math.ceil(max(abs(dx), abs(dy)))))
+    for i in range(1, steps + 1):
+        sx, sy = int(round(dx * i / steps)) - ox, int(round(dy * i / steps)) - oy
+        np.maximum(out[sy:sy + h, sx:sx + w], alpha, out=out[sy:sy + h, sx:sx + w])
+    return out, ox, oy
+
+
+TALL = {'large_tower': 1.6, 'small_tower': 1.6}   # shadow length per unit of object size; others 0.5
 
 
 def _blend(canvas, bgr, alpha, x, y):
@@ -224,14 +311,29 @@ def overlaps(box, boxes, limit=0.05):
 # --------------------------------------------------------------------------- #
 
 def make_image(rng, bank, cache, backgrounds, args, class_cycle):
+    v2 = args.legacy_v2
     level = rng.choices((0, 1, 2), weights=args.level_weights)[0]
-    entry = rng.choice(backgrounds)
-    canvas, _ = background_canvas(rng, cache, entry, level)
+    residential = False
+    if v2:
+        entry = rng.choice(backgrounds)
+    else:
+        # Dense residential / red-roof scenes (the ta-ta flood in the validation run)
+        # as hard negatives: empty or sparse.
+        tagged = [e for e in backgrounds if e.get('tag') == 'residential']
+        residential = bool(tagged) and rng.random() < args.residential_share
+        entry = rng.choice(tagged if residential else [e for e in backgrounds if e.get('tag') != 'residential'])
+    canvas, _ = background_canvas(rng, cache, entry, level, free_rotation=not v2)
     H, W = canvas.shape[:2]
     view_scale = W / VIEW_W                            # source px per view px
-    n = 0 if rng.random() < args.empty_share else rng.choice(args.objects_choices)
+    if residential:
+        n = 0 if rng.random() < 0.5 else rng.choice([1, 2])
+    else:
+        n = 0 if rng.random() < args.empty_share else rng.choice(args.objects_choices)
     sun = rng.uniform(0, 2 * math.pi)
-    shadow_len = rng.uniform(1.5, 6.0)
+    if v2:
+        shadow_len = rng.uniform(1.5, 6.0)
+    else:
+        sun_low = rng.uniform(0.15, 1.0)             # shadow length per unit object size (x TALL)
     labels, placed, used = [], [], []
     for _ in range(n):
         name = next(class_cycle)
@@ -256,10 +358,22 @@ def make_image(rng, bank, cache, backgrounds, args, class_cycle):
                 break
         else:
             continue
+        # dark_share 0 draws no random number, so it reproduces synth_v2 exactly.
+        if args.dark_share and rng.random() < args.dark_share:
+            gx1, gy1 = max(x - w // 2, 0), max(y - h // 2, 0)
+            ground = canvas[gy1:min(y + h + h // 2, H), gx1:min(x + w + w // 2, W)]
+            ground_v = float(np.clip(ground, 0, 255).max(axis=2).mean()) if ground.size else 128.0
+            bgr = dark_render(rng, bgr, alpha, ground_v)
         shadow = None
-        if rng.random() < 0.8:
+        if v2 and rng.random() < 0.8:
             shadow = (int(round(math.cos(sun) * shadow_len)), int(round(math.sin(sun) * shadow_len)),
                       rng.uniform(0.25, 0.5), rng.uniform(1.0, 2.5))
+        elif not v2 and rng.random() < 0.85:
+            # Scaled with the object (towers cast long ones), a third of them dark.
+            length = max(1.5, sun_low * TALL.get(name, 0.5) * max(h, w) * rng.uniform(0.8, 1.2))
+            strength = rng.uniform(0.5, 0.85) if rng.random() < 0.35 else rng.uniform(0.25, 0.5)
+            shadow = (int(round(math.cos(sun) * length)), int(round(math.sin(sun) * length)),
+                      strength, rng.uniform(1.0, 2.5), 'cast')
         visible, share = paste(canvas, bgr, alpha, x, y, shadow)
         placed.append(box)
         if visible is None or share < args.min_visible:
@@ -387,7 +501,7 @@ def preview(out, path, n=24, tile=(320, 180)):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--name', default='synth_v2')
+    parser.add_argument('--name', default='synth_v3')
     parser.add_argument('--train', type=int, default=6000)
     parser.add_argument('--val', type=int, default=600)
     parser.add_argument('--seed', type=int, default=0)
@@ -403,16 +517,27 @@ def main() -> int:
                         help='Share of images turned greyscale, so the model cannot rely on colour')
     parser.add_argument('--color-strength', type=float, default=1.0,
                         help='Scale of the whole-image white-balance / gamma / hue / saturation change (0 = off)')
+    parser.add_argument('--dark-share', type=float, default=0.6,
+                        help='Share of objects rendered as dark, flat silhouettes like the validation renderer')
+    parser.add_argument('--residential-share', type=float, default=0.15,
+                        help="Share of images on 'residential' backgrounds (dense housing, red roofs): "
+                             'hard negatives, half of them empty, the rest 1-2 objects')
+    parser.add_argument('--legacy-v2', action='store_true',
+                        help='The synth_v2 recipe, byte-identical: no dark silhouettes, short offset shadows, '
+                             '90-degree background turns, no tagged (residential) backgrounds')
     parser.add_argument('--jpg', action='store_true', help='JPEG q95 instead of PNG (much smaller, slightly lossy)')
     parser.add_argument('--workers', type=int, default=max(1, min(12, (__import__('os').cpu_count() or 2) - 2)))
     parser.add_argument('--resume', action='store_true',
                         help='Keep images an interrupted run already wrote (same arguments!) and render only the rest')
     args = parser.parse_args()
+    if args.legacy_v2:
+        args.dark_share = 0.0
+        args.residential_share = 0.0
 
     cut_root = assert_training_input(args.cutouts)
     bg_root = assert_training_input(args.backgrounds)
     bank, cut_manifest = load_cutouts(cut_root)
-    backgrounds, bg_index = load_backgrounds(bg_root)
+    backgrounds, bg_index = load_backgrounds(bg_root, include_tagged=not args.legacy_v2)
     if cut_manifest.get('validation_recordings_used') or bg_index.get('validation_recordings_used'):
         raise SystemExit('an input manifest says it used validation recordings; refusing')
 
@@ -435,6 +560,7 @@ def main() -> int:
         commit = None
     manifest = {
         'name': args.name, 'created': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_commit': commit, 'args': vars(args),
+        'recipe': 'v2' if args.legacy_v2 else RECIPE,
         'validation_recordings_used': False,
         'inputs_checked': {'cutouts': str(cut_root), 'backgrounds': str(bg_root)},
         'cutout_files': {name: sorted({f for f, _ in items}) for name, items in bank.items()},

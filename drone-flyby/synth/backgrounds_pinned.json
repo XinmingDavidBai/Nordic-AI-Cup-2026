@@ -1427,6 +1427,160 @@
    "m_per_px": 0.1928,
    "tiles": "10x6",
    "sha256": "e4b23c8b204c7dca641d17a605dece69bac0f0ff96e43a3e1f172444398898d4"
+  },
+  {
+   "file": "5ae4ba850b093000130affb5.jpg",
+   "oam_id": "5ae4ba850b093000130affb5",
+   "title": "Villas Baritna Mina",
+   "provider": "Ivan Petrushev",
+   "acquired": "2018-04-27",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 42.4517,
+   "lon": 25.6397,
+   "native_gsd": 0.0613096901536,
+   "size_px": [
+    1536,
+    1536
+   ],
+   "split": "train",
+   "zoom": 19,
+   "m_per_px": 0.2203,
+   "tiles": "6x6",
+   "tag": "residential",
+   "sha256": "1f46bbe343a3b12778d95e0b1db7650840f075e093f2cf99ab309c0b7bfff69e"
+  },
+  {
+   "file": "5ad9eb6a91b5310010e0d56f.jpg",
+   "oam_id": "5ad9eb6a91b5310010e0d56f",
+   "title": "Adzhasan",
+   "provider": "Ivan Petrushev",
+   "acquired": "2017-12-06",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 42.1486,
+   "lon": 24.7589,
+   "native_gsd": 0.0863519741732,
+   "size_px": [
+    2560,
+    1792
+   ],
+   "split": "train",
+   "zoom": 19,
+   "m_per_px": 0.2214,
+   "tiles": "10x7",
+   "tag": "residential",
+   "sha256": "07e65fda590e337f2e69de94e7e55f477474bd23967f53211eab61aed9c414f2"
+  },
+  {
+   "file": "5ad390c191b5310010e0d519.jpg",
+   "oam_id": "5ad390c191b5310010e0d519",
+   "title": "Aturen",
+   "provider": "Ivan Petrushev",
+   "acquired": "2018-04-15",
+   "platform": "satellite",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 42.4045,
+   "lon": 25.5706,
+   "native_gsd": 0.0613264519613,
+   "size_px": [
+    2304,
+    1792
+   ],
+   "split": "train",
+   "zoom": 19,
+   "m_per_px": 0.2205,
+   "tiles": "9x7",
+   "tag": "residential",
+   "sha256": "471bb230e9b027fa9775cb4264feb7b6ac6a14300cdb0b8b39bcc9deeba1054a"
+  },
+  {
+   "file": "5ad7a7c891b5310010e0d550.jpg",
+   "oam_id": "5ad7a7c891b5310010e0d550",
+   "title": "2018-04-16-Лида 3",
+   "provider": "Yauhen Kharuzhy",
+   "acquired": "2018-04-16",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 53.8947,
+   "lon": 25.2985,
+   "native_gsd": 0.05,
+   "size_px": [
+    2816,
+    1792
+   ],
+   "split": "val",
+   "zoom": 19,
+   "m_per_px": 0.1759,
+   "tiles": "11x7",
+   "tag": "residential",
+   "sha256": "e046763913aa723fde6561bf8fbaba41fafa5d0fbe9b5b70741a0e6ab9524b4d"
+  },
+  {
+   "file": "5eaddc5b3295f300072a6d8b.jpg",
+   "oam_id": "5eaddc5b3295f300072a6d8b",
+   "title": "Старый Петергоф",
+   "provider": "Sergey Astakhov",
+   "acquired": "2020-05-01",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 59.8842,
+   "lon": 29.8636,
+   "native_gsd": 0.0562193624212,
+   "size_px": [
+    3072,
+    2048
+   ],
+   "split": "val",
+   "zoom": 19,
+   "m_per_px": 0.1498,
+   "tiles": "12x8",
+   "tag": "residential",
+   "sha256": "dff44c200f0ed12f1e54d4164f32452dcdc2f966eeb33080753ccee9f129ec09"
+  },
+  {
+   "file": "5e906d60c6bbac0005e30fae.jpg",
+   "oam_id": "5e906d60c6bbac0005e30fae",
+   "title": "СПб, Фучика-Белы Куна",
+   "provider": "Sergey Astakhov",
+   "acquired": "2020-04-08",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 59.8714,
+   "lon": 30.3637,
+   "native_gsd": 0.0539197399238,
+   "size_px": [
+    3072,
+    2048
+   ],
+   "split": "train",
+   "zoom": 19,
+   "m_per_px": 0.1499,
+   "tiles": "12x8",
+   "tag": "residential",
+   "sha256": "14e156bd58dc7522762a9b7a705764cb7f6096a055247e9d2dccb92e7166bf2f"
+  },
+  {
+   "file": "5e7f576f482b9c000617844f.jpg",
+   "oam_id": "5e7f576f482b9c000617844f",
+   "title": "СПб, Димитрова - Пловдивская",
+   "provider": "Sergey Astakhov",
+   "acquired": "2020-03-27",
+   "platform": "uav",
+   "license": "CC-BY 4.0 (OpenAerialMap)",
+   "lat": 59.8437,
+   "lon": 30.3818,
+   "native_gsd": 0.0552701524365,
+   "size_px": [
+    3072,
+    2048
+   ],
+   "split": "train",
+   "zoom": 19,
+   "m_per_px": 0.15,
+   "tiles": "12x8",
+   "tag": "residential",
+   "sha256": "818625f0c3fd9b3f5e110d73c5f9621f15135c5fd08d2aff3b6b80035254dc3d"
   }
  ]
 }

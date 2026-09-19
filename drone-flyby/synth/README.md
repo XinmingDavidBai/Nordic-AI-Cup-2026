@@ -40,8 +40,9 @@ Public imagery of that place would be validation data by the back door, so
 ```cmd
 python -m synth.build_cutouts        :: SAM cut-outs of every object, ~3 min; review datasets/synth_assets/cutouts/review.jpg
 python -m synth.fetch_backgrounds    :: OpenAerialMap mosaics (CC-BY 4.0), ~10 min per 40 locations, resumable
-python -m synth.compose              :: datasets/synth_v2: 6000 train + 600 val views, ~10 min on 12 workers
+python -m synth.compose              :: datasets/synth_v3: 6000 train + 600 val views, ~10 min on 12 workers
 python -m synth.compose --resume     :: finish an interrupted compose (same arguments; identical output)
+python -m synth.compose --name synth_v2 --legacy-v2   :: the previous set, byte-identical
 ```
 
 - **Cut-outs** (`build_cutouts.py`): each object from up to 6 helsinki frames,
@@ -62,6 +63,50 @@ python -m synth.compose --resume     :: finish an interrupted compose (same argu
   images have no objects (hard negatives). Seeded per image: the same dataset
   whatever the number of workers, and `--resume` reproduces it exactly.
 
+## Dark silhouettes (synth_v3)
+
+The validation renderer draws objects as dark, flat silhouettes: measured on
+the recording, a helicopter at V 66 on V 174 ground and a tower at V 44 on
+V 138 (object/ground ratio 0.32-0.38). Helsinki's objects sit at a median 0.71x
+their ground, and pasted on our (darker) backgrounds synth_v2 objects came out at
+a median 1.04x; the model had never seen a dark object except the hangar, the
+one class the first synthetic fine-tune found on the recording.
+`--dark-share 0.6` (default) renders 60 % of objects darkened to 0.28-0.6x the
+local ground under them, contrast flattened, desaturated, half of them slightly
+blurred (`compose.dark_render`). Measured in final views (400 views each, with all synth_v3 changes):
+
+| | object V median | V 40-66 | object/ground median | ratio < 0.45 |
+|---|---|---|---|---|
+| synth_v2 | 115 | 7 % | 1.04 | 11 % |
+| synth_v3 | 69 | 24 % | 0.59 | 31 % |
+
+Remaining gap: our backgrounds are darker than the validation ground (V ~140-175),
+so dark objects also end up darker in absolute terms (about a quarter below V 40).
+
+Also in synth_v3 (the recipe id `compose.RECIPE` is written to the manifest; the
+training scripts refuse a set composed by an older recipe, see `synth/preflight.py`;
+`--legacy-v2` rebuilds synth_v2 byte-identically):
+
+- **cast shadows**: the object's outline swept away from the sun, length
+  0.15-1.0 x object size x 0.5 (towers x 1.6, e.g. the recording's tower, whose
+  dark region is ~1.5x its cut-out), 85 % of objects, a third of them dark
+  (strength 0.5-0.85). Median shadow 0.30x object size (was 0.07), p90 28 view
+  px (was 3.6). Boxes stay on the object.
+- **backgrounds at any angle** (the validation flight runs diagonally), cut from
+  inside the turned area. Cost: the turned crop needs more mosaic, so L0 ground
+  comes out a little finer (median 0.08 m per source px, was 0.10; both below
+  the intended 0.12-0.26 because the mosaics are small at L0).
+- **residential hard negatives**: 7 OpenAerialMap scenes of dense housing /
+  red-roof suburbs (Bulgaria, Lida, St Petersburg, Stary Petergof; tagged
+  `residential` in `backgrounds_pinned.json`, 5 train / 2 val, none from the
+  excluded area), used for 15 % of images, half of those empty, the rest 1-2
+  objects.
+
+`DETECTOR_GAMMA` (pipeline/config.py, default 1.0 = off) lifts dark pixels at
+test time. On the old helsinki checkpoint it cut `ta-ta` false positives by
+64-75 % (gamma 0.6-0.5) but found none of 8 known dark objects: not a
+substitute for training on them.
+
 ## Colour and lighting are not allowed to be cues
 
 - compositor: whole-image white balance, gamma, hue and saturation shifts on
@@ -74,11 +119,11 @@ python -m synth.compose --resume     :: finish an interrupted compose (same argu
 ## What is in git, what is not
 
 - in git: the cut-out bank (`datasets/synth_assets/cutouts/`, ~2 MB) and
-  `synth/backgrounds_pinned.json` (ids, splits, sizes and hashes of the 68
+  `synth/backgrounds_pinned.json` (ids, splits, sizes and hashes of the 75
   backgrounds; refresh it with `python -m synth.fetch_backgrounds --pin` after
   fetching new ones);
-- not in git: the background images (~130 MB) and synth_v2 itself (5.5 GB).
-  Never ship synth_v2: compose it where it is used. From the same inputs and
+- not in git: the background images (~130 MB) and the composed sets (~5.5 GB each).
+  Never ship them: compose them where they are used. From the same inputs and
   library versions it is byte-identical (checked on a copy of a fresh clone).
 - backgrounds on a new machine, either
   `python -m synth.fetch_backgrounds --pinned` (re-downloads exactly the pinned
@@ -91,11 +136,22 @@ python -m synth.compose --resume     :: finish an interrupted compose (same argu
 One job does it all: `jobs/train.lsf`, after the one-time `jobs/hpc_setup.sh`
 on the login node (venv, cached checkpoints and font, pinned backgrounds; the
 compute nodes are offline). The job checks its inputs, builds the cut-outs if
-missing, composes synth_v2 if not composed yet, trains `yolo11s` on helsinki
-crops + `synth_v2/train`, and scores the result on synth_v2 val. It uses
+missing, composes synth_v3 if not composed yet, trains `yolo11s` (or fine-tunes
+`INIT_WEIGHTS` for 40 epochs) on helsinki crops + `synth_v3/train`, and scores
+the result on synth_v3 val. It uses
 `--patience 0 --no-install` and hands over `last.pt` as the candidate, because
 the helsinki-val fitness ultralytics tracks does not measure transfer and must
 neither stop training nor pick the model. Details in the header of `train.lsf`.
+
+## Train (single T4, no HPC)
+
+`bash Train/train_local.sh` (fine-tune: `INIT_WEIGHTS=<checkpoint> bash Train/train_local.sh`):
+50 epochs from scratch / 30 fine-tuning, batch 8, lr0 0.005. It validates on
+the synthetic held-out set (`train_detector.py --val-dataset datasets/synth_v3/val`,
+helsinki frames all go to training), so here best.pt and early stopping
+(patience 10) do follow transfer, and best.pt is the candidate. Its synth val
+score is then slightly optimistic (the set also picked the epoch): the recording
+stays the independent check. Details in the header of the script.
 
 ## Evaluate and pick
 
