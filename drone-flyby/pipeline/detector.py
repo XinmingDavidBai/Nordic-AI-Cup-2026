@@ -16,6 +16,7 @@ import numpy as np
 
 from dtos import OBJECT_CLASSES, DroneFlybyPredictRequestDto
 from pipeline import config
+from pipeline.device import DeviceChoice, select_device
 from pipeline.geometry import (
     Box,
     area,
@@ -34,6 +35,18 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1 << 20), b''):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def log_device(choice: DeviceChoice) -> None:
+    """One clear line about where the detector runs; an error when a GPU goes unused."""
+    if choice.gpu_hardware_unused and choice.how != 'forced':
+        logger.error('!!! DETECTOR ON CPU although GPU hardware is present: %s (torch %s, %s). '
+                     'Fix the torch build / driver / container (--gpus all) for the latency budget.',
+                     choice.summary(), choice.torch_version, choice.torch_build)
+    elif choice.kind == 'cpu' and choice.how != 'forced':
+        logger.warning('Detector on CPU: %s (torch %s, %s)', choice.summary(), choice.torch_version, choice.torch_build)
+    else:
+        logger.info('Detector %s (torch %s, %s)', choice.summary(), choice.torch_version, choice.torch_build)
 
 
 @dataclass
@@ -99,15 +112,17 @@ class YoloDetector(Detector):
         self.weights_bytes = self.weights_path.stat().st_size
         self.ultralytics_version = ultralytics.__version__
         self.model = YOLO(str(weights_path))
-        self.device = config.DETECTOR_DEVICE or self._auto_device()
+        # Raises for a forced device torch cannot use (api.py then refuses to start).
+        self.device_choice = select_device(config.DETECTOR_DEVICE)
+        self.device = self.device_choice.device
         self.names = {int(k): v for k, v in self.model.names.items()}
         unknown = [n for n in self.names.values() if n not in OBJECT_CLASSES]
         if unknown:
             logger.warning('Model has classes the protocol does not accept, they will be dropped: %s', unknown)
         logger.info(
-            'YOLO detector loaded from %s (sha256 %s) on %s',
-            self.weights_path, self.weights_sha256[:12], self.device,
+            'YOLO detector loaded from %s (sha256 %s)', self.weights_path, self.weights_sha256[:12],
         )
+        log_device(self.device_choice)
 
     def describe(self):
         return {
@@ -117,21 +132,9 @@ class YoloDetector(Detector):
             'weights_bytes': self.weights_bytes,
             'num_classes': len(self.names),
             'device': self.device,
+            'device_info': self.device_choice.as_dict(),
             'ultralytics_version': self.ultralytics_version,
         }
-
-    @staticmethod
-    def _auto_device() -> str:
-        try:
-            import torch
-
-            if torch.cuda.is_available():
-                return '0'
-            if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
-                return 'mps'
-        except Exception:
-            pass
-        return 'cpu'
 
     def _run(self, image: np.ndarray):
         return self.model.predict(
@@ -140,7 +143,7 @@ class YoloDetector(Detector):
             conf=config.DETECTOR_MIN_CONF,
             iou=config.DETECTOR_NMS_IOU,
             agnostic_nms=True,
-            half=config.DETECTOR_HALF,
+            half=config.DETECTOR_HALF and self.device_choice.kind in ('cuda', 'rocm'),
             device=self.device,
             verbose=False,
         )[0]
@@ -148,6 +151,27 @@ class YoloDetector(Detector):
     def _warmup_image(self, image):
         for _ in range(2):
             self._run(image)
+
+    def warmup(self) -> None:
+        super().warmup()
+        if self.warmup_error is None or not self.device_choice.is_gpu or self.device_choice.how != 'auto':
+            return
+        # Auto-picked GPU that cannot actually run the model (driver/kernel mismatch,
+        # out of memory...): serving on the CPU beats serving nothing. A forced GPU
+        # stays failed, so api.py refuses to start instead.
+        failed = self.device_choice
+        logger.error('!!! GPU %s (%s) failed the warmup inference: %s. FALLING BACK TO CPU; '
+                     'expect several times the latency.', failed.device, failed.gpu_name, self.warmup_error)
+        self.device_choice = DeviceChoice(
+            'cpu', 'cpu', 'fallback',
+            f'{failed.kind.upper()} GPU {failed.device} ({failed.gpu_name}) failed warmup: {self.warmup_error}',
+            requested=failed.requested, torch_version=failed.torch_version, torch_build=failed.torch_build,
+            gpu_hardware_seen=failed.gpu_hardware_seen, gpu_hardware_unused=True,
+        )
+        self.device = 'cpu'
+        self.model.predictor = None   # rebuilt on the next call, on the new device
+        super().warmup()
+        log_device(self.device_choice)
 
     def detect(self, image, request):
         result = self._run(image)

@@ -79,7 +79,13 @@ NAIC_API_KEY = _str('NAIC_API_KEY', '')  # <<< INSERT API KEY HERE (or in .env)
 # none  : no detections
 DETECTOR_BACKEND = _str('DETECTOR_BACKEND', 'auto')
 DETECTOR_WEIGHTS = Path(_str('DETECTOR_WEIGHTS', str(ROOT / 'weights' / 'detector.pt')))
-DETECTOR_DEVICE = _str('DETECTOR_DEVICE', '')          # '' = auto (GPU 0 if torch sees one: CUDA or ROCm)
+# '' / auto = GPU whenever torch can use one (CUDA or ROCm GPU 0, else Apple MPS),
+# else CPU with the reason logged and on /api. cpu | 0 | cuda:N | mps force one;
+# a forced GPU torch cannot see fails startup. See pipeline/device.py.
+DETECTOR_DEVICE = _str('DETECTOR_DEVICE', '')
+# Refuse to start the server when the detector ends up on the CPU (for a host
+# that is supposed to have a GPU).
+DETECTOR_REQUIRE_GPU = _bool('DETECTOR_REQUIRE_GPU', False)
 DETECTOR_IMGSZ = _int('DETECTOR_IMGSZ', 960)           # try 1280 for tiny objects
 DETECTOR_MIN_CONF = _float('DETECTOR_MIN_CONF', 0.10)
 DETECTOR_NMS_IOU = _float('DETECTOR_NMS_IOU', 0.50)

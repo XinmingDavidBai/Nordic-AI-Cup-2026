@@ -207,6 +207,19 @@ first 12 characters). `detector.stats` counts frames where the detector raised
 or found nothing. The server also logs a `!!! DETECTOR ...` error when either
 happens on several frames in a row.
 
+**Serve on a GPU.** The detector is most of the per-frame time on a CPU, and a
+round trip over 333 ms loses frames (each one scores zero). `DETECTOR_DEVICE`
+empty/`auto` picks a CUDA or ROCm GPU whenever torch can use one, else Apple
+MPS, else the CPU; `cpu`, `0`, `cuda:N` or `mps` force one, and a forced GPU torch
+cannot see stops startup. The startup log says which device and why, and
+`/api` has it under `detector.device_info` (`kind`, `how` = auto/forced/fallback,
+`reason`, `gpu_name`, `torch_build`, `gpu_hardware_unused`). An auto-picked GPU
+that fails the warmup inference falls back to the CPU with a `!!!` error. GPU
+hardware torch cannot use (CPU-only torch, missing driver, `CUDA_VISIBLE_DEVICES`,
+a container without `--gpus all`) also logs `!!! DETECTOR ON CPU` and sets
+`gpu_hardware_unused: true`. On a host that must have a GPU, set
+`DETECTOR_REQUIRE_GPU=1` and the server refuses to start on the CPU.
+
 **Run exactly one server process.** The tracker, ego-motion and camera patrol
 live in that process's memory, per `sequence_id`. Never use uvicorn `--workers`,
 several replicas, or a load balancer without sticky sessions. Call `/api` a few
