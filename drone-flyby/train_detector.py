@@ -125,6 +125,10 @@ def build(args) -> Path:
     scenes = args.scenes or sorted(p.name for p in DATA_DIRECTORY.iterdir() if (p / 'images').is_dir())
     for path in [DATA_DIRECTORY / scene for scene in scenes] + list(args.extra_dataset or []):
         assert_training_input(path)
+    # The val set picks best.pt and drives early stopping, i.e. it steers training:
+    # a recording is refused here too.
+    if args.val_dataset:
+        assert_training_input(args.val_dataset)
 
     rng = random.Random(args.seed)
     out = Path(args.dataset_dir)
@@ -175,7 +179,11 @@ def build(args) -> Path:
         extra_images = Path(extra) / 'images'
         train_dirs.append(str((extra_images if extra_images.is_dir() else Path(extra)).resolve()))
     val_dir = (out / 'images' / 'val').resolve()
-    if counts['val'] == 0:
+    if args.val_dataset:
+        val_images = Path(args.val_dataset) / 'images'
+        val_dir = (val_images if val_images.is_dir() else Path(args.val_dataset)).resolve()
+        print(f'validating on {val_dir} (picks best.pt, drives --patience)')
+    elif counts['val'] == 0:
         val_dir = (out / 'images' / 'train').resolve()   # ultralytics needs something
     data = {
         'train': train_dirs if len(train_dirs) > 1 else train_dirs[0],
@@ -218,6 +226,8 @@ def train(args, data_yaml: Path) -> None:
         exist_ok=True,
         patience=args.patience,
         seed=args.seed,
+        lr0=args.lr0,
+        amp=args.amp,
         # Top-down imagery: any flip is a plausible view. Small scale jitter
         # stands in for altitude/level variation beyond the three levels.
         fliplr=0.5,
@@ -303,6 +313,10 @@ def main() -> int:
     parser.add_argument('--extra-dataset', action='append',
                         help='Extra YOLO-format dir (images/ + labels/) for training, e.g. datasets/synth_v2/train. '
                              'Recorded validation views are refused (synth/guard.py)')
+    parser.add_argument('--val-dataset',
+                        help='YOLO-format dir to validate on instead of the helsinki val frames, e.g. '
+                             'datasets/synth_v3/val (unseen backgrounds); it picks best.pt and drives --patience. '
+                             'Recordings are refused (synth/guard.py)')
     parser.add_argument('--color-aug', choices=sorted(COLOR_AUG), default='strong',
                         help="Colour augmentation profile (default 'strong'; 'default' = the old settings)")
     parser.add_argument('--gray-share', type=float, default=0.2,
@@ -315,7 +329,10 @@ def main() -> int:
     parser.add_argument('--device', default='',
                         help="'' auto (GPU whenever torch can use one), 'cpu', '0' / 'cuda:N' (CUDA or ROCm GPU), 'mps'")
     parser.add_argument('--workers', type=int, default=2)
-    parser.add_argument('--patience', type=int, default=50)
+    parser.add_argument('--patience', type=int, default=50, help='Epochs without val improvement before stopping; 0 = never')
+    parser.add_argument('--lr0', type=float, default=0.01, help='Initial learning rate (ultralytics default 0.01)')
+    parser.add_argument('--amp', action=argparse.BooleanOptionalAction, default=True,
+                        help='Mixed-precision training (ultralytics default on; --no-amp to disable)')
     parser.add_argument('--project', default=str(ROOT / 'runs'))
     parser.add_argument('--name', default='drone_detector')
     parser.add_argument('--no-install', action='store_true', help="Don't copy best.pt to weights/detector.pt")

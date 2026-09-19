@@ -223,6 +223,10 @@ def main() -> int:
                              "validation scene appears to be); 'none' to disable")
     parser.add_argument('--prefer', help='Regex on the image title; matching locations are fetched first '
                                          '(e.g. hard negatives: "harbo|marina|port|hamn")')
+    parser.add_argument('--ids', help='Comma-separated OpenAerialMap ids to fetch instead of searching '
+                                      '(same exclusion, size and split rules)')
+    parser.add_argument('--tag', help="Label stored with each fetched image, e.g. 'residential' (compose.py "
+                                      'samples those as hard-negative scenes)')
     parser.add_argument('--pin', action='store_true', help='Record the current set in synth/backgrounds_pinned.json')
     parser.add_argument('--pinned', nargs='?', const=str(PINNED), metavar='JSON',
                         help='Fetch exactly the locations in this list (default synth/backgrounds_pinned.json), no search')
@@ -239,10 +243,12 @@ def main() -> int:
     index = json.loads(index_path.read_text(encoding='utf-8')) if index_path.is_file() else {'images': []}
     have = {e['oam_id'] for e in index['images']}
 
-    found = search(args.bbox, args.gsd_from, args.gsd_to, args.pages)
+    if args.ids:
+        found = [requests.get(f'{API}/{i.strip()}', timeout=60).json()['results'] for i in args.ids.split(',') if i.strip()]
+    else:
+        found = search(args.bbox, args.gsd_from, args.gsd_to, args.pages)
+        random.Random(args.seed).shuffle(found)
     candidates, cells = [], set()
-    rng = random.Random(args.seed)
-    rng.shuffle(found)
     if args.prefer:
         prefer = re.compile(args.prefer, re.I)
         found.sort(key=lambda m: not prefer.search(m.get('title') or ''))   # stable: keeps the shuffle within groups
@@ -253,6 +259,8 @@ def main() -> int:
         lon0, lat0, lon1, lat1 = m['bbox']
         lat = (lat0 + lat1) / 2
         if exclude and lon1 >= exclude[0] and lon0 <= exclude[2] and lat1 >= exclude[1] and lat0 <= exclude[3]:
+            if args.ids:
+                print(f"  refused {m['_id']} {title[:30]!r}: inside the excluded validation area")
             continue
         width_m = (lon1 - lon0) * 111320 * math.cos(math.radians(lat))
         height_m = (lat1 - lat0) * 110574
@@ -287,10 +295,12 @@ def main() -> int:
             'acquired': (m.get('acquisition_end') or '')[:10], 'platform': m.get('platform'),
             'license': 'CC-BY 4.0 (OpenAerialMap)', 'lat': round((lat0 + lat1) / 2, 4), 'lon': round((lon0 + lon1) / 2, 4),
             'native_gsd': m.get('gsd'), 'size_px': [int(mosaic.shape[1]), int(mosaic.shape[0])], 'split': split, **info,
+            **({'tag': args.tag} if args.tag else {}),
         })
         index_path.write_text(json.dumps(index, indent=1, ensure_ascii=False), encoding='utf-8')
         fetched += 1
-        print(f"  [{fetched:3d}] {split:5s} {m['_id']} {title[:32]!r:36s} z{info['zoom']} {info['m_per_px']} m/px {info['tiles']} tiles", flush=True)
+        print(f"  [{fetched:3d}] {split:5s} {m['_id']} {title[:32]!r:36s} z{info['zoom']} {info['m_per_px']} m/px "
+              f"{info['tiles']} tiles lat {round((lat0 + lat1) / 2, 2)} lon {round((lon0 + lon1) / 2, 2)}", flush=True)
     splits = {s: sum(1 for e in index['images'] if e['split'] == s) for s in ('train', 'val')}
     print(f"{len(index['images'])} backgrounds in {OUT} ({splits})")
     return 0

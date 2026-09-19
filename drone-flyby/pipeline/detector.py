@@ -116,6 +116,10 @@ class YoloDetector(Detector):
         self.device_choice = select_device(config.DETECTOR_DEVICE)
         self.device = self.device_choice.device
         self.names = {int(k): v for k, v in self.model.names.items()}
+        self.gamma_lut = None
+        if config.DETECTOR_GAMMA != 1.0:
+            self.gamma_lut = np.clip(255.0 * (np.arange(256) / 255.0) ** config.DETECTOR_GAMMA + 0.5, 0, 255).astype(np.uint8)
+            logger.info('Detector input gamma %.2f (DETECTOR_GAMMA)', config.DETECTOR_GAMMA)
         unknown = [n for n in self.names.values() if n not in OBJECT_CLASSES]
         if unknown:
             logger.warning('Model has classes the protocol does not accept, they will be dropped: %s', unknown)
@@ -134,9 +138,12 @@ class YoloDetector(Detector):
             'device': self.device,
             'device_info': self.device_choice.as_dict(),
             'ultralytics_version': self.ultralytics_version,
+            'input_gamma': config.DETECTOR_GAMMA,
         }
 
     def _run(self, image: np.ndarray):
+        if self.gamma_lut is not None:
+            image = self.gamma_lut[image]
         return self.model.predict(
             image,  # BGR numpy, which is what ultralytics expects for arrays
             imgsz=config.DETECTOR_IMGSZ,
