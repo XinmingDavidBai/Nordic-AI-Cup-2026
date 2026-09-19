@@ -8,6 +8,12 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY requirements.txt .
+# On linux/amd64 the default PyPI torch wheel is a CUDA build, so an NVIDIA GPU
+# works as long as the container can see it: run with
+#   docker run --gpus all -p 9053:9053 drone-flyby
+# (needs the NVIDIA Container Toolkit on the host). Without --gpus the detector
+# runs on the CPU and the server logs "!!! DETECTOR ON CPU" when it finds GPU
+# hardware it cannot use. Check with: curl http://<host>:9053/api
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Your model and the server. The sample data under src/ is not copied: it is
