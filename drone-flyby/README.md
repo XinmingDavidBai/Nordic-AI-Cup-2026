@@ -482,7 +482,7 @@ There is also a `Dockerfile` if you would rather containerise it:
 
 ```cmd
 docker build -t drone-flyby .
-docker run -p 9053:9053 drone-flyby
+docker run --gpus all -p 9053:9053 drone-flyby    # drop --gpus all on a host without an NVIDIA GPU
 ```
 
 ### Make your endpoint reachable

@@ -62,10 +62,20 @@ def check_detector():
             f'(DETECTOR_BACKEND={config.DETECTOR_BACKEND!r}, DETECTOR_WEIGHTS={config.DETECTOR_WEIGHTS})'
         )
     elif info['warmup_error']:
-        problem = f"YOLO warmup inference failed: {info['warmup_error']}"
+        device = info['device_info']
+        problem = (f"YOLO warmup inference failed on device {device['device']!r} "
+                   f"({device['how']}; DETECTOR_DEVICE={config.DETECTOR_DEVICE!r}): {info['warmup_error']}")
     if problem is None:
+        device = info['device_info']
+        if config.DETECTOR_REQUIRE_GPU and device['kind'] == 'cpu':
+            raise RuntimeError(
+                f"Refusing to start: DETECTOR_REQUIRE_GPU is set but the detector is on the CPU "
+                f"({device['how']}: {device['reason']})."
+            )
+        where = device['kind'].upper() + (f" {device['gpu_name']}" if device['gpu_name'] else '')
         logger.info(
-            'Detector OK: yolo, weights %s (sha256 %s)', info['weights_path'], info['weights_sha256']
+            'Detector OK: yolo, weights %s (sha256 %s), on %s (%s: %s)',
+            info['weights_path'], info['weights_sha256'], where, device['how'], device['reason'],
         )
         return
     if config.ALLOW_NON_YOLO_DETECTOR:
@@ -74,7 +84,7 @@ def check_detector():
         return
     raise RuntimeError(
         f'Refusing to start: {problem}. A server like this answers every real frame '
-        'with nothing. Fix DETECTOR_BACKEND/DETECTOR_WEIGHTS, or set '
+        'with nothing. Fix DETECTOR_BACKEND/DETECTOR_WEIGHTS/DETECTOR_DEVICE, or set '
         'ALLOW_NON_YOLO_DETECTOR=1 for local debugging only.'
     )
 

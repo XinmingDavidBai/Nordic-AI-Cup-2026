@@ -170,12 +170,18 @@ def build(args) -> Path:
 def train(args, data_yaml: Path) -> None:
     from ultralytics import YOLO
 
-    device = args.device
-    if not device:
-        import torch
+    from pipeline.device import select_device
 
-        device = '0' if torch.cuda.is_available() else 'cpu'
-    print(f'training {args.model} on {device}')
+    # Same rules as serving: GPU whenever torch can use one; a forced GPU it
+    # cannot see is an error here rather than a slow CPU run.
+    choice = select_device(args.device)
+    device = choice.device
+    print(f'training {args.model}: {choice.summary()} (torch {choice.torch_version}, {choice.torch_build})')
+    if choice.kind == 'cpu' and choice.how != 'forced':
+        banner = '!' * 78
+        print(f'{banner}\n!!! TRAINING ON THE CPU: {choice.reason}\n'
+              f'!!! That is hours instead of minutes. See PIPELINE.md section 1a for GPU torch,\n'
+              f'!!! or pass --device cpu to do this on purpose.\n{banner}', flush=True)
     model = YOLO(args.model)
     model.train(
         data=str(data_yaml),
@@ -279,7 +285,8 @@ def main() -> int:
     parser.add_argument('--epochs', type=int, default=150)
     parser.add_argument('--imgsz', type=int, default=960)
     parser.add_argument('--batch', type=int, default=8)
-    parser.add_argument('--device', default='', help="'' auto, 'cpu', '0' (first GPU: CUDA or ROCm), 'mps'")
+    parser.add_argument('--device', default='',
+                        help="'' auto (GPU whenever torch can use one), 'cpu', '0' / 'cuda:N' (CUDA or ROCm GPU), 'mps'")
     parser.add_argument('--workers', type=int, default=2)
     parser.add_argument('--patience', type=int, default=50)
     parser.add_argument('--project', default=str(ROOT / 'runs'))
