@@ -1,0 +1,1778 @@
+{
+ "model": "datasets/synth_assets/mobile_sam.pt",
+ "scenes": [
+  "helsinki"
+ ],
+ "inputs_checked": [
+  "C:\\Users\\erikl\\Documents\\GitHub\\Nordic-AI-Cup-2026-cli\\drone-flyby\\src\\helsinki"
+ ],
+ "per_object": 6,
+ "validation_recordings_used": false,
+ "classes_missing": [],
+ "cutouts": [
+  {
+   "file": "hangar/helsinki_f000022.png",
+   "object_id": "hangar",
+   "scene": "helsinki",
+   "frame": 22,
+   "source_bbox": [
+    126.0,
+    36.0,
+    312.0,
+    164.0
+   ],
+   "box_size_source_px": [
+    186.0,
+    128.0
+   ],
+   "cutout_size_px": [
+    172,
+    102
+   ],
+   "mask_share": 0.574
+  },
+  {
+   "file": "hangar/helsinki_f000023.png",
+   "object_id": "hangar",
+   "scene": "helsinki",
+   "frame": 23,
+   "source_bbox": [
+    114.0,
+    89.0,
+    302.0,
+    218.0
+   ],
+   "box_size_source_px": [
+    188.0,
+    129.0
+   ],
+   "cutout_size_px": [
+    174,
+    103
+   ],
+   "mask_share": 0.574
+  },
+  {
+   "file": "hangar/helsinki_f000024.png",
+   "object_id": "hangar",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    102.0,
+    143.0,
+    291.0,
+    273.0
+   ],
+   "box_size_source_px": [
+    189.0,
+    130.0
+   ],
+   "cutout_size_px": [
+    175,
+    103
+   ],
+   "mask_share": 0.573
+  },
+  {
+   "file": "helicopter/helsinki_f000000.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    2233.0,
+    850.0,
+    2342.0,
+    937.0
+   ],
+   "box_size_source_px": [
+    109.0,
+    87.0
+   ],
+   "cutout_size_px": [
+    100,
+    75
+   ],
+   "mask_share": 0.119
+  },
+  {
+   "file": "helicopter/helsinki_f000003.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 3,
+   "source_bbox": [
+    2240.0,
+    1039.0,
+    2351.0,
+    1129.0
+   ],
+   "box_size_source_px": [
+    111.0,
+    90.0
+   ],
+   "cutout_size_px": [
+    102,
+    79
+   ],
+   "mask_share": 0.117
+  },
+  {
+   "file": "helicopter/helsinki_f000007.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    2249.0,
+    1304.0,
+    2364.0,
+    1398.0
+   ],
+   "box_size_source_px": [
+    115.0,
+    94.0
+   ],
+   "cutout_size_px": [
+    104,
+    84
+   ],
+   "mask_share": 0.115
+  },
+  {
+   "file": "helicopter/helsinki_f000010.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 10,
+   "source_bbox": [
+    2256.0,
+    1514.0,
+    2374.0,
+    1610.0
+   ],
+   "box_size_source_px": [
+    118.0,
+    96.0
+   ],
+   "cutout_size_px": [
+    107,
+    89
+   ],
+   "mask_share": 0.115
+  },
+  {
+   "file": "helicopter/helsinki_f000014.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    2267.0,
+    1808.0,
+    2388.0,
+    1908.0
+   ],
+   "box_size_source_px": [
+    121.0,
+    100.0
+   ],
+   "cutout_size_px": [
+    109,
+    93
+   ],
+   "mask_share": 0.117
+  },
+  {
+   "file": "helicopter/helsinki_f000017.png",
+   "object_id": "helicopter",
+   "scene": "helsinki",
+   "frame": 17,
+   "source_bbox": [
+    2275.0,
+    2041.0,
+    2399.0,
+    2143.0
+   ],
+   "box_size_source_px": [
+    124.0,
+    102.0
+   ],
+   "cutout_size_px": [
+    113,
+    98
+   ],
+   "mask_share": 0.12
+  },
+  {
+   "file": "jet_plane/helsinki_f000005.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 5,
+   "source_bbox": [
+    2202.0,
+    56.0,
+    2275.0,
+    132.0
+   ],
+   "box_size_source_px": [
+    73.0,
+    76.0
+   ],
+   "cutout_size_px": [
+    43,
+    48
+   ],
+   "mask_share": 0.149
+  },
+  {
+   "file": "jet_plane/helsinki_f000009.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 9,
+   "source_bbox": [
+    2210.0,
+    271.0,
+    2285.0,
+    349.0
+   ],
+   "box_size_source_px": [
+    75.0,
+    78.0
+   ],
+   "cutout_size_px": [
+    44,
+    50
+   ],
+   "mask_share": 0.15
+  },
+  {
+   "file": "jet_plane/helsinki_f000013.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 13,
+   "source_bbox": [
+    2218.0,
+    498.0,
+    2295.0,
+    578.0
+   ],
+   "box_size_source_px": [
+    77.0,
+    80.0
+   ],
+   "cutout_size_px": [
+    45,
+    50
+   ],
+   "mask_share": 0.151
+  },
+  {
+   "file": "jet_plane/helsinki_f000016.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 16,
+   "source_bbox": [
+    2224.0,
+    676.0,
+    2303.0,
+    759.0
+   ],
+   "box_size_source_px": [
+    79.0,
+    83.0
+   ],
+   "cutout_size_px": [
+    46,
+    52
+   ],
+   "mask_share": 0.15
+  },
+  {
+   "file": "jet_plane/helsinki_f000020.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 20,
+   "source_bbox": [
+    2233.0,
+    926.0,
+    2314.0,
+    1011.0
+   ],
+   "box_size_source_px": [
+    81.0,
+    85.0
+   ],
+   "cutout_size_px": [
+    48,
+    53
+   ],
+   "mask_share": 0.153
+  },
+  {
+   "file": "jet_plane/helsinki_f000024.png",
+   "object_id": "jet_plane",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    2242.0,
+    1190.0,
+    2325.0,
+    1279.0
+   ],
+   "box_size_source_px": [
+    83.0,
+    89.0
+   ],
+   "cutout_size_px": [
+    49,
+    57
+   ],
+   "mask_share": 0.156
+  },
+  {
+   "file": "large_launcher/helsinki_f000000.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    3455.0,
+    359.0,
+    3594.0,
+    464.0
+   ],
+   "box_size_source_px": [
+    139.0,
+    105.0
+   ],
+   "cutout_size_px": [
+    112,
+    71
+   ],
+   "mask_share": 0.194
+  },
+  {
+   "file": "large_launcher/helsinki_f000004.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 4,
+   "source_bbox": [
+    3496.0,
+    590.0,
+    3640.0,
+    696.0
+   ],
+   "box_size_source_px": [
+    144.0,
+    106.0
+   ],
+   "cutout_size_px": [
+    115,
+    75
+   ],
+   "mask_share": 0.194
+  },
+  {
+   "file": "large_launcher/helsinki_f000007.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    3529.0,
+    771.0,
+    3676.0,
+    879.0
+   ],
+   "box_size_source_px": [
+    147.0,
+    108.0
+   ],
+   "cutout_size_px": [
+    118,
+    77
+   ],
+   "mask_share": 0.192
+  },
+  {
+   "file": "large_launcher/helsinki_f000011.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 11,
+   "source_bbox": [
+    3575.0,
+    1025.0,
+    3727.0,
+    1135.0
+   ],
+   "box_size_source_px": [
+    152.0,
+    110.0
+   ],
+   "cutout_size_px": [
+    121,
+    80
+   ],
+   "mask_share": 0.188
+  },
+  {
+   "file": "large_launcher/helsinki_f000014.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    3611.0,
+    1226.0,
+    3767.0,
+    1336.0
+   ],
+   "box_size_source_px": [
+    156.0,
+    110.0
+   ],
+   "cutout_size_px": [
+    124,
+    82
+   ],
+   "mask_share": 0.19
+  },
+  {
+   "file": "large_launcher/helsinki_f000018.png",
+   "object_id": "large_launcher",
+   "scene": "helsinki",
+   "frame": 18,
+   "source_bbox": [
+    3662.0,
+    1507.0,
+    3823.0,
+    1619.0
+   ],
+   "box_size_source_px": [
+    161.0,
+    112.0
+   ],
+   "cutout_size_px": [
+    129,
+    86
+   ],
+   "mask_share": 0.191
+  },
+  {
+   "file": "large_tower/helsinki_f000007.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    3404.0,
+    11.0,
+    3462.0,
+    79.0
+   ],
+   "box_size_source_px": [
+    58.0,
+    68.0
+   ],
+   "cutout_size_px": [
+    52,
+    62
+   ],
+   "mask_share": 0.278
+  },
+  {
+   "file": "large_tower/helsinki_f000010.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 10,
+   "source_bbox": [
+    3434.0,
+    176.0,
+    3493.0,
+    243.0
+   ],
+   "box_size_source_px": [
+    59.0,
+    67.0
+   ],
+   "cutout_size_px": [
+    54,
+    60
+   ],
+   "mask_share": 0.291
+  },
+  {
+   "file": "large_tower/helsinki_f000014.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    3476.0,
+    407.0,
+    3538.0,
+    472.0
+   ],
+   "box_size_source_px": [
+    62.0,
+    65.0
+   ],
+   "cutout_size_px": [
+    56,
+    58
+   ],
+   "mask_share": 0.286
+  },
+  {
+   "file": "large_tower/helsinki_f000017.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 17,
+   "source_bbox": [
+    3509.0,
+    589.0,
+    3572.0,
+    652.0
+   ],
+   "box_size_source_px": [
+    63.0,
+    63.0
+   ],
+   "cutout_size_px": [
+    58,
+    57
+   ],
+   "mask_share": 0.306
+  },
+  {
+   "file": "large_tower/helsinki_f000021.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 21,
+   "source_bbox": [
+    3555.0,
+    844.0,
+    3621.0,
+    905.0
+   ],
+   "box_size_source_px": [
+    66.0,
+    61.0
+   ],
+   "cutout_size_px": [
+    61,
+    53
+   ],
+   "mask_share": 0.315
+  },
+  {
+   "file": "large_tower/helsinki_f000024.png",
+   "object_id": "large_tower",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    3591.0,
+    1046.0,
+    3660.0,
+    1104.0
+   ],
+   "box_size_source_px": [
+    69.0,
+    58.0
+   ],
+   "cutout_size_px": [
+    63,
+    51
+   ],
+   "mask_share": 0.328
+  },
+  {
+   "file": "medium_launcher/helsinki_f000015.png",
+   "object_id": "medium_launcher",
+   "scene": "helsinki",
+   "frame": 15,
+   "source_bbox": [
+    3730.0,
+    25.0,
+    3777.0,
+    69.0
+   ],
+   "box_size_source_px": [
+    47.0,
+    44.0
+   ],
+   "cutout_size_px": [
+    21,
+    22
+   ],
+   "mask_share": 0.111
+  },
+  {
+   "file": "medium_launcher/helsinki_f000016.png",
+   "object_id": "medium_launcher",
+   "scene": "helsinki",
+   "frame": 16,
+   "source_bbox": [
+    3742.0,
+    78.0,
+    3789.0,
+    123.0
+   ],
+   "box_size_source_px": [
+    47.0,
+    45.0
+   ],
+   "cutout_size_px": [
+    23,
+    21
+   ],
+   "mask_share": 0.108
+  },
+  {
+   "file": "medium_launcher/helsinki_f000017.png",
+   "object_id": "medium_launcher",
+   "scene": "helsinki",
+   "frame": 17,
+   "source_bbox": [
+    3754.0,
+    132.0,
+    3801.0,
+    177.0
+   ],
+   "box_size_source_px": [
+    47.0,
+    45.0
+   ],
+   "cutout_size_px": [
+    23,
+    22
+   ],
+   "mask_share": 0.111
+  },
+  {
+   "file": "medium_launcher/helsinki_f000018.png",
+   "object_id": "medium_launcher",
+   "scene": "helsinki",
+   "frame": 18,
+   "source_bbox": [
+    3766.0,
+    187.0,
+    3814.0,
+    232.0
+   ],
+   "box_size_source_px": [
+    48.0,
+    45.0
+   ],
+   "cutout_size_px": [
+    23,
+    24
+   ],
+   "mask_share": 0.114
+  },
+  {
+   "file": "medium_launcher/helsinki_f000019.png",
+   "object_id": "medium_launcher",
+   "scene": "helsinki",
+   "frame": 19,
+   "source_bbox": [
+    3779.0,
+    242.0,
+    3827.0,
+    288.0
+   ],
+   "box_size_source_px": [
+    48.0,
+    46.0
+   ],
+   "cutout_size_px": [
+    23,
+    23
+   ],
+   "mask_share": 0.12
+  },
+  {
+   "file": "medium_plane/helsinki_f000021.png",
+   "object_id": "medium_plane",
+   "scene": "helsinki",
+   "frame": 21,
+   "source_bbox": [
+    602.0,
+    37.0,
+    657.0,
+    85.0
+   ],
+   "box_size_source_px": [
+    55.0,
+    48.0
+   ],
+   "cutout_size_px": [
+    49,
+    41
+   ],
+   "mask_share": 0.187
+  },
+  {
+   "file": "medium_plane/helsinki_f000022.png",
+   "object_id": "medium_plane",
+   "scene": "helsinki",
+   "frame": 22,
+   "source_bbox": [
+    593.0,
+    90.0,
+    649.0,
+    139.0
+   ],
+   "box_size_source_px": [
+    56.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    49,
+    39
+   ],
+   "mask_share": 0.18
+  },
+  {
+   "file": "medium_plane/helsinki_f000023.png",
+   "object_id": "medium_plane",
+   "scene": "helsinki",
+   "frame": 23,
+   "source_bbox": [
+    584.0,
+    144.0,
+    640.0,
+    193.0
+   ],
+   "box_size_source_px": [
+    56.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    48,
+    40
+   ],
+   "mask_share": 0.182
+  },
+  {
+   "file": "medium_plane/helsinki_f000024.png",
+   "object_id": "medium_plane",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    575.0,
+    199.0,
+    632.0,
+    248.0
+   ],
+   "box_size_source_px": [
+    57.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    49,
+    41
+   ],
+   "mask_share": 0.181
+  },
+  {
+   "file": "mine_roller/helsinki_f000000.png",
+   "object_id": "mine_roller",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    1979.0,
+    2010.0,
+    2032.0,
+    2070.0
+   ],
+   "box_size_source_px": [
+    53.0,
+    60.0
+   ],
+   "cutout_size_px": [
+    47,
+    54
+   ],
+   "mask_share": 0.27
+  },
+  {
+   "file": "mine_roller/helsinki_f000001.png",
+   "object_id": "mine_roller",
+   "scene": "helsinki",
+   "frame": 1,
+   "source_bbox": [
+    1980.0,
+    2090.0,
+    2033.0,
+    2150.0
+   ],
+   "box_size_source_px": [
+    53.0,
+    60.0
+   ],
+   "cutout_size_px": [
+    48,
+    55
+   ],
+   "mask_share": 0.276
+  },
+  {
+   "file": "small_launcher/helsinki_f000000.png",
+   "object_id": "small_launcher",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    1788.0,
+    221.0,
+    1808.0,
+    251.0
+   ],
+   "box_size_source_px": [
+    20.0,
+    30.0
+   ],
+   "cutout_size_px": [
+    13,
+    15
+   ],
+   "mask_share": 0.124
+  },
+  {
+   "file": "small_launcher/helsinki_f000005.png",
+   "object_id": "small_launcher",
+   "scene": "helsinki",
+   "frame": 5,
+   "source_bbox": [
+    1783.0,
+    500.0,
+    1804.0,
+    530.0
+   ],
+   "box_size_source_px": [
+    21.0,
+    30.0
+   ],
+   "cutout_size_px": [
+    15,
+    17
+   ],
+   "mask_share": 0.123
+  },
+  {
+   "file": "small_launcher/helsinki_f000010.png",
+   "object_id": "small_launcher",
+   "scene": "helsinki",
+   "frame": 10,
+   "source_bbox": [
+    1779.0,
+    798.0,
+    1800.0,
+    828.0
+   ],
+   "box_size_source_px": [
+    21.0,
+    30.0
+   ],
+   "cutout_size_px": [
+    15,
+    16
+   ],
+   "mask_share": 0.125
+  },
+  {
+   "file": "small_launcher/helsinki_f000014.png",
+   "object_id": "small_launcher",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    1775.0,
+    1051.0,
+    1797.0,
+    1081.0
+   ],
+   "box_size_source_px": [
+    22.0,
+    30.0
+   ],
+   "cutout_size_px": [
+    11,
+    12
+   ],
+   "mask_share": 0.128
+  },
+  {
+   "file": "small_plane/helsinki_f000000.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    2028.0,
+    1502.0,
+    2069.0,
+    1550.0
+   ],
+   "box_size_source_px": [
+    41.0,
+    48.0
+   ],
+   "cutout_size_px": [
+    34,
+    40
+   ],
+   "mask_share": 0.222
+  },
+  {
+   "file": "small_plane/helsinki_f000001.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 1,
+   "source_bbox": [
+    2029.0,
+    1573.0,
+    2070.0,
+    1622.0
+   ],
+   "box_size_source_px": [
+    41.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    34,
+    40
+   ],
+   "mask_share": 0.221
+  },
+  {
+   "file": "small_plane/helsinki_f000003.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 3,
+   "source_bbox": [
+    2030.0,
+    1719.0,
+    2073.0,
+    1769.0
+   ],
+   "box_size_source_px": [
+    43.0,
+    50.0
+   ],
+   "cutout_size_px": [
+    34,
+    42
+   ],
+   "mask_share": 0.213
+  },
+  {
+   "file": "small_plane/helsinki_f000004.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 4,
+   "source_bbox": [
+    2031.0,
+    1794.0,
+    2074.0,
+    1844.0
+   ],
+   "box_size_source_px": [
+    43.0,
+    50.0
+   ],
+   "cutout_size_px": [
+    34,
+    42
+   ],
+   "mask_share": 0.216
+  },
+  {
+   "file": "small_plane/helsinki_f000006.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 6,
+   "source_bbox": [
+    2033.0,
+    1947.0,
+    2076.0,
+    1998.0
+   ],
+   "box_size_source_px": [
+    43.0,
+    51.0
+   ],
+   "cutout_size_px": [
+    36,
+    44
+   ],
+   "mask_share": 0.225
+  },
+  {
+   "file": "small_plane/helsinki_f000007.png",
+   "object_id": "small_plane",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    2034.0,
+    2025.0,
+    2077.0,
+    2077.0
+   ],
+   "box_size_source_px": [
+    43.0,
+    52.0
+   ],
+   "cutout_size_px": [
+    35,
+    45
+   ],
+   "mask_share": 0.225
+  },
+  {
+   "file": "small_tower/helsinki_f000000.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    2616.0,
+    791.0,
+    2669.0,
+    851.0
+   ],
+   "box_size_source_px": [
+    53.0,
+    60.0
+   ],
+   "cutout_size_px": [
+    43,
+    46
+   ],
+   "mask_share": 0.341
+  },
+  {
+   "file": "small_tower/helsinki_f000004.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 4,
+   "source_bbox": [
+    2635.0,
+    1044.0,
+    2690.0,
+    1104.0
+   ],
+   "box_size_source_px": [
+    55.0,
+    60.0
+   ],
+   "cutout_size_px": [
+    45,
+    44
+   ],
+   "mask_share": 0.338
+  },
+  {
+   "file": "small_tower/helsinki_f000007.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    2651.0,
+    1244.0,
+    2707.0,
+    1303.0
+   ],
+   "box_size_source_px": [
+    56.0,
+    59.0
+   ],
+   "cutout_size_px": [
+    45,
+    43
+   ],
+   "mask_share": 0.345
+  },
+  {
+   "file": "small_tower/helsinki_f000011.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 11,
+   "source_bbox": [
+    2673.0,
+    1524.0,
+    2731.0,
+    1582.0
+   ],
+   "box_size_source_px": [
+    58.0,
+    58.0
+   ],
+   "cutout_size_px": [
+    47,
+    44
+   ],
+   "mask_share": 0.35
+  },
+  {
+   "file": "small_tower/helsinki_f000014.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    2690.0,
+    1745.0,
+    2750.0,
+    1803.0
+   ],
+   "box_size_source_px": [
+    60.0,
+    58.0
+   ],
+   "cutout_size_px": [
+    47,
+    45
+   ],
+   "mask_share": 0.35
+  },
+  {
+   "file": "small_tower/helsinki_f000018.png",
+   "object_id": "small_tower",
+   "scene": "helsinki",
+   "frame": 18,
+   "source_bbox": [
+    2714.0,
+    2057.0,
+    2776.0,
+    2114.0
+   ],
+   "box_size_source_px": [
+    62.0,
+    57.0
+   ],
+   "cutout_size_px": [
+    49,
+    48
+   ],
+   "mask_share": 0.363
+  },
+  {
+   "file": "ta-ta/helsinki_f000000.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    1098.0,
+    293.0,
+    1127.0,
+    312.0
+   ],
+   "box_size_source_px": [
+    29.0,
+    19.0
+   ],
+   "cutout_size_px": [
+    25,
+    18
+   ],
+   "mask_share": 0.364
+  },
+  {
+   "file": "ta-ta/helsinki_f000005.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 5,
+   "source_bbox": [
+    1070.0,
+    576.0,
+    1101.0,
+    594.0
+   ],
+   "box_size_source_px": [
+    31.0,
+    18.0
+   ],
+   "cutout_size_px": [
+    24,
+    16
+   ],
+   "mask_share": 0.365
+  },
+  {
+   "file": "ta-ta/helsinki_f000010.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 10,
+   "source_bbox": [
+    1040.0,
+    878.0,
+    1072.0,
+    896.0
+   ],
+   "box_size_source_px": [
+    32.0,
+    18.0
+   ],
+   "cutout_size_px": [
+    25,
+    16
+   ],
+   "mask_share": 0.353
+  },
+  {
+   "file": "ta-ta/helsinki_f000014.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 14,
+   "source_bbox": [
+    1015.0,
+    1136.0,
+    1048.0,
+    1153.0
+   ],
+   "box_size_source_px": [
+    33.0,
+    17.0
+   ],
+   "cutout_size_px": [
+    26,
+    15
+   ],
+   "mask_share": 0.352
+  },
+  {
+   "file": "ta-ta/helsinki_f000019.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 19,
+   "source_bbox": [
+    981.0,
+    1480.0,
+    1015.0,
+    1495.0
+   ],
+   "box_size_source_px": [
+    34.0,
+    15.0
+   ],
+   "cutout_size_px": [
+    27,
+    13
+   ],
+   "mask_share": 0.374
+  },
+  {
+   "file": "ta-ta/helsinki_f000024.png",
+   "object_id": "ta-ta",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    945.0,
+    1851.0,
+    981.0,
+    1865.0
+   ],
+   "box_size_source_px": [
+    36.0,
+    14.0
+   ],
+   "cutout_size_px": [
+    28,
+    12
+   ],
+   "mask_share": 0.381
+  },
+  {
+   "file": "tank/helsinki_f000001.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 1,
+   "source_bbox": [
+    882.0,
+    21.0,
+    928.0,
+    64.0
+   ],
+   "box_size_source_px": [
+    46.0,
+    43.0
+   ],
+   "cutout_size_px": [
+    34,
+    28
+   ],
+   "mask_share": 0.23
+  },
+  {
+   "file": "tank/helsinki_f000006.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 6,
+   "source_bbox": [
+    847.0,
+    289.0,
+    895.0,
+    334.0
+   ],
+   "box_size_source_px": [
+    48.0,
+    45.0
+   ],
+   "cutout_size_px": [
+    37,
+    30
+   ],
+   "mask_share": 0.236
+  },
+  {
+   "file": "tank/helsinki_f000010.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 10,
+   "source_bbox": [
+    818.0,
+    516.0,
+    867.0,
+    563.0
+   ],
+   "box_size_source_px": [
+    49.0,
+    47.0
+   ],
+   "cutout_size_px": [
+    37,
+    32
+   ],
+   "mask_share": 0.238
+  },
+  {
+   "file": "tank/helsinki_f000015.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 15,
+   "source_bbox": [
+    779.0,
+    818.0,
+    830.0,
+    867.0
+   ],
+   "box_size_source_px": [
+    51.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    38,
+    34
+   ],
+   "mask_share": 0.241
+  },
+  {
+   "file": "tank/helsinki_f000019.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 19,
+   "source_bbox": [
+    746.0,
+    1076.0,
+    799.0,
+    1126.0
+   ],
+   "box_size_source_px": [
+    53.0,
+    50.0
+   ],
+   "cutout_size_px": [
+    40,
+    37
+   ],
+   "mask_share": 0.246
+  },
+  {
+   "file": "tank/helsinki_f000024.png",
+   "object_id": "tank",
+   "scene": "helsinki",
+   "frame": 24,
+   "source_bbox": [
+    702.0,
+    1420.0,
+    756.0,
+    1472.0
+   ],
+   "box_size_source_px": [
+    54.0,
+    52.0
+   ],
+   "cutout_size_px": [
+    40,
+    39
+   ],
+   "mask_share": 0.255
+  },
+  {
+   "file": "condor/helsinki_f000000.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    2657.0,
+    1369.0,
+    2823.0,
+    1531.0
+   ],
+   "box_size_source_px": [
+    166.0,
+    162.0
+   ],
+   "cutout_size_px": [
+    107,
+    97
+   ],
+   "mask_share": 0.141
+  },
+  {
+   "file": "condor/helsinki_f000002.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 2,
+   "source_bbox": [
+    2668.0,
+    1510.0,
+    2837.0,
+    1676.0
+   ],
+   "box_size_source_px": [
+    169.0,
+    166.0
+   ],
+   "cutout_size_px": [
+    110,
+    101
+   ],
+   "mask_share": 0.139
+  },
+  {
+   "file": "condor/helsinki_f000003.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 3,
+   "source_bbox": [
+    2673.0,
+    1583.0,
+    2844.0,
+    1749.0
+   ],
+   "box_size_source_px": [
+    171.0,
+    166.0
+   ],
+   "cutout_size_px": [
+    111,
+    102
+   ],
+   "mask_share": 0.141
+  },
+  {
+   "file": "condor/helsinki_f000005.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 5,
+   "source_bbox": [
+    2685.0,
+    1730.0,
+    2858.0,
+    1900.0
+   ],
+   "box_size_source_px": [
+    173.0,
+    170.0
+   ],
+   "cutout_size_px": [
+    113,
+    106
+   ],
+   "mask_share": 0.141
+  },
+  {
+   "file": "condor/helsinki_f000006.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 6,
+   "source_bbox": [
+    2691.0,
+    1806.0,
+    2866.0,
+    1977.0
+   ],
+   "box_size_source_px": [
+    175.0,
+    171.0
+   ],
+   "cutout_size_px": [
+    112,
+    107
+   ],
+   "mask_share": 0.141
+  },
+  {
+   "file": "condor/helsinki_f000008.png",
+   "object_id": "condor",
+   "scene": "helsinki",
+   "frame": 8,
+   "source_bbox": [
+    2703.0,
+    1960.0,
+    2881.0,
+    2135.0
+   ],
+   "box_size_source_px": [
+    178.0,
+    175.0
+   ],
+   "cutout_size_px": [
+    115,
+    110
+   ],
+   "mask_share": 0.141
+  },
+  {
+   "file": "jammer/helsinki_f000000.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    1496.0,
+    1247.0,
+    1528.0,
+    1290.0
+   ],
+   "box_size_source_px": [
+    32.0,
+    43.0
+   ],
+   "cutout_size_px": [
+    28,
+    36
+   ],
+   "mask_share": 0.387
+  },
+  {
+   "file": "jammer/helsinki_f000002.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 2,
+   "source_bbox": [
+    1490.0,
+    1383.0,
+    1522.0,
+    1426.0
+   ],
+   "box_size_source_px": [
+    32.0,
+    43.0
+   ],
+   "cutout_size_px": [
+    28,
+    38
+   ],
+   "mask_share": 0.399
+  },
+  {
+   "file": "jammer/helsinki_f000004.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 4,
+   "source_bbox": [
+    1484.0,
+    1524.0,
+    1516.0,
+    1567.0
+   ],
+   "box_size_source_px": [
+    32.0,
+    43.0
+   ],
+   "cutout_size_px": [
+    29,
+    38
+   ],
+   "mask_share": 0.409
+  },
+  {
+   "file": "jammer/helsinki_f000007.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 7,
+   "source_bbox": [
+    1474.0,
+    1743.0,
+    1507.0,
+    1786.0
+   ],
+   "box_size_source_px": [
+    33.0,
+    43.0
+   ],
+   "cutout_size_px": [
+    29,
+    39
+   ],
+   "mask_share": 0.418
+  },
+  {
+   "file": "jammer/helsinki_f000009.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 9,
+   "source_bbox": [
+    1467.0,
+    1894.0,
+    1500.0,
+    1938.0
+   ],
+   "box_size_source_px": [
+    33.0,
+    44.0
+   ],
+   "cutout_size_px": [
+    30,
+    40
+   ],
+   "mask_share": 0.424
+  },
+  {
+   "file": "jammer/helsinki_f000011.png",
+   "object_id": "jammer",
+   "scene": "helsinki",
+   "frame": 11,
+   "source_bbox": [
+    1460.0,
+    2051.0,
+    1494.0,
+    2095.0
+   ],
+   "box_size_source_px": [
+    34.0,
+    44.0
+   ],
+   "cutout_size_px": [
+    29,
+    42
+   ],
+   "mask_share": 0.431
+  },
+  {
+   "file": "spacecraft/helsinki_f000000.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 0,
+   "source_bbox": [
+    1525.0,
+    627.0,
+    1566.0,
+    675.0
+   ],
+   "box_size_source_px": [
+    41.0,
+    48.0
+   ],
+   "cutout_size_px": [
+    37,
+    39
+   ],
+   "mask_share": 0.366
+  },
+  {
+   "file": "spacecraft/helsinki_f000004.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 4,
+   "source_bbox": [
+    1514.0,
+    869.0,
+    1556.0,
+    918.0
+   ],
+   "box_size_source_px": [
+    42.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    39,
+    42
+   ],
+   "mask_share": 0.368
+  },
+  {
+   "file": "spacecraft/helsinki_f000008.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 8,
+   "source_bbox": [
+    1502.0,
+    1125.0,
+    1546.0,
+    1174.0
+   ],
+   "box_size_source_px": [
+    44.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    39,
+    43
+   ],
+   "mask_share": 0.369
+  },
+  {
+   "file": "spacecraft/helsinki_f000013.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 13,
+   "source_bbox": [
+    1486.0,
+    1467.0,
+    1532.0,
+    1516.0
+   ],
+   "box_size_source_px": [
+    46.0,
+    49.0
+   ],
+   "cutout_size_px": [
+    41,
+    45
+   ],
+   "mask_share": 0.385
+  },
+  {
+   "file": "spacecraft/helsinki_f000017.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 17,
+   "source_bbox": [
+    1473.0,
+    1759.0,
+    1520.0,
+    1809.0
+   ],
+   "box_size_source_px": [
+    47.0,
+    50.0
+   ],
+   "cutout_size_px": [
+    42,
+    46
+   ],
+   "mask_share": 0.393
+  },
+  {
+   "file": "spacecraft/helsinki_f000021.png",
+   "object_id": "spacecraft",
+   "scene": "helsinki",
+   "frame": 21,
+   "source_bbox": [
+    1459.0,
+    2070.0,
+    1507.0,
+    2120.0
+   ],
+   "box_size_source_px": [
+    48.0,
+    50.0
+   ],
+   "cutout_size_px": [
+    44,
+    48
+   ],
+   "mask_share": 0.415
+  }
+ ]
+}

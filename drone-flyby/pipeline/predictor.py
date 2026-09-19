@@ -344,14 +344,20 @@ def _predict_locked(request: DroneFlybyPredictRequestDto, state: SequenceState) 
 def _to_annotations(answers, request) -> List[DroneFlybyPredictionDto]:
     out = []
     for object_id, confidence, box in answers:
-        bbox = clip_bbox_to_frame(source_bbox_to_global(box, request.original_width, request.original_height))
-        if bbox is None:
-            continue
-        out.append(
-            DroneFlybyPredictionDto(
-                object_id=object_id,
-                bbox=[round(float(c), 6) for c in bbox],
-                confidence=round(float(min(max(confidence, 0.0), 1.0)), 5),
+        # One bad answer (NaN confidence, unknown class...) must cost only itself,
+        # not every other annotation in the frame.
+        try:
+            bbox = clip_bbox_to_frame(source_bbox_to_global(box, request.original_width, request.original_height))
+            if bbox is None:
+                continue
+            out.append(
+                DroneFlybyPredictionDto(
+                    object_id=object_id,
+                    bbox=[round(float(c), 6) for c in bbox],
+                    confidence=round(float(min(max(confidence, 0.0), 1.0)), 5),
+                )
             )
-        )
+        except Exception as error:
+            logger.warning('Dropped one invalid annotation on frame %s (%s, confidence %r, box %s): %s',
+                           request.frame, object_id, confidence, box, error)
     return out

@@ -21,9 +21,10 @@ looks by default (DETECTOR_BACKEND=auto).
 Caveat worth keeping in mind: helsinki has ONE instance per class over 25
 consecutive frames, and the validation/evaluation sequences are different
 scenes. Heavy augmentation matters and the val split below is leaky (adjacent
-frames look alike), so treat val mAP as a smoke signal, not a promise. Recorded
-validation views (RECORD_DIR) that you label or pseudo-label can be added with
---extra-dataset.
+frames look alike), so treat val mAP as a smoke signal, not a promise. Add the
+synthetic set (synth/README.md) with --extra-dataset. Recorded validation views
+(RECORD_DIR) are evaluation-only by team rule, even labelled: build() refuses
+them (synth/guard.py).
 """
 
 import argparse
@@ -49,6 +50,17 @@ from utils import (
 
 ROOT = Path(__file__).resolve().parent
 CLASS_INDEX = {name: index for index, name in enumerate(OBJECT_CLASSES)}
+
+# Colour augmentation. 'strong' (default) because the first real validation scene
+# had different terrain, season and light than helsinki and the model, which had
+# only seen helsinki's colours, found almost nothing: hue/saturation/brightness
+# swing hard and 10 % of images get red and blue swapped. Together with
+# --gray-share (greyscale training crops) and the synthetic set's own lighting
+# changes, colour stops being a cue the model can rely on.
+COLOR_AUG = {
+    'default': dict(hsv_h=0.015, hsv_s=0.5, hsv_v=0.4, bgr=0.0),
+    'strong': dict(hsv_h=0.05, hsv_s=0.9, hsv_v=0.6, bgr=0.1),
+}
 
 
 def render_crop(image, level, cx, cy):
@@ -106,6 +118,14 @@ def crop_centres(level, annotations, count, object_share, rng):
 
 
 def build(args) -> Path:
+    from synth.guard import assert_training_input
+
+    # Recorded validation views are for evaluation only (team rule). Checked
+    # before anything is deleted or built, so a bad path fails immediately.
+    scenes = args.scenes or sorted(p.name for p in DATA_DIRECTORY.iterdir() if (p / 'images').is_dir())
+    for path in [DATA_DIRECTORY / scene for scene in scenes] + list(args.extra_dataset or []):
+        assert_training_input(path)
+
     rng = random.Random(args.seed)
     out = Path(args.dataset_dir)
     if out.exists():
@@ -114,7 +134,6 @@ def build(args) -> Path:
         (out / 'images' / split).mkdir(parents=True, exist_ok=True)
         (out / 'labels' / split).mkdir(parents=True, exist_ok=True)
 
-    scenes = args.scenes or sorted(p.name for p in DATA_DIRECTORY.iterdir() if (p / 'images').is_dir())
     counts = {'train': 0, 'val': 0}
     instances = {'train': 0, 'val': 0}
     for scene in scenes:
@@ -141,6 +160,10 @@ def build(args) -> Path:
                 if not labels and rng.random() > args.keep_empty:
                     continue
                 stem = f'{scene}_f{frame:06d}_L{level}_{index:02d}'
+                # Colour does not transfer between scenes; make the model do without it.
+                # (gray_share 0 draws no random number, so it rebuilds exactly the old dataset.)
+                if split == 'train' and args.gray_share and rng.random() < args.gray_share:
+                    crop = cv2.cvtColor(cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
                 cv2.imwrite(str(out / 'images' / split / f'{stem}.png'), crop, [cv2.IMWRITE_PNG_COMPRESSION, 1])
                 (out / 'labels' / split / f'{stem}.txt').write_text('\n'.join(labels) + ('\n' if labels else ''))
                 counts[split] += 1
@@ -204,9 +227,7 @@ def train(args, data_yaml: Path) -> None:
         translate=0.1,
         mosaic=1.0,
         close_mosaic=max(1, min(10, args.epochs // 5)),
-        hsv_h=0.015,
-        hsv_s=0.5,
-        hsv_v=0.4,
+        **COLOR_AUG[args.color_aug],
         plots=True,
     )
     best, last = Path(model.trainer.best), Path(model.trainer.last)
@@ -279,7 +300,13 @@ def main() -> int:
     parser.add_argument('--min-visible', type=float, default=0.4, help='Min share of a box inside the crop to label it')
     parser.add_argument('--min-view-pixels', type=float, default=2.0)
     parser.add_argument('--keep-empty', type=float, default=0.3, help='Probability of keeping a crop with no objects')
-    parser.add_argument('--extra-dataset', action='append', help='Extra YOLO-format dir (images/ + labels/) for training')
+    parser.add_argument('--extra-dataset', action='append',
+                        help='Extra YOLO-format dir (images/ + labels/) for training, e.g. datasets/synth_v2/train. '
+                             'Recorded validation views are refused (synth/guard.py)')
+    parser.add_argument('--color-aug', choices=sorted(COLOR_AUG), default='strong',
+                        help="Colour augmentation profile (default 'strong'; 'default' = the old settings)")
+    parser.add_argument('--gray-share', type=float, default=0.2,
+                        help='Share of generated TRAIN crops written greyscale (val untouched)')
     parser.add_argument('--build-only', action='store_true')
     parser.add_argument('--model', default='yolo11n.pt', help='Any ultralytics detection checkpoint or yaml')
     parser.add_argument('--epochs', type=int, default=150)

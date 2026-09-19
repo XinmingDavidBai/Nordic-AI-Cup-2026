@@ -1,9 +1,25 @@
 #!/bin/bash
-# Before submitting: replace YOUR_DTU_USERNAME below with your own DTU login
-# (only affects the -B/-N email notifications; the job runs fine either way).
-# Run hpc_setup.sh once first -- it creates logs/ and caches MODEL below so
-# this job doesn't need internet access on the compute node.
-#BSUB -J drone_detector_train
+# The one training job: fresh clone -> synthetic data -> trained weights -> scores.
+#
+# Once, on the LOGIN node (it has internet, the compute nodes do not):
+#   cd <clone>/drone-flyby
+#   bash jobs/hpc_setup.sh                  # venv + deps, cached checkpoints/font, synthetic backgrounds
+# Then, from the same drone-flyby/ folder:
+#   PREFLIGHT_ONLY=1 bash jobs/train.lsf    # optional: checks the inputs in a second, no GPU, no queue
+#   bsub < jobs/train.lsf
+#
+# The job runs in the folder it was submitted from and writes logs/ there; LSF
+# mails the submitting user (no username is hard-coded, anyone can submit it).
+# Data steps are skipped when their output already exists, so a resubmit after a
+# timeout does not compose again (training itself starts over):
+#   1. cut-out bank (datasets/synth_assets/cutouts, committed; rebuilt with SAM if missing)
+#   2. synthetic dataset datasets/$SYNTH (composed from cut-outs + pinned backgrounds)
+#   3. training on helsinki crops + $SYNTH/train (strong colour aug + greyscale, the defaults)
+#   4. scores on the held-out synthetic val set
+#
+# NEVER point --extra-dataset at a recording: validation views are evaluation
+# only (train_detector.py and the synth scripts refuse them, see synth/guard.py).
+#BSUB -J drone_detector
 #BSUB -q gpua100
 #BSUB -gpu "num=1:mode=exclusive_process"
 #BSUB -n 8
@@ -12,29 +28,82 @@
 #BSUB -W 8:00
 #BSUB -B
 #BSUB -N
-#BSUB -u s234812@dtu.dk
-#BSUB -o /work3/s234812/nordic_cup/drone-flyby/logs/train_%J.out
-#BSUB -e /work3/s234812/nordic_cup/drone-flyby/logs/train_%J.err
+#BSUB -o logs/train_%J.out
+#BSUB -e logs/train_%J.err
 
 set -euo pipefail
-cd /work3/s234812/nordic_cup/drone-flyby
+cd "${LS_SUBCWD:-$PWD}"
+if [ ! -f train_detector.py ]; then
+    echo "Submit from the drone-flyby/ folder: cd <clone>/drone-flyby && bsub < jobs/train.lsf" >&2
+    exit 1
+fi
 mkdir -p logs
 
-echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname)"
-nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+# ---- run config -------------------------------------------------------------
+MODEL=yolo11s.pt          # must be cached by hpc_setup.sh (compute nodes are offline)
+EPOCHS=100                # ~6600 images/epoch (plus helsinki crops): ~45 s/epoch on an A100
+IMGSZ=960
+BATCH=32
+WORKERS=$(( ${LSB_DJOB_NUMPROC:-8} - 1 ))
+USE_SYNTH=1               # 0 = helsinki crops only (the old baseline job)
+SYNTH=synth_v2            # name, sizes and seed must match to reproduce synth_v2 exactly
+SYNTH_TRAIN=6000
+SYNTH_VAL=600
+SYNTH_SEED=0
+NAME=drone_detector_synth
+# ------------------------------------------------------------------------------
 
+ASSETS=datasets/synth_assets
+problems=()
+[ -f .venv/bin/activate ] || problems+=("no .venv: run 'bash jobs/hpc_setup.sh' on the login node")
+[ -f "$MODEL" ] || problems+=("$MODEL not cached here: run 'bash jobs/hpc_setup.sh' on the login node")
+[ -d src/helsinki/images ] || problems+=("src/helsinki/images missing: incomplete clone?")
+if [ "$USE_SYNTH" = 1 ] && [ ! -f "datasets/$SYNTH/manifest.json" ]; then
+    [ -f synth/backgrounds_pinned.json ] || problems+=("synth/backgrounds_pinned.json missing: git pull")
+    [ -f "$ASSETS/backgrounds/backgrounds.json" ] || problems+=("no synthetic backgrounds in $ASSETS/backgrounds: run 'bash jobs/hpc_setup.sh' on the login node, or copy them from the laptop (synth/README.md)")
+    if [ ! -f "$ASSETS/cutouts/cutouts.json" ] && [ ! -f "$ASSETS/mobile_sam.pt" ]; then
+        problems+=("no cut-out bank ($ASSETS/cutouts, committed: git pull) and no SAM checkpoint to build one")
+    fi
+fi
+if [ ${#problems[@]} -gt 0 ]; then
+    echo "NOT READY:" >&2
+    printf '  - %s\n' "${problems[@]}" >&2
+    exit 1
+fi
+if [ "${PREFLIGHT_ONLY:-0}" = 1 ]; then
+    echo "Preflight OK. Submit with: bsub < jobs/train.lsf"
+    exit 0
+fi
+
+echo "Job ${LSB_JOBID:-?} started $(date) on $(hostname) in $PWD"
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+module load python3/3.11.9 2>/dev/null || true    # the Python hpc_setup.sh built the venv with
 source .venv/bin/activate
 
-# ---- run config (edit per variant: baseline / copy_paste / synthetic) ----
-MODEL=yolo11s.pt          # bump to yolo11m.pt if the A100 has headroom to spare
-EPOCHS=150
-IMGSZ=960
-BATCH=32                  # A100 headroom over the CPU run's batch=8
-WORKERS=$(( ${LSB_DJOB_NUMPROC:-8} - 1 ))
-NAME=drone_detector_a100
-EXTRA_ARGS=""             # e.g. "--extra-dataset datasets/synthetic" for variant C
-# ---------------------------------------------------------------------------
+EXTRA_ARGS=()
+if [ "$USE_SYNTH" = 1 ]; then
+    if [ ! -f "$ASSETS/cutouts/cutouts.json" ]; then
+        echo "== Building the cut-out bank ($(date))"
+        python -m synth.build_cutouts --model "$ASSETS/mobile_sam.pt"
+    fi
+    if [ ! -f "datasets/$SYNTH/manifest.json" ]; then
+        echo "== Composing datasets/$SYNTH ($(date))"
+        resume=()
+        [ -d "datasets/$SYNTH" ] && resume=(--resume)    # an earlier job was cut off mid-compose
+        python -m synth.compose --name "$SYNTH" --train "$SYNTH_TRAIN" --val "$SYNTH_VAL" --seed "$SYNTH_SEED" \
+            --workers "$WORKERS" ${resume[@]+"${resume[@]}"}
+    fi
+    EXTRA_ARGS=(--extra-dataset "datasets/$SYNTH/train")
+fi
 
+# --color-aug strong and --gray-share 0.2 are the defaults: hard hue/saturation/
+# brightness jitter, red/blue swaps and greyscale crops, so colour and lighting
+# are not cues the model leans on.
+# Ultralytics validates on helsinki crops, which says nothing about new terrain:
+# --patience 0 so it cannot stop training early on that signal, --no-install so
+# it does not pick the served model, and last.pt (not the helsinki-picked
+# best.pt) is the candidate. Both are scored on the synthetic val set below.
+echo "== Training ($(date))"
 python train_detector.py \
     --model "$MODEL" \
     --epochs "$EPOCHS" \
@@ -43,8 +112,22 @@ python train_detector.py \
     --device 0 \
     --workers "$WORKERS" \
     --name "$NAME" \
-    $EXTRA_ARGS
+    --patience 0 \
+    --no-install \
+    ${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}
 
-echo "Job finished $(date)"
-echo "Best checkpoint + archive copied to weights/detector.pt and models_weights/ - scp these back, e.g.:"
-echo "  scp s234812@transfer.gbar.dtu.dk:/work3/s234812/nordic_cup/drone-flyby/weights/detector.pt ./weights/"
+TAG=${NAME}_${LSB_JOBID:-local}
+cp "runs/$NAME/weights/last.pt" "weights/candidate_${TAG}.pt"
+cp "runs/$NAME/weights/best.pt" "weights/candidate_${TAG}_helsinki_best.pt"
+
+if [ "$USE_SYNTH" = 1 ]; then
+    # Held-out synthetic locations: compare with 0.03 mAP50 (both old checkpoints on synth_v2 val).
+    echo "== Scoring on datasets/$SYNTH val ($(date))"
+    python -m synth.evaluate "weights/candidate_${TAG}.pt" "weights/candidate_${TAG}_helsinki_best.pt" \
+        --synthetic "datasets/$SYNTH/data.yaml" --device 0 --out "logs/eval_${TAG}.json"
+fi
+
+echo "Job finished $(date). Candidate weights: $PWD/weights/candidate_${TAG}.pt"
+echo "Copy back and check against the recorded validation run on the laptop (evaluation only):"
+echo "  scp <user>@transfer.gbar.dtu.dk:$PWD/weights/candidate_${TAG}*.pt weights/"
+echo "  python -m synth.evaluate weights/candidate_${TAG}.pt weights/detector.pt --recording <merged recording folder> --gallery eval_gallery"

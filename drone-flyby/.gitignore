@@ -82,7 +82,12 @@ cython_debug/
 
 # Pipeline outputs (debug_replay, run_local, train_detector, recorder)
 debug_out/
-datasets/
+# Generated datasets stay local, except the small synthetic cut-out bank (~2 MB),
+# which a fresh clone needs to compose synth_v2 (see synth/README.md).
+datasets/*
+!datasets/synth_assets/
+datasets/synth_assets/*
+!datasets/synth_assets/cutouts/
 runs/
 recordings/
 models_weights/
