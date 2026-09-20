@@ -1,5 +1,17 @@
 # RL with tIoU reward -- working notes (branch `medical-appointment-rl-tiou`)
 
+**Bottom line (2026-09-20, end of the investigation window before the
+16:00 competition deadline): neither approach tried beat E9's validated
+0.7255 CV-pooled score. This is a decisive negative result, not an
+inconclusive one -- both branches were tested to a clear, settled outcome,
+not abandoned for lack of time.** Stage 1 (RL fine-tuning of E9's own
+segment-citation policy): 7 configurations across 3 orders of magnitude of
+learning rate, all flat or negative on held-out data. Stage 2 (plain SFT on
+a higher-ceiling clause-level citation format): reached 0.7302 at 2x E9's own
+training budget, with per-epoch gains decelerating by ~3x per doubling --
+converging to a plateau below E9, not toward it. Full detail, numbers, and
+what's reusable for a future attempt: section 6.
+
 Started 2026-09-18 from `TIOU_RL_SCOPE.md` (the scoping note) after reading
 `NEXT_STEPS.md`. Both are gitignored on the leaderboard branch; copies live in
 this branch's working tree only. This file is committed and is the running
