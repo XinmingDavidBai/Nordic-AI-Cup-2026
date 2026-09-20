@@ -472,6 +472,35 @@ Kept the rest of the prompt byte-identical to the live one; added one rule
 sentence ("cite the confirmation, not the raising") plus the worked example.
 Started 11:23, `rl_results/fewshot_eval.log`.
 
+**Result of 4e (few-shot): also a regression.** offline 0.652 vs E3's 0.697
+baseline (acc 0.949 vs 0.964, tIoU 0.454 vs 0.519, FN 18 vs 12, pick-right
+108/163 vs 123/172). The worked example hurt BOTH the disambiguation it
+targeted AND the model's baseline yes/no judgment -- the same failure
+signature as every other prompt modification in this project's history
+(E2, prompt A/B/C). This is now the 5th independent category of intervention
+(RL x2 objective variants, 2 forms of loss reweighting, prompt engineering)
+to fail, all converging on the same conclusion: `llama3.2:3b` itself, at
+this prompt/task, is the bottleneck, not the training method or the prompt
+wording specifically.
+
+## 4f. Attempt 5: base model swap (no training, literature-motivated)
+
+A 2026 structured-output benchmark (found via search) specifically flags
+`Llama 3.2 3B`'s JSON reliability as weak for its size class and rates
+Gemma 3 4B as the most reliable small model tested for this exact task type
+-- the first genuinely different lever tried tonight (not a training or
+prompt change, but a different base model). `ollama pull gemma3:4b` failed:
+this machine's ollama (0.5.7) is too old for that model, and upgrading it
+risks restarting/disrupting the SAME shared ollama daemon the other session
+may be live-serving the leaderboard branch from -- correctly ruled out as
+unsafe, not attempted. Substituted `phi3.5:3.8b` (Microsoft, old enough to be
+ollama-0.5.7-compatible) as a same-idea, safer test: zero-shot (no
+fine-tuning, no prompt changes beyond `OLLAMA_MODEL`) through the exact E3
+prompt/pipeline, `OLLAMA_TIMEOUT=20` (a different model's latency profile is
+unknown, so widened generously for this one-off offline test only -- the
+live server's own timeout is untouched). Started 11:37,
+`rl_results/phi35_eval.log`.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
