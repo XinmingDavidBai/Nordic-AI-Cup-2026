@@ -21,19 +21,25 @@ kind of intervention on this task.
 **But a genuinely different, unplanned finding emerged and is the best
 result of the whole investigation: swapping the base model.**
 `phi3.5:3.8b`, zero-shot (no fine-tuning, no prompt changes), through the
-exact same pipeline and prompt E9 was built on, scores **0.7071** -- beating
-the current live baseline (E3, 0.697) with zero training cost, and its
-worst-case round trip (32s) comfortably fits the 60s latency budget. This
-was found via a literature search (a 2026 structured-output benchmark
-specifically flagged `Llama 3.2 3B`'s reliability as weak for its size
-class) after every other lever available in the remaining time had been
-tried and failed. Attempting to fine-tune phi3.5 the way E9 was built hit
-genuine MPS memory instability on this machine (not a data or method
-problem) and was not completed in time -- **the clean, validated,
-zero-training result stands, and applying E9's own fine-tuning recipe to
-this base model, on a machine or environment without the memory issue, is
-the clearest concrete next step for whoever continues this branch.** Full
-detail, numbers, and everything reusable: section 6.
+exact same pipeline and prompt E9 was built on, scores **0.7071** on the
+full 390-question offline harness -- beating the current live baseline (E3,
+0.697) with zero training cost, and its worst-case round trip (32s)
+comfortably fits the 60s latency budget. This was found via a literature
+search (a 2026 structured-output benchmark specifically flagged
+`Llama 3.2 3B`'s reliability as weak for its size class) after every other
+lever available in the remaining time had been tried and failed.
+Fine-tuning phi3.5 the way E9 was built hit genuine MPS memory instability
+on this machine, which was diagnosed and fixed (`gc.collect()` alongside
+the existing MPS cache clearing) in time to run to completion: on fold 0,
+3 epochs took it from 0.7225 (zero-shot, HF-eval baseline) to **0.7326**
+(+0.01) -- fine-tuning helped, and specifically corrected the over-eager
+"yes" bias as predicted (FP 1->0), but did not close the remaining gap to
+E9's own fold-0 score of 0.7533. **Net position: the zero-shot result
+(0.7071, full dataset, no training) is a clean, validated, low-risk finding
+that beats the current baseline today; fine-tuning phi3.5 further (more
+epochs, or all 5 folds for a genuine CV comparison against E9's 0.7255) is
+the clearest next step for anyone continuing this branch with more time.**
+Full detail, numbers, and everything reusable: section 6.
 
 Started 2026-09-18 from `TIOU_RL_SCOPE.md` (the scoping note) after reading
 `NEXT_STEPS.md`. Both are gitignored on the leaderboard branch; copies live in
