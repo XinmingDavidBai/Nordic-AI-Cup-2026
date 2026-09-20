@@ -528,6 +528,26 @@ fold-0 number, and any apparent win still needs the CV-time caveat from 4c
 kept in mind (single-fold result, not directly comparable to E9's
 CV-pooled 0.7255 without more folds, which there is not time for).
 
+**Fine-tuning phi3.5 hit memory instability, stopped rather than debugged
+further given the clock.** Two separate hangs within ~40 min: first the
+default eval batch size (16, a bug -- `finetune_local.py` never actually
+exposed `--eval-batch` despite training carefully using batch 1; fixed and
+verified with a bounded 16-example eval, 53s, clean); then training itself
+hung again around step 20 even at batch 1 with gradient checkpointing
+enabled -- PhysMem dropped from ~10GB free to ~200MB free both times,
+confirming genuine memory pressure, not a code exception. This looks like a
+memory-accumulation issue specific to Phi-3.5's fused-projection LoRA layers
+on this machine's MPS backend, not a simple one-line fix. Not pursued further
+with ~3h20m left to the deadline -- **the standing, already-validated result
+is the zero-shot finding (0.7071 vs E3's 0.697, no training needed)**, which
+does not depend on this unstable path at all.
+
+Quick follow-up while stopping this thread: tested the few-shot prompt
+(`tools/prompt_fewshot.txt`, which regressed llama3.2:3b in 4e) on phi3.5
+instead -- pure inference via ollama, no training, no memory risk, ~13 min.
+Different model, same prompt-engineering question: does phi3.5 respond
+better to worked examples than llama3.2:3b did?
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
