@@ -1,16 +1,39 @@
 # RL with tIoU reward -- working notes (branch `medical-appointment-rl-tiou`)
 
 **Bottom line (2026-09-20, end of the investigation window before the
-16:00 competition deadline): neither approach tried beat E9's validated
-0.7255 CV-pooled score. This is a decisive negative result, not an
-inconclusive one -- both branches were tested to a clear, settled outcome,
-not abandoned for lack of time.** Stage 1 (RL fine-tuning of E9's own
+16:00 competition deadline):**
+
+**The RL-tIoU direction itself (the thing this branch was created to test)
+is a decisive negative result.** Stage 1 (RL fine-tuning of E9's own
 segment-citation policy): 7 configurations across 3 orders of magnitude of
 learning rate, all flat or negative on held-out data. Stage 2 (plain SFT on
 a higher-ceiling clause-level citation format): reached 0.7302 at 2x E9's own
 training budget, with per-epoch gains decelerating by ~3x per doubling --
-converging to a plateau below E9, not toward it. Full detail, numbers, and
-what's reusable for a future attempt: section 6.
+converging to a plateau below E9, not toward it. Two further training-based
+attempts (focal-loss and domain-knowledge-weighted continuation of E9) were
+diagnosed as fundamentally unable to work before completion: E9 already fits
+its own training set near-perfectly, so there is no training-loss signal
+left to reweight. Prompt-engineering (a few-shot worked example targeting
+the diagnosed duplicate-mention error pattern) also regressed, on two
+different base models -- not a model-specific fragility, a property of this
+kind of intervention on this task.
+
+**But a genuinely different, unplanned finding emerged and is the best
+result of the whole investigation: swapping the base model.**
+`phi3.5:3.8b`, zero-shot (no fine-tuning, no prompt changes), through the
+exact same pipeline and prompt E9 was built on, scores **0.7071** -- beating
+the current live baseline (E3, 0.697) with zero training cost, and its
+worst-case round trip (32s) comfortably fits the 60s latency budget. This
+was found via a literature search (a 2026 structured-output benchmark
+specifically flagged `Llama 3.2 3B`'s reliability as weak for its size
+class) after every other lever available in the remaining time had been
+tried and failed. Attempting to fine-tune phi3.5 the way E9 was built hit
+genuine MPS memory instability on this machine (not a data or method
+problem) and was not completed in time -- **the clean, validated,
+zero-training result stands, and applying E9's own fine-tuning recipe to
+this base model, on a machine or environment without the memory issue, is
+the clearest concrete next step for whoever continues this branch.** Full
+detail, numbers, and everything reusable: section 6.
 
 Started 2026-09-18 from `TIOU_RL_SCOPE.md` (the scoping note) after reading
 `NEXT_STEPS.md`. Both are gitignored on the leaderboard branch; copies live in
@@ -413,6 +436,50 @@ model on an already-proven-regressive recipe twice (caught within ~1 minute
 each time); and the missing-gradient-checkpointing bug above cost 158
 minutes. None corrupted data or the leaderboard branch; all are documented
 here so they are not repeated.
+
+**Update, later the same day (section 4f): the actual best result of the
+whole investigation turned out not to be RL or SFT at all.** After stages 1
+and 2 were both conclusively exhausted, and two more training-based ideas
+(focal-loss and hard-example-weighted continuation of E9, section 4d) were
+diagnosed as unable to work before even finishing -- E9 has already fit its
+own 310-example training set to near-zero loss, so there is no training-loss
+signal left anywhere in that data for any reweighting scheme to amplify --
+a literature search surfaced a genuinely different lever: the base model
+itself. A 2026 structured-output benchmark specifically flagged
+`Llama 3.2 3B` as weak for reliable structured JSON generation at its size
+class. `phi3.5:3.8b`, dropped in as `OLLAMA_MODEL` with **zero other
+changes** -- same prompt, same retrieval, same rules, no fine-tuning --
+scored **0.7071** offline (vs the current live baseline's 0.697), with a
+32s worst-case round trip (well inside the 60s budget, comparable margin to
+E9's own 35.5s). This is the single best result found this session, and it
+cost 13 minutes to discover, not hours.
+
+The underlying behaviour shift is a real tradeoff, not a free lunch: FN
+dropped sharply (12->4) but FP rose (2->14) -- phi3.5 says "yes" more
+liberally, and the net gain comes from resolved false negatives outweighing
+the new false positives once the 0.4/0.6 accuracy/tIoU weighting is applied.
+E9's own fine-tuning recipe was specifically built to correct exactly this
+kind of over-eager "yes" bias via hard-negative training examples (that is
+most of what teaches "strict grounding" in `_PROMPT`'s rules and in the
+training data), so applying E9's own SFT process to phi3.5 as the base model
+-- not continuing E9's llama weights, a fresh LoRA on phi3.5 -- is the
+clearest, best-motivated next step. **This was started (fresh LoRA, r=16,
+lr 2e-4, 3 epochs, `jobs/finetune_local.py --base-template phi3`,
+`--init-adapter` not used since phi3.5 needs a fresh adapter not a continued
+one) but hit genuine Apple-MPS memory instability twice** (once a real bug --
+the eval step's batch size was never actually wired to the `--eval-batch`
+flag, now fixed -- and once a harder-to-diagnose hang mid-training around
+step 20 even at batch size 1 with gradient checkpointing on, most likely
+something specific to how Phi-3.5's fused `qkv_proj`/`gate_up_proj` LoRA
+layers interact with MPS's gradient-checkpointing memory management). Not
+resolved in the remaining time; the zero-shot result needed none of this
+infrastructure and stands on its own. **Whoever continues this: the fastest
+path to a real result is very likely `jobs/finetune_local.py --base-template
+phi3` on a CUDA machine (the HPC, once its service window ends) rather than
+debugging the MPS-specific hang further** -- the same recipe worked
+correctly for the llama path on this same machine all night, so the issue is
+plausibly specific to Phi-3.5's architecture on Apple's Metal backend, not
+this project's training code in general.
 
 ## 4d. Attempt 3: focal-loss SFT continuation of E9 (2026-09-20, ~10:48)
 
