@@ -501,6 +501,33 @@ unknown, so widened generously for this one-off offline test only -- the
 live server's own timeout is untouched). Started 11:37,
 `rl_results/phi35_eval.log`.
 
+**Update on 4f**: `phi3.5:3.8b` zero-shot (no training) through the exact
+E3 prompt/pipeline: **0.7071**, beating E3's own 0.697 with zero training.
+Real behavioural tradeoff underneath: FN 12->4 (much better recall) but
+FP 2->14 (much more willing to say yes) -- mean tIoU also rose (0.519->0.542).
+Net positive by the actual scoring formula, but the FP pattern is exactly
+what NEXT_STEPS.md previously flagged as a red flag for llama3.2:3b
+("FP above ~4 is a net loss"). The open question SFT should answer: does
+training on the hard-negative examples (which taught llama3.2:3b strict
+grounding) correct phi3.5's over-eager "yes" bias the same way, while
+keeping its better tIoU?
+
+Downloaded `microsoft/Phi-3.5-mini-instruct` (HF format, for MPS training --
+separate from ollama's GGUF copy used for the zero-shot test above).
+Phi-3.5 fuses attention/MLP projections differently from Llama
+(`qkv_proj`/`gate_up_proj` vs separate q/k/v/gate/up) and uses its own chat
+template (`<|system|>...<|end|>`, stop token `<|end|>` per
+`ollama show phi3.5:3.8b --template`, not the tokenizer's base
+`<|endoftext|>`) -- `jobs/finetune_local.py` extended with `--base-template`
+to support this alongside the existing llama path, smoke-tested (5 steps,
+clean) before the real run. **Fresh LoRA, E9's own recipe (r=16, lr 2e-4,
+3 epochs), fold 0.** Started 12:02, `rl_results/phi35_sft.log`. Plan: pause
+after epoch 1 for an early read (same pattern as the other SFT runs
+tonight), same adoption bar as everything else -- must clear E9's 0.7533
+fold-0 number, and any apparent win still needs the CV-time caveat from 4c
+kept in mind (single-fold result, not directly comparable to E9's
+CV-pooled 0.7255 without more folds, which there is not time for).
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from

@@ -30,6 +30,21 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, get_cosine_schedul
 
 import rl_common as rc  # noqa: E402  (render_prompt is identical for both tasks)
 
+
+def render_prompt_phi3(r):
+    """ollama's exact phi3.5:3.8b template (checked via `ollama show phi3.5:3.8b
+    --template`): <|system|>\n{system}<|end|>\n<|user|>\n{prompt}<|end|>\n<|assistant|>\n
+    The stop token is <|end|>, not the tokenizer's base eos (<|endoftext|>)."""
+    return f"<|system|>\n{r['system']}<|end|>\n<|user|>\n{r['prompt']}<|end|>\n<|assistant|>\n"
+
+
+TEMPLATES = {'llama': rc.render_prompt, 'phi3': render_prompt_phi3}
+TURN_END = {'llama': '<|eot_id|>', 'phi3': '<|end|>'}
+LORA_TARGETS = {
+    'llama': ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj'],
+    'phi3': ['qkv_proj', 'o_proj', 'gate_up_proj', 'down_proj'],  # Phi-3.5 fuses q/k/v and gate/up
+}
+
 BASE_MODEL = os.getenv('BASE_MODEL', 'unsloth/Llama-3.2-3B-Instruct')
 
 ap = argparse.ArgumentParser()
@@ -53,6 +68,8 @@ ap.add_argument('--focal-gamma', type=float, default=0.0,
                      'perfectly (max training loss observed 0.054 over 29 sampled steps), so there is no genuine '
                      'hard-vs-easy signal in TRAINING loss to exploit -- use --hard-boost instead, which is driven '
                      'by domain knowledge (the reward table), not the model\'s own (already-overfit) confidence.')
+ap.add_argument('--base-template', choices=list(TEMPLATES), default='llama',
+                help='prompt/chat template + turn-end token to train with (must match how the base model is served)')
 ap.add_argument('--hard-boost', type=float, default=1.0,
                 help='fixed loss multiplier (not confidence-based) for stage-1 training positives where '
                      'tools/rl_reward_table.json has oracle_idx != best_idx -- i.e. plain retrieval alone would '
@@ -87,6 +104,13 @@ state_path = os.path.join(args.out, 'train_state.json')
 tok = AutoTokenizer.from_pretrained(BASE_MODEL)
 if tok.pad_token is None:
     tok.pad_token = tok.eos_token
+if args.base_template == 'phi3':
+    # eval_records() (shared with the llama path) stops generation at tok.eos_token_id;
+    # phi3.5's actual turn-end token per ollama's own template is <|end|>, not the base
+    # tokenizer eos (<|endoftext|>) -- point eos_token_id at <|end|> so greedy eval matches
+    # how ollama actually serves it. pad stays a real, rarely-generated token (<|endoftext|>).
+    tok.pad_token_id = tok.convert_tokens_to_ids('<|endoftext|>')
+    tok.eos_token_id = tok.convert_tokens_to_ids('<|end|>')
 model = AutoModelForCausalLM.from_pretrained(BASE_MODEL, dtype=dtype).to(device)
 from peft import PeftModel
 if args.resume and os.path.isfile(os.path.join(args.out, 'adapter_config.json')):
@@ -98,7 +122,7 @@ elif args.init_adapter:
 else:
     model = get_peft_model(model, LoraConfig(
         r=16, lora_alpha=32, lora_dropout=0.05, bias='none', task_type='CAUSAL_LM',
-        target_modules=['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']))
+        target_modules=LORA_TARGETS[args.base_template]))
 model.config.use_cache = False
 model.gradient_checkpointing_enable()
 model.enable_input_require_grads()
@@ -107,9 +131,13 @@ print(f'{args.fold}: {len(train_records)} train, {len(held_out)} held out; '
       f'trainable {sum(p.numel() for p in trainable)/1e6:.1f}M; device {device} {dtype}', flush=True)
 
 
+_render = TEMPLATES[args.base_template]
+_turn_end = TURN_END[args.base_template]
+
+
 def encode_batch(recs):
-    p_ids = [tok(rc.render_prompt(r), add_special_tokens=True)['input_ids'] for r in recs]
-    c_ids = [tok(r['target_json'] + tok.eos_token, add_special_tokens=False)['input_ids'] for r in recs]
+    p_ids = [tok(_render(r), add_special_tokens=True)['input_ids'] for r in recs]
+    c_ids = [tok(r['target_json'] + _turn_end, add_special_tokens=False)['input_ids'] for r in recs]
     seqs = [p + c for p, c in zip(p_ids, c_ids)]
     L = max(len(s) for s in seqs)
     ids = torch.full((len(recs), L), tok.pad_token_id, dtype=torch.long)
@@ -158,6 +186,8 @@ if 'rl2' in args.data:
     import rl2_common as rc2
 else:
     rc2 = rc
+if args.base_template != 'llama':
+    rc2.render_prompt = _render  # eval_records() calls rc2.render_prompt; keep it in sync with training
 
 state = {'epoch': 0, 'idx': 0, 'step': 0}
 if args.resume and os.path.isfile(state_path):
