@@ -445,6 +445,33 @@ Implementation: `--init-adapter` and `--focal-gamma` added to
 before the real run. `rl_results/focal_sft.log`, adapter in
 `checkpoints_focal/fold0`.
 
+**Update on 4d**: killed after diagnosing why it can't work, before spending
+the full ~83 min. Even on the "hard" (oracle!=best_idx) TRAINING examples,
+E9's own training loss is already near-zero (E9 was SFT-trained on this exact
+310-example set, so of course it already fits them) -- there is no genuine
+hard-vs-easy signal left in TRAINING loss to reweight, by focal weighting OR
+by a fixed domain-knowledge multiplier (also tried, same result: the "hard"
+flagged examples still show near-zero plain loss). This is a general
+limitation, not specific to focal loss: reweighting SFT loss on data a model
+has already converged on cannot inject new gradient, because generalization
+gaps only show up on data the training loop never sees.
+
+## 4e. Attempt 4: few-shot in-context demonstration, no training at all
+
+Given attempt 3's dead end is fundamental to *any* further-training-on-the-
+same-data approach, switched to something training doesn't touch: one
+worked example of the diagnosed duplicate-mention pattern, added directly to
+the live prompt (`tools/prompt_fewshot.txt`), tested via the offline harness
+(`tools/pipeline_eval.py`, no GPU, ~13 min, cheap regardless of outcome).
+Real example from the training data (`sample_18_yes_q01`): segment 6 "I need
+my ibumet and renewed" (the request) vs segment 22 "Yes, the prescription is
+created" (the confirmation) -- exactly the "annotator marks the confirmation,
+not the raising" pattern NEXT_STEPS.md section 3.1/4 identified as the single
+largest remaining error cluster and could not fix with prompt rules alone.
+Kept the rest of the prompt byte-identical to the live one; added one rule
+sentence ("cite the confirmation, not the raising") plus the worked example.
+Started 11:23, `rl_results/fewshot_eval.log`.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from

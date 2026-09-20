@@ -48,9 +48,16 @@ ap.add_argument('--init-adapter', default=None, help='continue SFT from this exi
 ap.add_argument('--focal-gamma', type=float, default=0.0,
                 help='focal-loss exponent applied per training EXAMPLE (not per token): loss *= (1-p)^gamma, '
                      'p = exp(-plain CE) = model\'s current probability on the whole target sequence. '
-                     '0 = plain CE (default); >0 down-weights examples the model already gets confidently right, '
-                     'concentrating gradient on the ones it still gets wrong -- Lin et al. 2017 (object detection), '
-                     'used here at the sequence level since our targets are short structured JSON completions.')
+                     '0 = plain CE (default); >0 down-weights examples the model already gets confidently right. '
+                     'DIAGNOSED INEFFECTIVE on this data 2026-09-20: E9 already fits its own training set near-'
+                     'perfectly (max training loss observed 0.054 over 29 sampled steps), so there is no genuine '
+                     'hard-vs-easy signal in TRAINING loss to exploit -- use --hard-boost instead, which is driven '
+                     'by domain knowledge (the reward table), not the model\'s own (already-overfit) confidence.')
+ap.add_argument('--hard-boost', type=float, default=1.0,
+                help='fixed loss multiplier (not confidence-based) for stage-1 training positives where '
+                     'tools/rl_reward_table.json has oracle_idx != best_idx -- i.e. plain retrieval alone would '
+                     'cite the wrong segment, so getting these right requires genuine LLM disambiguation, not just '
+                     'the pipeline. 52/150 fold-0 training positives qualify. 1.0 = no boost (default).')
 args = ap.parse_args()
 
 device = 'mps' if torch.backends.mps.is_available() else 'cpu'
@@ -59,6 +66,12 @@ random.seed(args.seed)
 torch.manual_seed(args.seed)
 
 records = [json.loads(l) for l in open(args.data)]
+
+HARD_IDS = set()
+if args.hard_boost != 1.0:
+    _table = json.load(open('tools/rl_reward_table.json'))
+    HARD_IDS = {q for q, e in _table.items() if e.get('gold') and e.get('oracle_idx') != e.get('best_idx')}
+    print(f'--hard-boost {args.hard_boost}: {len(HARD_IDS)} question_ids flagged hard (oracle_idx != best_idx)', flush=True)
 if args.fold == 'all':
     train_records, held_out = records, []
 else:
@@ -184,6 +197,9 @@ for epoch in range(state['epoch'], math.ceil(args.epochs)):
             ids, att, mask = encode_batch(batch)
             opt.zero_grad(set_to_none=True)
             loss, plain_loss = ce_loss(ids, att, mask, gamma=args.focal_gamma)
+            is_hard = args.hard_boost != 1.0 and any(r['question_id'] in HARD_IDS for r in batch)
+            if is_hard:
+                loss = loss * args.hard_boost
             loss.backward()
             torch.nn.utils.clip_grad_norm_(trainable, 1.0)
             opt.step()
@@ -200,8 +216,8 @@ for epoch in range(state['epoch'], math.ceil(args.epochs)):
         state['step'] += 1
         if state['step'] % 10 == 0:
             print(json.dumps({'step': state['step'], 'epoch': epoch, 'idx': i + args.batch_size,
-                               'loss': plain_loss, 'weighted_loss': loss.item(), 'lr': sched.get_last_lr()[0],
-                               'elapsed_min': round((time.time() - t0) / 60, 1)}), flush=True)
+                               'loss': plain_loss, 'weighted_loss': loss.item(), 'hard': is_hard if args.hard_boost != 1.0 else None,
+                               'lr': sched.get_last_lr()[0], 'elapsed_min': round((time.time() - t0) / 60, 1)}), flush=True)
         if device == 'mps':
             torch.mps.empty_cache()
         if (i + args.batch_size) % args.save_every < args.batch_size:

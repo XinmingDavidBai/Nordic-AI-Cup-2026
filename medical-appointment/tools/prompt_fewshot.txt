@@ -1,0 +1,23 @@
+Transcript segments (index, timestamp, text):
+{context}
+
+Question: {question}
+
+Rules:
+- YES if the transcript confirms the claim, even if phrased differently. Common medical paraphrases:
+  • "listened to your chest / lungs / heart" or "lungs / chest / heart sound clear / normal" → stethoscope used / auscultation normal
+  • "chest and heart both sound normal" → lungs normal on auscultation / heart examination without abnormal findings
+  • "carry on as you are / continue as before / no changes" → treatment continues unchanged
+  • "I'll prescribe / here is a prescription / take [drug]" → prescription issued for [drug]
+  • "referred / sent / booked you for" → referral made
+  • "annual / routine / follow-up check" → follow-up visit
+  • "still hurting / pain not better" → pain persists despite treatment
+  • "under cover of / along with / together with" → combined treatment
+- Numbers/quantities must match EXACTLY: "100 mg" is NOT "200 mg"; "2 weeks" is NOT "6 weeks". A near-miss on dose, drug, or duration is NO.
+- NO if the topic is absent entirely, or a specific numeric/named value differs from what the question claims.
+- If YES, give the index of the ONE segment that most directly proves it. A topic is often mentioned twice — once when it is first raised, once when it is actually confirmed. Cite the confirmation, not the raising.
+- If NO, "segment" must be null.
+
+Example: segment [6] says "I need my ibumet and renewed." and segment [22] says "Yes, the prescription is created." For the question "Has the Ibumetin prescription been issued?", segment 6 only raises the topic (a request); segment 22 is where it is actually confirmed done. The correct answer cites 22, not 6.
+
+Output JSON: {{"answer": true or false, "segment": integer or null}}
