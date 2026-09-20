@@ -310,8 +310,16 @@ At ~25-38 min/epoch/fold, getting a genuinely comparable CV-pooled number for
 stage 2 would need 4 more folds x 3 epochs each -- over 9 hours, which does
 not fit in what remains before the 16:00 deadline. Even a fold-0 win at this
 point could not be honestly validated against E9's number in time, so
-further open-ended training stopped here in favour of writing up complete,
-honest findings for whoever continues this branch.
+further open-ended training paused here in favour of writing up complete,
+honest findings for whoever continues this branch -- then reconsidered:
+unlike the RL runs, this SFT trajectory is still rising at every checkpoint
+with no sign of plateau or overfitting, and SFT is a fundamentally more
+predictable optimisation process than the RL runs that failed tonight. With
+real time margin remaining, extended to 6 epochs (3 more, LR schedule
+reopened the same way as m3-extended in 4b -- except here the trend actually
+favours it). Started 08:47, `rl_results/stage2_sft_extend.log`. Note this
+remains a single-fold (fold 0) result regardless of outcome; see the CV-time
+caveat above, unchanged.
 
 ## 6. Summary for whoever picks this branch up next
 
