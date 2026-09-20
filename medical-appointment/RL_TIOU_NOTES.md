@@ -548,6 +548,14 @@ instead -- pure inference via ollama, no training, no memory risk, ~13 min.
 Different model, same prompt-engineering question: does phi3.5 respond
 better to worked examples than llama3.2:3b did?
 
+**Result: no, decisively worse.** 0.608 (vs the zero-shot 0.7071 and E3's
+0.697) -- accuracy collapsed to 0.751, positives-answered-yes 194/195 (the
+model now says yes to almost everything, positives AND negatives alike).
+This settles the question cleanly: prompt-engineering interventions on this
+task backfire regardless of which small (3-4B) base model is used -- it is
+not a llama3.2:3b-specific fragility. **Standing best result: the plain
+zero-shot swap, unmodified prompt, 0.7071.**
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
