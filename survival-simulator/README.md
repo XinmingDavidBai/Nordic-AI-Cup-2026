@@ -85,7 +85,7 @@ Each ActionRequest must include the following fields:
 |turn_angle	        | float | Rotation applied this step (radians).                                     |
 |spawn_agent	    | bool  | Whether the agent should attempt to spawn a new agent (high energy cost).   |
 
-For a full example of how actions are used in practice, see [dummy_agent_policy.py](src/utils/controllers/dummy_agent_policy.py) and [agent_server.py](agent_server.py).
+For a full example of how actions are used in practice, see [hive_policy.py](src/utils/controllers/hive_policy.py) and [agent_server.py](agent_server.py).
 
 ## Energy costs
 |Action                                               | Energy cost                                     |
@@ -156,7 +156,7 @@ Feel free to change the `HOST` and `PORT` settings in [agent_server.py](agent_se
 
 To run a simulation on the server, you can run [simulation_server.py](simulation_server.py) while the endpoint is running.
 
-The default movement logic for agents can be found in [dummy_agent_policy.py](src/utils/controllers/dummy_agent_policy.py).
+The movement logic for agents can be found in [hive_policy.py](src/utils/controllers/hive_policy.py), and its tunable parameters in [params.py](src/utils/controllers/params.py).
 
 
 ### OBS

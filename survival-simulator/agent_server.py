@@ -9,9 +9,17 @@ from src.utils.controllers.hive_policy import HiveMind
 HOST = "0.0.0.0"
 PORT = 9052
 
-# Trained parameters if they exist, hand-set defaults otherwise.
-PARAMS_PATH = os.environ.get("HIVE_PARAMS", "checkpoints/best.json")
-params = Params.load(PARAMS_PATH) if os.path.exists(PARAMS_PATH) else Params()
+# Trained parameters if they exist, hand-set defaults otherwise. A missing checkpoint
+# used to fall back silently, so an evaluation could run hand-set defaults without anyone
+# noticing - it says so now.
+PARAMS_PATH = os.environ.get("HIVE_PARAMS", "checkpoints/train_paired/best.json")
+if os.path.exists(PARAMS_PATH):
+    print(f"Policy parameters: {PARAMS_PATH}")
+    params = Params.load(PARAMS_PATH)
+else:
+    print(f"WARNING: {PARAMS_PATH} not found - serving hand-set defaults, not trained "
+          f"parameters. Set HIVE_PARAMS to pick a checkpoint.")
+    params = Params()
 
 app = FastAPI(title="Survival Simulator Agent Endpoint")
 
