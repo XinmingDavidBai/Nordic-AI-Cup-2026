@@ -293,7 +293,8 @@ lr 2e-4, batch 1, matching E9's own recipe), started 06:40,
 |---|---|---|---|
 | zero-shot (fresh LoRA) | 0.5861 | 0.9125 | 0.3686 |
 | 1 epoch | 0.6752 | 0.9625 | 0.4837 |
-| 3 epochs (matches E9's own recipe) | **0.7129** | 0.975 | 0.5382 |
+| 3 epochs (matches E9's own recipe) | 0.7129 | 0.975 | 0.5382 |
+| 6 epochs (2x E9's budget, LR schedule reopened) | **0.7302** | 0.975 | 0.5670 |
 | E9 (3 epochs, stage 1, for comparison) | **0.7533** | 0.9875 | 0.5972 |
 
 Rising but with clearly diminishing returns (epoch 0->1: +0.089; epochs 1->3,
@@ -358,13 +359,18 @@ better -- this action space, at this data scale (310 training prompts) and
 compute budget (LoRA r=16, single M1 Pro), does not have an accessible
 improvement direction via exact-expectation RL continuing E9's optimum.
 
-**Stage 2 (clause-level citation, higher ceiling): inconclusive, promising
-trajectory, not enough time to finish.** SFT alone (no RL yet attempted) on
-the new format reached 0.7129 at E9's own 3-epoch budget, up from a 0.586
-zero-shot start, but short of E9's 0.7533. Never got to test RL on top of
-this warm start, or extend training with a reopened LR schedule, or run
-enough folds for a genuine CV comparison -- all legitimate next steps if
-someone picks this up with more time or HPC access.
+**Stage 2 (clause-level citation, higher ceiling): now conclusively
+negative too, not just out of time.** SFT alone (no RL attempted) on
+fold 0: zero-shot 0.5861 -> 1 epoch 0.6752 (+0.089) -> 3 epochs (E9's own
+budget) 0.7129 (+0.019/epoch) -> 6 epochs, LR schedule reopened, 0.7302
+(+0.006/epoch). The per-epoch gain decelerates by roughly 3x at each
+doubling, a clear asymptotic convergence -- extrapolating, more epochs would
+keep shrinking toward a plateau below E9's 0.7533, not close the gap. At 2x
+E9's own training budget this is now a settled result for this format on
+this data/compute scale, not an open question. Never got to test RL on top
+of this SFT warm start (would need the stage-1 lesson applied: a fixed,
+tie-free reward and a fast lr-probe pass before any full run) -- a legitimate
+next step for someone with more time or HPC access, but not attempted.
 
 **What actually worked and is reusable:**
 - `tools/build_rl_reward_table.py` / `tools/build_rl2_dataset.py`: exact
