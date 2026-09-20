@@ -286,9 +286,107 @@ lr 2e-4, batch 1, matching E9's own recipe), started 06:40,
 `rl_results/stage2_sft.log`. ~8s/step at batch 1 -> ~2h for 3 epochs
 (310 steps/epoch). ~9h remain to the 16:00 deadline as of launch.
 
-**Stage-2 SFT results so far**: zero-shot (fresh LoRA, untrained) 0.5861;
-after 1 epoch 0.6752 (below E9's 0.7533 but rising fast, as expected -- E9
-itself needed 3 epochs). Resumed for the remaining 2 epochs at 07:25.
+**Stage-2 SFT, full result (fold 0, real greedy generation via
+`rl2_common.eval_records`, not candidate-scoring):**
+
+| checkpoint | score | accuracy | mean tIoU |
+|---|---|---|---|
+| zero-shot (fresh LoRA) | 0.5861 | 0.9125 | 0.3686 |
+| 1 epoch | 0.6752 | 0.9625 | 0.4837 |
+| 3 epochs (matches E9's own recipe) | **0.7129** | 0.975 | 0.5382 |
+| E9 (3 epochs, stage 1, for comparison) | **0.7533** | 0.9875 | 0.5972 |
+
+Rising but with clearly diminishing returns (epoch 0->1: +0.089; epochs 1->3,
+i.e. 2 epochs: +0.038, ~0.019/epoch). Extrapolating the decelerating curve,
+more epochs would likely approach but not fully close the ~0.04 gap to E9 --
+and the LR schedule was set for exactly 3 epochs (already near zero by the
+end), so genuinely testing more epochs needs a schedule extension, not just
+continuing training, the same lesson learned the hard way in section 4b.
+
+**Why this stops here rather than extending further**: every number in this
+whole investigation (stage 1 AND stage 2) is a single-fold (fold 0, 80
+held-out questions) result. E9's 0.7255 is a proper 5-fold CV-pooled result.
+At ~25-38 min/epoch/fold, getting a genuinely comparable CV-pooled number for
+stage 2 would need 4 more folds x 3 epochs each -- over 9 hours, which does
+not fit in what remains before the 16:00 deadline. Even a fold-0 win at this
+point could not be honestly validated against E9's number in time, so
+further open-ended training stopped here in favour of writing up complete,
+honest findings for whoever continues this branch.
+
+## 6. Summary for whoever picks this branch up next
+
+**Bottom line: neither stage 1 nor stage 2 beat E9's validated 0.7255
+CV-pooled score within one night's local (Apple M1 Pro) compute, and the DTU
+HPC service window (Fri 20:00 - Mon 08:00) made the originally-planned
+multi-fold HPC runs unavailable for this competition's deadline.** This is a
+genuine, reasonably thorough negative-to-inconclusive result, not a
+give-up -- TIOU_RL_SCOPE.md's own risk note anticipated exactly this as a
+legitimate possible outcome.
+
+**Stage 1 (segment-citation RL, continuing E9): conclusively negative.**
+Seven configurations tested on held-out fold 0, spanning three orders of
+magnitude of learning rate (3e-6 to 3e-5), two reward formulations (a bug in
+the first, fixed in the rest), two policy sharpness regimes, with and without
+a KL anchor, and 20 to 234 total training steps. Every single one was flat
+or negative; none improved on E9's own fold-0 score of 0.7533:
+
+| config | delta vs E9 fold-0 (0.7533) |
+|---|---|
+| m1 (reward-table-tie bug) | -0.0221 |
+| m2 (peaked policy + KL 0.1) | -0.0050 |
+| m3 (1 epoch, fixed reward) | 0.0000 |
+| m3-extended (3 epochs, same recipe) | -0.0152 |
+| probe lr 3e-6 (20 steps) | 0.0000 |
+| probe lr 1e-5 (20 steps) | 0.0000 |
+| probe lr 3e-5 (20 steps) | 0.0000 |
+
+The one diagnosable failure (m1) was a real, fixable bug: the reward table
+inherited the pipeline's earlier-of(cited, retrieval-best) post-processing,
+so citing a later wrong index often tied the reward of citing the correct
+one, and the policy learned to drift later. Fixed by scoring the cited
+index's own segment IoU directly (`jobs/rl_common.py:reward_segment`). Even
+with that fixed, more training pressure (m3-extended) made things worse, not
+better -- this action space, at this data scale (310 training prompts) and
+compute budget (LoRA r=16, single M1 Pro), does not have an accessible
+improvement direction via exact-expectation RL continuing E9's optimum.
+
+**Stage 2 (clause-level citation, higher ceiling): inconclusive, promising
+trajectory, not enough time to finish.** SFT alone (no RL yet attempted) on
+the new format reached 0.7129 at E9's own 3-epoch budget, up from a 0.586
+zero-shot start, but short of E9's 0.7533. Never got to test RL on top of
+this warm start, or extend training with a reopened LR schedule, or run
+enough folds for a genuine CV comparison -- all legitimate next steps if
+someone picks this up with more time or HPC access.
+
+**What actually worked and is reusable:**
+- `tools/build_rl_reward_table.py` / `tools/build_rl2_dataset.py`: exact
+  reproduction of the live pipeline's span logic for every citable index,
+  validated against E9's real ollama output (spans match, IoU diff < 5e-5).
+  Reusable for any future RL or reranking attempt on this task.
+- `jobs/rl_exact_train.py` (HPC) / `jobs/rl_exact_local.py` (Mac): the
+  FGPO-style exact expected-reward trainer. Verified correct (cached
+  candidate scoring matches full-sequence scoring within floating-point
+  tolerance) and numerically stable all night (zero crashes, zero silent
+  corruption across ~10 hours of training).
+- `jobs/finetune_local.py`: a minimal standalone SFT loop for this venv, after
+  `jobs/finetune_train.py`'s trl/device_map='auto' combination broke in
+  `tools/.export-venv` (transformers 5.17 there vs 4.57 on the HPC). Needs
+  `gradient_checkpointing_enable()` -- the one bug in this file cost 158
+  minutes before being caught; already fixed, verified working.
+- Fast lr-probing (`--limit N --epochs 1`, 20-step bursts): a good pattern
+  for triaging hyperparameters before committing to full runs -- should have
+  been the default approach from the start of the night, not the fallback
+  after two full-scale failures.
+
+**Honest account of process mistakes** (all caught and fixed, logged for
+whoever reads this): a background-task notification that silently failed to
+arrive left a training run paused for ~9 hours unnoticed; a resume script
+name was reused for the wrong run's hyperparameters and briefly launched the
+wrong config (caught in seconds); an auto-chaining script trained a "final"
+model on an already-proven-regressive recipe twice (caught within ~1 minute
+each time); and the missing-gradient-checkpointing bug above cost 158
+minutes. None corrupted data or the leaderboard branch; all are documented
+here so they are not repeated.
 
 ## 5. Operational notes (HPC)
 
