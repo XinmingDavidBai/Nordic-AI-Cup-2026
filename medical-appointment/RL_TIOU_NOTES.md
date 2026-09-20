@@ -252,6 +252,40 @@ learning rates (3e-6, 1e-5, 3e-5), fresh from E9's fold-0 adapter each time,
 looking for ANY positive held-out delta before committing to a full run.
 `rl_results/probe_lrs.sh` / `rl_results/probes.log`.
 
+## 4c. Stage-2 SFT attempt (2026-09-20, ~04:00-06:40)
+
+Three lr probes (3e-6/1e-5/3e-5, 20 steps each, fresh from E9): all exactly
+flat, 0.7533->0.7533. Combined with m1/m2/m3/m3-ext, that's 7 configurations
+spanning 3 orders of magnitude in lr, all flat or negative. Considering
+stage-1 (segment-citation) RL fine-tuning at this data/compute scale
+thoroughly negatively tested; stopped searching that space.
+
+Pivoted to stage 2 (clause-level, higher ceiling 0.885 vs 0.794). Two real
+mistakes cost significant time here, logged for honesty:
+- `jobs/finetune_train.py` (the trl-based E9-style trainer) failed in
+  `tools/.export-venv` on two fronts: `device_map='auto'` offloaded params to
+  the meta device instead of placing them on MPS, and trl 1.13's `SFTConfig`
+  rejected `warmup_ratio` -- likely a trl/transformers version skew specific
+  to this venv (transformers 5.17 here vs 4.57 on the HPC). Rather than debug
+  someone else's trainer's dependency stack with the clock critical, wrote
+  `jobs/finetune_local.py`: a minimal standalone SFT loop reusing the same
+  explicit-device-placement pattern that worked all night in
+  `rl_exact_local.py`.
+- That new script OMITTED `gradient_checkpointing_enable()` (present in
+  every other local trainer tonight) and had a bug where the per-batch OOM
+  handler's `continue` meant a never-advancing step counter never hit the
+  loop's exit condition -- so a "quick smoke test" silently retried every
+  remaining batch in the epoch, OOMing on all of them, for **158 minutes**,
+  producing a meaningless "result" (an untrained, freshly-initialized LoRA
+  adapter's zero-shot score on 4 examples). Fixed both (gradient checkpointing
+  enabled; `--max-steps` hard cap; abort after 20 total OOMs) and verified
+  with a bounded 3-step run (24s, 0 OOM) before committing to a real run.
+
+**Current**: `checkpoints_rl2_sft/fold0` stage-2 SFT training (3 epochs,
+lr 2e-4, batch 1, matching E9's own recipe), started 06:40,
+`rl_results/stage2_sft.log`. ~8s/step at batch 1 -> ~2h for 3 epochs
+(310 steps/epoch). ~9h remain to the 16:00 deadline as of launch.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
