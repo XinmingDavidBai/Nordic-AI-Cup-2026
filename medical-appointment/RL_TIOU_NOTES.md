@@ -473,17 +473,38 @@ step 20 even at batch size 1 with gradient checkpointing on, most likely
 something specific to how Phi-3.5's fused `qkv_proj`/`gate_up_proj` LoRA
 layers interact with MPS's gradient-checkpointing memory management). Not
 resolved in the remaining time; the zero-shot result needed none of this
-infrastructure and stands on its own. **Update: the MPS hang was actually fixed.** Added explicit `gc.collect()`
-alongside the existing per-step `torch.mps.empty_cache()` -- Python-side
-reference cycles from the loss/tensor objects were plausibly not being freed
-between steps even though the MPS-side cache was clearing. A 40-step bounded
-test (past the previous ~20-step hang point) completed cleanly in 4.5 min,
-0 OOM. Relaunched the real run (fresh LoRA, r=16, lr 2e-4, 3 epochs, fold 0,
-`--eval-batch 4`) at 13:08, `rl_results/phi35_sft2.log`. ~1h45m needed for
-all 3 epochs at the observed pace, against ~2h50m remaining at launch --
-tight but workable; plan is to pause after epoch 1 (~35 min) for an early
-read, same discipline as every other SFT run tonight, given how little
-margin is left before 16:00.
+infrastructure and stands on its own. **Update: the MPS hang was fixed and the full run completed cleanly.**
+Added explicit `gc.collect()` alongside the existing per-step
+`torch.mps.empty_cache()` -- Python-side reference cycles from the
+loss/tensor objects were plausibly not being freed between steps even though
+the MPS-side cache was clearing. Relaunched (fresh LoRA, r=16, lr 2e-4,
+3 epochs, fold 0, `--eval-batch 4`) at 13:08; all 930 steps completed in
+103.5 min, **0 OOM, 0 hangs** -- the fix held for the entire run, more than
+45x past the point the earlier attempts died at.
+
+**Final result (fold 0, HF-eval path, apples-to-apples with the init
+number): init 0.7225 -> final 0.7326 (+0.0101).** Real, if modest,
+improvement from fine-tuning, and it landed exactly where predicted: FP
+dropped from 1 to 0 (fine-tuning's hard-negative training data corrects the
+over-eager "yes" bias, as hypothesized) while mean tIoU also rose
+(0.554->0.571). **But this is still short of E9's own fold-0 score, 0.7533**
+-- a real gap of -0.021 remains. Fine-tuning helped, but not enough to
+close the gap on this one fold in one 3-epoch pass.
+
+**Where this leaves the phi3.5 direction overall:**
+- Zero-shot, no training, full 390-question dataset via ollama: **0.7071,
+  beats the current live baseline (0.697).** This number is real, cheap
+  (13 min) to reproduce, latency-safe (32s worst case), and does not depend
+  on any of the fine-tuning infrastructure above.
+- Fine-tuned, fold-0 only, HF-eval: 0.7326, better than its own zero-shot
+  start but still short of E9's fold-0 (0.7533). One fold, one epoch budget,
+  one hyperparameter setting -- not a ceiling, just what one pass reached
+  with under three hours left in the day.
+- The honest, most likely-to-work next step for whoever continues this:
+  more epochs (the SFT trajectory was still rising, unlike stage 1's RL
+  attempts) and/or all 5 folds for a genuine CV-pooled comparison against
+  E9's 0.7255 -- both straightforward now that the MPS memory issue is
+  fixed and documented, just out of reach in the time that was left.
 
 ## 4d. Attempt 3: focal-loss SFT continuation of E9 (2026-09-20, ~10:48)
 
