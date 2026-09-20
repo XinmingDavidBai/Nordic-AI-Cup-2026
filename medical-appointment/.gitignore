@@ -102,4 +102,6 @@ jobs/synthetic_data.jsonl
 # RL-tIoU branch (see RL_TIOU_NOTES.md): HPC-side outputs if pulled down locally
 rl_results/
 checkpoints_rl/
+checkpoints_rl2_sft/
 checkpoints_e9/
+tools/results_think_first.json
