@@ -286,6 +286,10 @@ lr 2e-4, batch 1, matching E9's own recipe), started 06:40,
 `rl_results/stage2_sft.log`. ~8s/step at batch 1 -> ~2h for 3 epochs
 (310 steps/epoch). ~9h remain to the 16:00 deadline as of launch.
 
+**Stage-2 SFT results so far**: zero-shot (fresh LoRA, untrained) 0.5861;
+after 1 epoch 0.6752 (below E9's 0.7533 but rising fast, as expected -- E9
+itself needed 3 epochs). Resumed for the remaining 2 epochs at 07:25.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
