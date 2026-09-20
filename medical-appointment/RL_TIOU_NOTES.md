@@ -220,6 +220,38 @@ dialogue benchmark, PriMock57-style corpora): note generation or response
 selection, no evidence-span labels; not usable as extra supervision for this
 metric. The E10 synthetic route remains the only data-scaling option.
 
+## 4b. m3-extended result and pivot to fast lr probes (2026-09-20, ~02:30)
+
+3-epoch extension of m3 (234 total steps, same segment reward/flat policy/no
+KL, LR schedule reopened to a higher peak for epochs 1-2): **0.7533 -> 0.7381,
+a clear regression** (tIoU 0.597->0.580, acc 0.988->0.975, one new FP). More
+training in the same safe direction made it worse, not better -- ruling out
+"just needs more magnitude" as the fix for m3's flatness. Diff of the 4
+changed held-out answers: the clearest case (`sample_10_yes_q03`) was a
+previously-CORRECT citation (segment 6, iou 0.97, matching both oracle and
+best_idx) that drifted to an adjacent wrong segment (5, iou 0.21) -- looks
+like generic duplicate-mention confusion getting worse with more exposure,
+not a clean, patchable bug like m1's tie exploit.
+
+Four configurations now, all flat-or-negative on held-out fold 0:
+
+| config | init -> final | delta |
+|---|---|---|
+| m1: lr 2e-5, 1ep, reward-table ties (bug) | 0.7533 -> 0.7312 | -0.0221 |
+| m2: lr 1e-5, 1ep, peaked policy + KL 0.1 + entropy 0 | 0.7533 -> 0.7483 | -0.0050 |
+| m3: lr 1e-5, 1ep, flat policy + entropy 0.03, no KL | 0.7533 -> 0.7533 | 0.0000 |
+| m3-ext: same as m3, 3ep | 0.7533 -> 0.7381 | -0.0152 |
+
+**Killed a second near-miss**: the extend script auto-chained into training
+the all-39 "final" adapter on the just-proven-regressive 3-epoch recipe;
+caught and killed within ~1 minute (vs a ~3-4h waste if left running).
+
+**Pivot**: rather than another full 1-3.5h blind run, triaging fast --
+`jobs/rl_exact_local.py --limit 80 --epochs 1` (20 steps, ~15-20 min) at three
+learning rates (3e-6, 1e-5, 3e-5), fresh from E9's fold-0 adapter each time,
+looking for ANY positive held-out delta before committing to a full run.
+`rl_results/probe_lrs.sh` / `rl_results/probes.log`.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from
