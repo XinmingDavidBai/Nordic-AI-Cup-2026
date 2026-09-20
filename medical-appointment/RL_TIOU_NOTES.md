@@ -473,13 +473,17 @@ step 20 even at batch size 1 with gradient checkpointing on, most likely
 something specific to how Phi-3.5's fused `qkv_proj`/`gate_up_proj` LoRA
 layers interact with MPS's gradient-checkpointing memory management). Not
 resolved in the remaining time; the zero-shot result needed none of this
-infrastructure and stands on its own. **Whoever continues this: the fastest
-path to a real result is very likely `jobs/finetune_local.py --base-template
-phi3` on a CUDA machine (the HPC, once its service window ends) rather than
-debugging the MPS-specific hang further** -- the same recipe worked
-correctly for the llama path on this same machine all night, so the issue is
-plausibly specific to Phi-3.5's architecture on Apple's Metal backend, not
-this project's training code in general.
+infrastructure and stands on its own. **Update: the MPS hang was actually fixed.** Added explicit `gc.collect()`
+alongside the existing per-step `torch.mps.empty_cache()` -- Python-side
+reference cycles from the loss/tensor objects were plausibly not being freed
+between steps even though the MPS-side cache was clearing. A 40-step bounded
+test (past the previous ~20-step hang point) completed cleanly in 4.5 min,
+0 OOM. Relaunched the real run (fresh LoRA, r=16, lr 2e-4, 3 epochs, fold 0,
+`--eval-batch 4`) at 13:08, `rl_results/phi35_sft2.log`. ~1h45m needed for
+all 3 epochs at the observed pace, against ~2h50m remaining at launch --
+tight but workable; plan is to pause after epoch 1 (~35 min) for an early
+read, same discipline as every other SFT run tonight, given how little
+margin is left before 16:00.
 
 ## 4d. Attempt 3: focal-loss SFT continuation of E9 (2026-09-20, ~10:48)
 

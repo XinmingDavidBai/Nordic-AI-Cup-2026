@@ -20,6 +20,7 @@ import math
 import os
 import random
 import sys
+import gc
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -244,10 +245,13 @@ for epoch in range(state['epoch'], math.ceil(args.epochs)):
             if device == 'mps':
                 torch.mps.empty_cache()
             continue
+        loss_item = loss.item()
+        del ids, att, mask, loss
+        gc.collect()
         state['step'] += 1
         if state['step'] % 10 == 0:
             print(json.dumps({'step': state['step'], 'epoch': epoch, 'idx': i + args.batch_size,
-                               'loss': plain_loss, 'weighted_loss': loss.item(), 'hard': is_hard if args.hard_boost != 1.0 else None,
+                               'loss': plain_loss, 'weighted_loss': loss_item, 'hard': is_hard if args.hard_boost != 1.0 else None,
                                'lr': sched.get_last_lr()[0], 'elapsed_min': round((time.time() - t0) / 60, 1)}), flush=True)
         if device == 'mps':
             torch.mps.empty_cache()
