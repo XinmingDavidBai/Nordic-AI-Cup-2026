@@ -105,3 +105,10 @@ checkpoints_rl/
 checkpoints_rl2_sft/
 checkpoints_e9/
 tools/results_think_first.json
+
+# Phi-3.5 model-swap experiment (2026-09-20): adapter + loose offline results
+checkpoints_focal/
+checkpoints_phi35/
+tools/results_fewshot.json
+tools/results_phi35.json
+tools/results_phi35_fewshot.json
