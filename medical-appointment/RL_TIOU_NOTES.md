@@ -414,6 +414,37 @@ each time); and the missing-gradient-checkpointing bug above cost 158
 minutes. None corrupted data or the leaderboard branch; all are documented
 here so they are not repeated.
 
+## 4d. Attempt 3: focal-loss SFT continuation of E9 (2026-09-20, ~10:48)
+
+User asked for a fresh literature search given real time remained. Two
+findings from that search motivated a genuinely different (not RL) lever:
+- Focal loss / hard-example weighting is specifically validated for small,
+  imbalanced fine-tuning datasets -- down-weight the loss on examples the
+  model already gets confidently right, concentrate gradient on the ones it
+  doesn't. Directly targets what the stage-2 SFT loss logs showed all night:
+  most training steps had near-zero loss (already-easy examples), a small
+  minority spiked (the genuinely hard/ambiguous ones) -- uniform-weight CE
+  wastes most of its gradient budget on examples that don't need correcting.
+- A calibration-literature finding: SFT yields well-calibrated confidence,
+  while RL methods (GRPO included) induce *overconfidence* -- consistent with
+  what m1-m3 showed empirically (entropy collapsing, p(best) rising, without
+  held-out correctness improving). This is a plausible explanation for *why*
+  the RL runs failed, not just evidence they did.
+
+**Design**: continue E9's own fold-0 adapter (already strong, 0.7533) with
+focal-loss-weighted plain SFT on the *same* stage-1 data
+(`tools/finetune_dataset.jsonl`) -- not RL, not a new action space. Per
+training example: `loss *= (1 - p)^gamma`, p = the model's current
+probability on that example's whole target sequence, gamma=2.0 (the
+standard value from Lin et al. 2017, applied here at the sequence level
+since targets are short structured JSON, not long token sequences). lr 5e-5
+(well below E9's own 2e-4 SFT lr, deliberately conservative to avoid
+catastrophic forgetting of E9's already-good behaviour), 2 epochs.
+Implementation: `--init-adapter` and `--focal-gamma` added to
+`jobs/finetune_local.py`; smoke-tested (5 steps, 30s, correct behaviour)
+before the real run. `rl_results/focal_sft.log`, adapter in
+`checkpoints_focal/fold0`.
+
 ## 5. Operational notes (HPC)
 
 - Workspace `/work3/s234812/nordic_cup_rl/medical-appointment`, synced from

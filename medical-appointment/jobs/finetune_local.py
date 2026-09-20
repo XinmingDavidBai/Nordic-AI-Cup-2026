@@ -44,6 +44,13 @@ ap.add_argument('--resume', action='store_true')
 ap.add_argument('--eval-limit', type=int, default=0)
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=-1, help='hard cap on successful optimizer steps, for bounded smoke tests')
+ap.add_argument('--init-adapter', default=None, help='continue SFT from this existing adapter dir instead of a fresh LoRA (e.g. checkpoints_e9/fold0)')
+ap.add_argument('--focal-gamma', type=float, default=0.0,
+                help='focal-loss exponent applied per training EXAMPLE (not per token): loss *= (1-p)^gamma, '
+                     'p = exp(-plain CE) = model\'s current probability on the whole target sequence. '
+                     '0 = plain CE (default); >0 down-weights examples the model already gets confidently right, '
+                     'concentrating gradient on the ones it still gets wrong -- Lin et al. 2017 (object detection), '
+                     'used here at the sequence level since our targets are short structured JSON completions.')
 args = ap.parse_args()
 
 device = 'mps' if torch.backends.mps.is_available() else 'cpu'
@@ -68,10 +75,13 @@ tok = AutoTokenizer.from_pretrained(BASE_MODEL)
 if tok.pad_token is None:
     tok.pad_token = tok.eos_token
 model = AutoModelForCausalLM.from_pretrained(BASE_MODEL, dtype=dtype).to(device)
+from peft import PeftModel
 if args.resume and os.path.isfile(os.path.join(args.out, 'adapter_config.json')):
-    from peft import PeftModel
     model = PeftModel.from_pretrained(model, args.out, is_trainable=True)
     print(f'resumed adapter from {args.out}', flush=True)
+elif args.init_adapter:
+    model = PeftModel.from_pretrained(model, args.init_adapter, is_trainable=True)
+    print(f'continuing SFT from {args.init_adapter}', flush=True)
 else:
     model = get_peft_model(model, LoraConfig(
         r=16, lora_alpha=32, lora_dropout=0.05, bias='none', task_type='CAUSAL_LM',
@@ -100,13 +110,18 @@ def encode_batch(recs):
     return ids.to(device), att.to(device), mask.to(device)
 
 
-def ce_loss(ids, att, mask):
+def ce_loss(ids, att, mask, gamma=0.0):
     logits = model(input_ids=ids, attention_mask=att).logits[:, :-1].float()
     tgt = ids[:, 1:]
     m = mask[:, 1:]
     lp = torch.gather(F.log_softmax(logits, -1), 2, tgt.unsqueeze(-1)).squeeze(-1)
     tok_loss = -(lp * m)
-    return tok_loss.sum() / m.sum().clamp(min=1)
+    plain = tok_loss.sum() / m.sum().clamp(min=1)  # mean per-token CE for this example (batch size 1 assumed for focal)
+    if gamma <= 0:
+        return plain, plain.item()
+    p = torch.exp(-plain.detach())  # model's current per-token-geometric-mean probability on the target
+    weight = (1 - p).clamp(min=1e-4) ** gamma
+    return weight * plain, plain.item()
 
 
 def do_eval(name, rc2):
@@ -168,7 +183,7 @@ for epoch in range(state['epoch'], math.ceil(args.epochs)):
         try:
             ids, att, mask = encode_batch(batch)
             opt.zero_grad(set_to_none=True)
-            loss = ce_loss(ids, att, mask)
+            loss, plain_loss = ce_loss(ids, att, mask, gamma=args.focal_gamma)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(trainable, 1.0)
             opt.step()
@@ -185,7 +200,7 @@ for epoch in range(state['epoch'], math.ceil(args.epochs)):
         state['step'] += 1
         if state['step'] % 10 == 0:
             print(json.dumps({'step': state['step'], 'epoch': epoch, 'idx': i + args.batch_size,
-                               'loss': loss.item(), 'lr': sched.get_last_lr()[0],
+                               'loss': plain_loss, 'weighted_loss': loss.item(), 'lr': sched.get_last_lr()[0],
                                'elapsed_min': round((time.time() - t0) / 60, 1)}), flush=True)
         if device == 'mps':
             torch.mps.empty_cache()
